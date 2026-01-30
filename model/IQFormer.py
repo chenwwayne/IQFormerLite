@@ -8,7 +8,7 @@ from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
 import math
 from torch.autograd import Variable
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "torch-conv-kan")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "torch-conv-kan")))
 from kan_convs.fast_kan_conv import FastKANConv1DLayer
 
 KANConv1d = FastKANConv1DLayer
