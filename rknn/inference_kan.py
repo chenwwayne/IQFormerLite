@@ -4,17 +4,15 @@ import argparse
 import time
 import sys
 
-# Try to import RKNN or RKNNLite
+# 尝试导入 rknn_toolkit_lite2
 try:
-    from rknn.api import RKNN
-    RKNN_TYPE = 'toolkit'
+    from rknnlite.api import RKNNLite
 except ImportError:
-    try:
-        from rknnlite.api import RKNNLite as RKNN
-        RKNN_TYPE = 'lite'
-    except ImportError:
-        print("Error: neither rknn.api nor rknnlite.api is available.")
-        sys.exit(1)
+    RKNNLite = None
+    print("Error: rknn_toolkit_lite2 not found.")
+    print("Please install it first (e.g., pip install rknn_toolkit_lite2).")
+    # 为了防止在没有安装环境时报错，这里仅提示，不强制退出，除非真正运行时报错
+    pass
 
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
@@ -125,21 +123,26 @@ def show_outputs(output, top_k=5):
     print("----------------------------")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='RKNN Inference Script for IQFormer (KAN)')
-    parser.add_argument('--model', type=str, default='/home/cww/IQFormer_lite/save_models/model_2016.10a_60_1024_0.001_kan_k31_g4_r-2_2/weight_kan.rknn', help='Path to .rknn model file')
+    parser = argparse.ArgumentParser(description='RKNN Lite2 Inference Script for IQFormer (KAN)')
+    parser.add_argument('--model', type=str, default='/home/orangepi/iqformer-lite/save_models/weight_kan.rknn', help='Path to .rknn model file')
     parser.add_argument('--data', type=str, default=None, help='Path to data file (.h5 or .pkl)')
     parser.add_argument('--simulate', type=str, default='random', choices=['random', 'sine', 'constant', 'zeros'], help='Type of simulated input data (default: random)')
-    parser.add_argument('--target', type=str, default='rk3588', help='Target platform (e.g. rk3588)')
-    parser.add_argument('--device_id', type=str, default=None, help='Device ID for adb')
+    # core_mask 是 Lite2 特有的参数，用于指定 NPU 核心
+    default_core_mask = RKNNLite.NPU_CORE_0 if RKNNLite else 0
+    parser.add_argument('--core_mask', type=int, default=default_core_mask, help='NPU core mask (default: NPU_CORE_0)')
     args = parser.parse_args()
 
-    # 1. Create RKNN object
-    print(f"Using {RKNN_TYPE.upper()} API")
-    rknn = RKNN(verbose=True)
+    if RKNNLite is None:
+        print("Cannot run inference: rknn_toolkit_lite2 not installed.")
+        sys.exit(1)
+
+    # 1. Create RKNNLite object
+    print(f"Using RKNN Toolkit Lite2 API")
+    rknn_lite = RKNNLite(verbose=True)
 
     # 2. Load RKNN model
     print('--> Loading model')
-    ret = rknn.load_rknn(args.model)
+    ret = rknn_lite.load_rknn(args.model)
     if ret != 0:
         print('Load RKNN model failed!')
         sys.exit(ret)
@@ -147,12 +150,8 @@ if __name__ == '__main__':
 
     # 3. Init runtime environment
     print('--> Init runtime environment')
-    if RKNN_TYPE == 'toolkit':
-        # On PC, target specifies the simulation target or connected device
-        ret = rknn.init_runtime(target=args.target, device_id=args.device_id)
-    else:
-        # On board (Lite), usually no arguments needed for default NPU
-        ret = rknn.init_runtime()
+    # 板端推理直接 init_runtime，可以指定 core_mask
+    ret = rknn_lite.init_runtime(core_mask=args.core_mask)
         
     if ret != 0:
         print('Init runtime environment failed!')
@@ -162,7 +161,7 @@ if __name__ == '__main__':
     # 4. Prepare Input
     # Model expects (1, 2, 1024) based on description
     # We take one sample for inference
-    samples, _ = load_data(args.data, shape=(1, 2, 1024), sim_type=args.simulate)
+    samples, _ = load_data(args.data, shape=(1, 2, 128), sim_type=args.simulate)
     
     # Take the first sample and add batch dimension if needed
     input_data = samples[0] # (2, 1024)
@@ -173,7 +172,8 @@ if __name__ == '__main__':
     # 5. Inference
     print('--> Running model')
     start_time = time.time()
-    outputs = rknn.inference(inputs=[input_data], data_format=['nchw']) 
+    # Lite2 inference 只需要 inputs 列表
+    outputs = rknn_lite.inference(inputs=[input_data]) 
     end_time = time.time()
     print('done')
     print(f"Inference time: {(end_time - start_time)*1000:.2f} ms")
@@ -184,4 +184,4 @@ if __name__ == '__main__':
     show_outputs(outputs[0])
 
     # 7. Release
-    rknn.release()
+    rknn_lite.release()
