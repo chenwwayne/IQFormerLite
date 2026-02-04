@@ -58,7 +58,7 @@ class PETCGDNN(nn.Module):
     def forward(self, x):
         x = torch.transpose(x,2,1)
         x = self.features(x)
-        x = torch.squeeze(x)
+        x = x.squeeze(2)
         x = torch.transpose(x, 1, 2)
         x, _ = self.gru(x)
         x = self.classifier(x[:, -1, :])

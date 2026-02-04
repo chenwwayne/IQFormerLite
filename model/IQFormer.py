@@ -1,5 +1,4 @@
 import os
-import sys
 import copy
 import einops
 import torch
@@ -8,10 +7,6 @@ from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
 import math
 from torch.autograd import Variable
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "torch-conv-kan")))
-from kan_convs.fast_kan_conv import FastKANConv1DLayer
-
-KANConv1d = FastKANConv1DLayer
 
 def stemIQ(in_chs, out_chs):
     """
@@ -46,9 +41,6 @@ class Embedding(nn.Module):
         patch_size = patch_size
         stride = stride
         padding = padding
-        # User requested ONLY this to be KANConv1d
-        # self.proj = KANConv1d(in_chans, embed_dim, kernel_size=patch_size,
-        #                       stride=stride, padding=padding)
         self.proj = nn.Conv1d(in_chans, embed_dim, kernel_size=patch_size,
                               stride=stride, padding=padding)
         self.norm = norm_layer(embed_dim) if norm_layer else nn.Identity()
@@ -221,132 +213,19 @@ class LocalRepresentation(nn.Module):
             x = input + self.drop_path(x)
         return x
     
-class BandStem(nn.Module):
-    def __init__(self, in_chs, out_chs):
-        super().__init__()
-        self.conv = nn.Conv1d(in_chs, out_chs, kernel_size=3, stride=1, padding=1, groups=1)
-        self.bn = nn.BatchNorm1d(out_chs)
-        self.act = nn.GELU()
-        self.proj = nn.Conv1d(out_chs, out_chs, kernel_size=1)
-    
-    def forward(self, x):
-        x = self.conv(x)
-        x = self.bn(x)
-        x = self.act(x)
-        x = self.proj(x)
-        return x
-
-# class KANStem(nn.Module):
-#     def __init__(self, in_chs, out_chs):
-#         super().__init__()
-#         self.conv = KANConv1d(in_chs, out_chs, kernel_size=7, stride=1, padding=3, groups=1)
-#         self.bn = nn.BatchNorm1d(out_chs)
-#         self.act = nn.GELU()
-#         self.proj = nn.Conv1d(out_chs, out_chs, kernel_size=1)
-    
-#     def forward(self, x):
-#         x = self.conv(x)
-#         x = self.bn(x)
-#         x = self.act(x)
-#         x = self.proj(x)
-#         return x
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
-class FilterbankKANStem(nn.Module):
-    """
-    STFT-like learnable filterbank with FastKANConv1DLayer:
-    - long window (kernel_size=31 by default) to mimic STFT nperseg
-    - produces band_k channels (frequency-band-like responses)
-    - magnitude + log compression to mimic spectrogram energy
-    - BN + 1x1 projection for stable fusion
-    """
-    def __init__(
-        self,
-        in_chs: int = 2,
-        band_k: int = 32,
-        kernel_size: int = 31,
-        stride: int = 1,
-        grid_size: int = 8,
-        grid_range=(-2.0, 2.0),
-        dropout: float = 0.0,
-        base_activation=nn.SiLU,
-        use_log_abs: bool = True,
-        eps: float = 1e-6,
-        post_proj: bool = True,
-    ):
-        super().__init__()
-        ks = int(kernel_size)
-        assert ks % 2 == 1, "kernel_size should be odd, so padding=ks//2 keeps length"
-        pad = ks // 2
-
-        self.use_log_abs = use_log_abs
-        self.eps = eps
-
-        # FastKANConv1DLayer signature:
-        # (input_dim, output_dim, kernel_size, groups=1, padding=0, stride=1, dilation=1,
-        #  grid_size=8, base_activation=nn.SiLU, grid_range=[-2,2], dropout=0.0, norm_layer=nn.InstanceNorm1d, **norm_kwargs)
-        self.fb = KANConv1d(
-            input_dim=in_chs,
-            output_dim=band_k,
-            kernel_size=ks,
-            groups=1,
-            padding=pad,
-            stride=stride,
-            dilation=1,
-            grid_size=grid_size,
-            base_activation=base_activation,
-            grid_range=list(grid_range),
-            dropout=dropout,
-            norm_layer=nn.InstanceNorm1d,  # 默认就是这个，但写清楚
-        )
-
-        # 重要：把分布稳定下来，便于 Fusion 学到“用它”
-        self.bn = nn.BatchNorm1d(band_k)
-
-        # 可选：再加一个 1×1 投影 + BN（小成本，但提升稳定性）
-        self.post_proj = post_proj
-        if post_proj:
-            self.proj = nn.Sequential(
-                nn.GELU(),
-                nn.Conv1d(band_k, band_k, kernel_size=1, bias=False),
-                nn.BatchNorm1d(band_k),
-            )
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        x: (B, 2, L)
-        return: (B, band_k, L)
-        """
-        band = self.fb(x)  # (B, band_k, L)
-
-        # 关键：做“能量化”非线性，逼近 |STFT| 的统计特性
-        if self.use_log_abs:
-            band = torch.log1p(torch.abs(band) + self.eps)
-        # 你也可以试试更接近能量谱的版本：
-        # band = torch.log1p(band.pow(2) + self.eps)
-
-        band = self.bn(band)
-        if self.post_proj:
-            band = self.proj(band)
-        return band
-
-
 class Fusion(nn.Module):
     """
     IQFormer  Fusion Encoder Block.
     """
 
-    def __init__(self, input_chanel, out_chanel, drop):
+    def __init__(self, input_chanel,drop):
 
         super().__init__()
 
-        self.Conv = nn.Sequential( nn.Conv1d(input_chanel,out_chanel,1),
-                                  nn.BatchNorm1d(out_chanel),
+        self.Conv = nn.Sequential( nn.Conv1d(input_chanel,input_chanel*2,1),
+                                  nn.BatchNorm1d(input_chanel*2),
                                   nn.GELU(),
-                                  nn.Conv1d(out_chanel,out_chanel,1),
+                                  nn.Conv1d(input_chanel*2,input_chanel*2,1),
                                   
         )
         self.drop = nn.Dropout(drop)
@@ -441,53 +320,17 @@ class IQFormer(nn.Module):
                  drop_rate=0., drop_path_rate=0.,
                  use_layer_scale=True, layer_scale_init_value=1e-5,
                  fork_feat=False,
-                 vit_num=1,
-                 aux_mode='none',
-                 band_k=32,
-                 kernel_size=31,
-                 grid_size=2,
-                 grid_range=(-2.0, 2.0)):
+                 vit_num=1,):
         super().__init__()
 
         if not fork_feat:
             self.num_classes = num_classes
         self.fork_feat = fork_feat
-        self.aux_mode = aux_mode
         self.BN = nn.BatchNorm1d(2)
-        
-        if self.aux_mode == 'stft':
-            self.BN_stft = nn.BatchNorm2d(1)
-            self.patch_embedIQ = stemIQ(2, embed_dims[0]//4) # out: embed_dims[0]//8
-            self.patch_embedSTFT = stemSTFT(32,1,embed_dims[0]//4) # out: embed_dims[0]//8
-            # Fusion in: embed_dims[0]//4, out: embed_dims[0]
-            self.fusion = Fusion(embed_dims[0]//4, embed_dims[0], drop_rate)
-        elif self.aux_mode == 'conv':
-            self.patch_embedIQ = stemIQ(2, embed_dims[0]//4) # out: embed_dims[0]//8
-            # BandStem out: band_k
-            self.bandstem = BandStem(2, band_k)
-            # Fusion in: embed_dims[0]//8 + band_k, out: embed_dims[0]
-            self.fusion = Fusion(embed_dims[0]//8 + band_k, embed_dims[0], drop_rate)
-        elif self.aux_mode == 'kan':
-            self.patch_embedIQ = stemIQ(2, embed_dims[0]//4) # out: embed_dims[0]//8
-            # self.kanstem = KANStem(2, band_k)
-            self.kanstem = FilterbankKANStem(
-                in_chs=2,
-                band_k=band_k,
-                kernel_size=kernel_size,
-                stride=1,            # hop=1
-                grid_size=grid_size,
-                grid_range=grid_range,
-                dropout=0.0,         # 先关掉，确保可控；后续再试 0.1
-                base_activation=nn.SiLU,
-                use_log_abs=True,    # 强烈建议开
-                post_proj=True,
-            )
-            # Fusion in: embed_dims[0]//8 + band_k, out: embed_dims[0]
-            self.fusion = Fusion(embed_dims[0]//8 + band_k, embed_dims[0], drop_rate)
-        else: # none
-            # Direct IQ embedding to full dimension
-            self.patch_embedIQ = stemIQ(2, embed_dims[0]*2) # out: embed_dims[0]
-
+        self.BN_stft = nn.BatchNorm2d(1)
+        self.patch_embedIQ = stemIQ(2, embed_dims[0]//4)
+        self.patch_embedSTFT = stemSTFT(32,1,embed_dims[0]//4)
+        self.fusion = Fusion(embed_dims[0]//4,drop_rate)
         network = []
         for i in range(len(layers)):
             stage = Stage(embed_dims[i], i, layers, mlp_ratio=mlp_ratios,
@@ -511,7 +354,7 @@ class IQFormer(nn.Module):
                 )
 
         self.network = nn.ModuleList(network)
-        # self.patch_LSTM = nn.LSTM(input_size=embed_dims[0]//2, hidden_size=embed_dims[0]//2,bidirectional=True, batch_first=True, num_layers=2, dropout=drop_rate)
+        self.patch_LSTM = nn.LSTM(input_size=embed_dims[0]//2, hidden_size=embed_dims[0]//2,bidirectional=True, batch_first=True, num_layers=2, dropout=drop_rate)
 
         # Classifier head
         self.norm = nn.BatchNorm1d(embed_dims[-1])
@@ -541,31 +384,14 @@ class IQFormer(nn.Module):
             x = block(x)
         return x
 
-    def forward(self, x, stft=None):
+    def forward(self, x, stft):
         x = self.BN(x)
-        
-        if self.aux_mode == 'stft':
-            if stft is None:
-                raise ValueError("stft input is required for aux_mode='stft'")
-            stft = self.BN_stft(stft)
-            x_iq = self.patch_embedIQ(x)
-            stft_feat = torch.squeeze(self.patch_embedSTFT(stft))
-            x = self.fusion(x_iq, stft_feat)
-        elif self.aux_mode == 'conv':
-            x_iq = self.patch_embedIQ(x)
-            # Generate band features from IQ
-            # Note: BandStem takes (B, 2, L)
-            band_feat = self.bandstem(x) 
-            x = self.fusion(x_iq, band_feat)
-        elif self.aux_mode == 'kan':
-            x_iq = self.patch_embedIQ(x)
-            kan_feat = self.kanstem(x)
-            x = self.fusion(x_iq, kan_feat)
-        else: # none
-            x = self.patch_embedIQ(x)
-            
-        # x,_ = self.patch_LSTM(x.permute(0,2,1))
-        x = self.forward_tokens(x)
+        stft = self.BN_stft(stft)
+        x = self.patch_embedIQ(x)
+        stft = torch.squeeze(self.patch_embedSTFT(stft), 2)
+        x = self.fusion(x,stft)
+        x,_ = self.patch_LSTM(x.permute(0,2,1))
+        x = self.forward_tokens(x.permute(0,2,1))
         x = self.norm(x)
         cls_out = self.head(self.globalavgpool(x))
         return cls_out

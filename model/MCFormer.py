@@ -76,7 +76,7 @@ class MCformer(nn.Module):
 
         # Reshape
         #x = x.view(-1, 128, 32)
-        x = x.squeeze()
+        x = x.squeeze(-1)
 
         # Transformer Encoder layers
         for layer in self.transformer_layers:
