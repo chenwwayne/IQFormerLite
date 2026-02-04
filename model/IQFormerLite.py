@@ -431,7 +431,7 @@ def Stage(dim, index, layers, mlp_ratio=4.,
     return blocks
 
 
-class IQFormer(nn.Module):
+class IQFormerLite(nn.Module):
 
     def __init__(self, layers, embed_dims=None,
                  mlp_ratios=4,

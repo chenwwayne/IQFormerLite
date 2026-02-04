@@ -29,7 +29,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Import models
 try:
     from model.IQFormer import IQFormer
-    from model.IQFormerLite import IQFormer as IQFormerLite
+    from model.IQFormerLite import IQFormerLite
     from model.MCLDNN import MCLDNN
     from model.AMCNET import AMC_Net
     from model.MCFormer import MCformer

@@ -15,7 +15,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from dataset import RMLgeneral, RMLval, RMLtest
 import numpy as np
 from torch.utils.data import DataLoader
-from IQFormer import IQFormer
+from IQFormerLite import IQFormerLite
 import torch
 from torch import nn
 from tensorboardX import SummaryWriter
@@ -191,7 +191,7 @@ if __name__ == '__main__':
     else:
         num_classes = 11
     if args.database_choose in ['2016.10a','2016.10b']:
-        model = IQFormer([2,3,2], embed_dims=[64,64,64],
+        model = IQFormerLite([2,3,2], embed_dims=[64,64,64],
                 mlp_ratios=1,
                 act_layer=nn.GELU,
                 num_classes=num_classes,
@@ -206,7 +206,7 @@ if __name__ == '__main__':
                 grid_size=args.grid_size,
                 grid_range=tuple(args.grid_range))
     else:
-        model = IQFormer([3,3,3], embed_dims=[64,64,64],
+        model = IQFormerLite([3,3,3], embed_dims=[64,64,64],
             mlp_ratios=4,
             act_layer=nn.GELU,
             num_classes=num_classes,
