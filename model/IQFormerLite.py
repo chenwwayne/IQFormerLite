@@ -179,6 +179,34 @@ class EfficientAdditiveAttnetion(nn.Module):
         return out
 
 
+class LargeKernelConv1D(nn.Module):
+    def __init__(self, dim, kernel_size=31, drop=0.):
+        super().__init__()
+        self.dwconv = nn.Conv1d(dim, dim, kernel_size=kernel_size, padding=kernel_size // 2, groups=dim)
+        self.norm = nn.BatchNorm1d(dim)
+        self.act = nn.GELU()
+        self.pwconv = nn.Conv1d(dim, dim, kernel_size=1)
+        self.drop = nn.Dropout(drop)
+        self.apply(self._init_weights)
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Conv1d):
+            trunc_normal_(m.weight, std=.02)
+            if m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+        elif isinstance(m, (nn.BatchNorm1d)):
+            nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
+
+    def forward(self, x):
+        x = self.dwconv(x)
+        x = self.norm(x)
+        x = self.act(x)
+        x = self.pwconv(x)
+        x = self.drop(x)
+        return x
+
+
 class LocalRepresentation(nn.Module):
     """
     Local Representation module for IQFormer that is implemented by 3*3 depth-wise and point-wise convolutions.
@@ -379,7 +407,7 @@ class IQFormer_Encoder(nn.Module):
 
         self.local_representation = LocalRepresentation(dim=dim, kernel_size=3, drop_path=0.,
                                                                    use_layer_scale=True)
-        self.attn = EfficientAdditiveAttnetion(in_dims=dim, token_dim=dim, num_heads=1)
+        self.attn = LargeKernelConv1D(dim=dim, kernel_size=51, drop=drop)
         self.linear = FCN(in_features=dim, hidden_features=int(dim * mlp_ratio), act_layer=act_layer, drop=drop)
         self.drop_path = DropPath(drop_path) if drop_path > 0. \
             else nn.Identity()
@@ -394,12 +422,12 @@ class IQFormer_Encoder(nn.Module):
         x = self.local_representation(x)
         if self.use_layer_scale:
             x = x + self.drop_path(
-                self.layer_scale_1 * self.attn(x.permute(0, 2, 1)).permute(0, 2, 1))
+                self.layer_scale_1 * self.attn(x))
             x = x + self.drop_path(self.layer_scale_2 * self.linear(x))
 
         else:
             x = x + self.drop_path(
-                self.attn(x.permute(0, 2, 1)).permute(0, 2, 1))
+                self.attn(x))
             x = x + self.drop_path(self.linear(x))
         return x
 
