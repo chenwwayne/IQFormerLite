@@ -14,6 +14,7 @@ from sklearn.metrics import confusion_matrix
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from dataset import RMLgeneral, RMLval, RMLtest
 import numpy as np
+import random
 from torch.utils.data import DataLoader
 from IQFormerLite import IQFormerLite
 from IQFormer import IQFormer
@@ -45,6 +46,15 @@ def plot_confusion_matrix(cm, database, SNR, save_dir, labels=[]):
     plt.tight_layout()
     plt.savefig(os.path.join(save_dir, f'{database}_{SNR}.pdf'), bbox_inches='tight', dpi=450)
     plt.close()
+
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 if __name__ == '__main__':
@@ -112,6 +122,7 @@ if __name__ == '__main__':
     # GPU device
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     print('Device: {}'.format(device))
+    set_seed(args.seed)
 
     # Load dataset
     dataset_aux_mode = args.aux_mode
