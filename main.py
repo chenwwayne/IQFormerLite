@@ -65,7 +65,7 @@ if __name__ == '__main__':
                         help='Auxiliary feature mode: none (IQ-only), stft (STFT-IQ fusion), conv (Conv band-IQ fusion), kan (KAN filter bank)')
     parser.add_argument('--band_k', type=int, default=32, help='Number of frequency bands for Conv/KAN-based feature extraction')
     parser.add_argument('--kernel_size', type=int, default=31, help='Kernel size for KAN filterbank')
-    parser.add_argument('--grid_size', type=int, default=2, help='Grid size for KAN filterbank')
+    parser.add_argument('--grid_size', type=int, default=4, help='Grid size for KAN filterbank')
     parser.add_argument('--grid_range', type=float, nargs=2, default=[-2.0, 2.0], help='Grid range for KAN filterbank')
     parser.add_argument('--report', action='store_true', help='Generate model report')
     parser.add_argument('--report_only', action='store_true', help='Generate model report and exit')

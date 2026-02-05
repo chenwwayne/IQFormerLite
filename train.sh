@@ -8,20 +8,20 @@ MAX_JOBS=${MAX_JOBS:-10}
 # KERNEL_SIZES=(15 17 31)
 # GRID_SIZES=(2 4 8)
 # GRID_RANGES=("-2 2" "-1 1")
-KERNEL_SIZES=(15)
-GRID_SIZES=(2)
+KERNEL_SIZES=(31)
+GRID_SIZES=(4)
 GRID_RANGES=("-2 2")
 
 # Define the list of models to run
 # MODELS=('IQFormerLite' 'IQFormer' 'MCFormer' 'AMCNET' 'MCLDNN' 'PETCGDNN' 'FEA_T128')
 # MODELS=('MCFormer' 'AMCNET' 'MCLDNN' 'PETCGDNN' 'FEA_T128')
-MODELS=('IQFormer')
+MODELS=('IQFormerLite')
 running=0
 
 for model in "${MODELS[@]}"; do
     # Check if the model supports KAN parameters (IQFormerLite and IQFormer)
     # if [[ "$model" == "IQFormerLite" || "$model" == "IQFormer" ]]; then
-    if [["$model" == "IQFormerLite"]]; then
+    if [ "$model" == "IQFormerLite" ]; then
         for kernel_size in "${KERNEL_SIZES[@]}"; do
           for grid_size in "${GRID_SIZES[@]}"; do
             for grid_range in "${GRID_RANGES[@]}"; do
