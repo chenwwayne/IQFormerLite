@@ -16,6 +16,12 @@ from dataset import RMLgeneral, RMLval, RMLtest
 import numpy as np
 from torch.utils.data import DataLoader
 from IQFormerLite import IQFormerLite
+from IQFormer import IQFormer
+from MCFormer import MCformer
+from AMCNET import AMC_Net
+from MCLDNN import MCLDNN
+from PETCGDNN import PETCGDNN
+from FEA_T128 import FEA_T
 import torch
 from torch import nn
 from tensorboardX import SummaryWriter
@@ -67,6 +73,9 @@ if __name__ == '__main__':
     parser.add_argument('--report_length', type=int, default=128, help='Input length for model report')
 
     # model
+    parser.add_argument('--model', type=str, default='IQFormerLite',
+                        choices=['IQFormerLite', 'IQFormer', 'MCFormer', 'AMCNET', 'MCLDNN', 'PETCGDNN', 'FEA_T128'],
+                        help='Model to use')
     parser.add_argument('--seed', type=int, default=1234,
                         help='random seed (default: 1234)')
     parser.add_argument('--model_path', type=str,
@@ -105,6 +114,10 @@ if __name__ == '__main__':
     print('Device: {}'.format(device))
 
     # Load dataset
+    dataset_aux_mode = args.aux_mode
+    if args.model == 'IQFormer':
+        dataset_aux_mode = 'stft'
+
     train_dataset = [[],[],[]]
     val_dataset = [[],[],[]]
     test_dataset = [[],[],[]]
@@ -136,9 +149,9 @@ if __name__ == '__main__':
         test = test[snr_idx]
         test_label = test_label[snr_idx]
         SNR_te = SNR_te[snr_idx]
-        train_dataset = RMLgeneral(train,train_label,SNR_tr, aux_mode=args.aux_mode)
-        val_dataset = RMLval(val,val_label,SNR_va, aux_mode=args.aux_mode)
-        test_dataset = RMLtest(test,test_label,SNR_te, aux_mode=args.aux_mode)
+        train_dataset = RMLgeneral(train,train_label,SNR_tr, aux_mode=dataset_aux_mode)
+        val_dataset = RMLval(val,val_label,SNR_va, aux_mode=dataset_aux_mode)
+        test_dataset = RMLtest(test,test_label,SNR_te, aux_mode=dataset_aux_mode)
     else: 
         if args.database_choose[-1] == 'a':
             data = pd.read_pickle(os.path.join(args.database_path, 'RML2016.10a.pkl'))
@@ -171,9 +184,9 @@ if __name__ == '__main__':
             test_dataset[0].extend(x)
             test_dataset[1].extend(y)
             test_dataset[2].extend(SNR_te)
-        train_dataset = RMLgeneral(np.array(train_dataset[0]),np.array(train_dataset[1]),np.array(train_dataset[2]), aux_mode=args.aux_mode)
-        val_dataset = RMLtest(np.array(val_dataset[0]),np.array(val_dataset[1]),np.array(val_dataset[2]), aux_mode=args.aux_mode)
-        test_dataset = RMLtest(np.array(test_dataset[0]),np.array(test_dataset[1]),np.array(test_dataset[2]), aux_mode=args.aux_mode)
+        train_dataset = RMLgeneral(np.array(train_dataset[0]),np.array(train_dataset[1]),np.array(train_dataset[2]), aux_mode=dataset_aux_mode)
+        val_dataset = RMLtest(np.array(val_dataset[0]),np.array(val_dataset[1]),np.array(val_dataset[2]), aux_mode=dataset_aux_mode)
+        test_dataset = RMLtest(np.array(test_dataset[0]),np.array(test_dataset[1]),np.array(test_dataset[2]), aux_mode=dataset_aux_mode)
     print(f'train_size:{len(train_dataset)}\tval_size:{len(val_dataset)}\t')
     # Training Dataloader
     train_loader = DataLoader(
@@ -190,13 +203,30 @@ if __name__ == '__main__':
         num_classes = 26
     else:
         num_classes = 11
-    if args.database_choose in ['2016.10a','2016.10b']:
-        model = IQFormerLite([2,3,2], embed_dims=[64,64,64],
-                mlp_ratios=1,
+    
+    if args.model == 'IQFormerLite':
+        if args.database_choose in ['2016.10a','2016.10b']:
+            model = IQFormerLite([2,3,2], embed_dims=[64,64,64],
+                    mlp_ratios=1,
+                    act_layer=nn.GELU,
+                    num_classes=num_classes,
+                    down_patch_size=3, down_stride=2, down_pad=1,
+                    drop_rate=0.2, drop_path_rate=0.,
+                    use_layer_scale=False, layer_scale_init_value=1e-5,
+                    fork_feat=False,
+                    vit_num=1,
+                    aux_mode=args.aux_mode,
+                    band_k=args.band_k,
+                    kernel_size=args.kernel_size,
+                    grid_size=args.grid_size,
+                    grid_range=tuple(args.grid_range))
+        else:
+            model = IQFormerLite([3,3,3], embed_dims=[64,64,64],
+                mlp_ratios=4,
                 act_layer=nn.GELU,
                 num_classes=num_classes,
                 down_patch_size=3, down_stride=2, down_pad=1,
-                drop_rate=0.2, drop_path_rate=0.,
+                drop_rate=0.2, drop_path_rate=0.2,
                 use_layer_scale=False, layer_scale_init_value=1e-5,
                 fork_feat=False,
                 vit_num=1,
@@ -205,21 +235,40 @@ if __name__ == '__main__':
                 kernel_size=args.kernel_size,
                 grid_size=args.grid_size,
                 grid_range=tuple(args.grid_range))
+    elif args.model == 'IQFormer':
+        if args.database_choose in ['2016.10a','2016.10b']:
+            model = IQFormer([2,3,2], embed_dims=[64,64,64],
+                mlp_ratios=4,
+                act_layer=nn.GELU,
+                num_classes=num_classes,
+                down_patch_size=3, down_stride=2, down_pad=1,
+                drop_rate=0.2, drop_path_rate=0.,
+                use_layer_scale=False, layer_scale_init_value=1e-5,
+                fork_feat=False,
+                vit_num=1,)
+        else:
+            model = IQFormer([3,3,3], embed_dims=[64,64,64],
+                mlp_ratios=4,
+                act_layer=nn.GELU,
+                num_classes=num_classes,
+                down_patch_size=3, down_stride=2, down_pad=1,
+                drop_rate=0.2, drop_path_rate=0.2,
+                use_layer_scale=False, layer_scale_init_value=1e-5,
+                fork_feat=False,
+                vit_num=1)
+    elif args.model == 'MCFormer':
+        model = MCformer(num_classes=num_classes)
+    elif args.model == 'AMCNET':
+        model = AMC_Net(num_classes=num_classes, sig_len=128)
+    elif args.model == 'MCLDNN':
+        model = MCLDNN(num_classes=num_classes, frame_length=128)
+    elif args.model == 'PETCGDNN':
+        model = PETCGDNN(num_classes=num_classes, frame_length=128)
+    elif args.model == 'FEA_T128':
+        model = FEA_T(num_class=num_classes, seq_length=128)
     else:
-        model = IQFormerLite([3,3,3], embed_dims=[64,64,64],
-            mlp_ratios=4,
-            act_layer=nn.GELU,
-            num_classes=num_classes,
-            down_patch_size=3, down_stride=2, down_pad=1,
-            drop_rate=0.2, drop_path_rate=0.2,
-            use_layer_scale=False, layer_scale_init_value=1e-5,
-            fork_feat=False,
-            vit_num=1,
-            aux_mode=args.aux_mode,
-            band_k=args.band_k,
-            kernel_size=args.kernel_size,
-            grid_size=args.grid_size,
-            grid_range=tuple(args.grid_range))
+        raise ValueError(f"Unknown model: {args.model}")
+
     model = model.to(device)
     total_params = sum(p.numel() for p in model.parameters())
     print(f'{total_params:,} total parameters.')

@@ -24,7 +24,7 @@ def train_epoch(num_epoch, data_loader, model, min_SNR, max_SNR, optimizer, crit
             batch_SNR = batch_SNR.numpy().tolist()
             batch_y = batch_y.to(device)
 
-            if aux_mode == 'stft':
+            if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
                 batch_out = model(batch_x,batch_stft)
             else:
                 batch_out = model(batch_x)
@@ -87,7 +87,7 @@ def val_epoch(num_epoch, data_loader, model, min_SNR, max_SNR, scheduler, criter
                 batch_SNR = batch_SNR.numpy().tolist()
                 batch_y = batch_y.to(device)
                 start = time.time()
-                if aux_mode == 'stft':
+                if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
                     batch_out = model(batch_x,batch_stft)
                 else:
                     batch_out = model(batch_x)
@@ -139,7 +139,7 @@ def test_epoch(num_epoch, data_loader, model, device, aux_mode='stft'):
             batch_stft = batch_stft.to(device)
             batch_x = batch_x.to(device)
             batch_y = batch_y.to(device)
-            if aux_mode == 'stft':
+            if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
                 batch_out = model(batch_x,batch_stft)
             else:
                 batch_out = model(batch_x)
