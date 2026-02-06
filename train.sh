@@ -21,8 +21,8 @@ for model in "${MODELS[@]}"; do
     # if [[ "$model" == "IQFormerLite" || "$model" == "IQFormer" ]]; then
     if [ "$model" == "IQFormerLite" ]; then
         for seed in "${SEEDS[@]}"; do
-          tag="${model}_kan_k${KERNEL_SIZE}_g${GRID_SIZE}_r${GRID_RANGE// /_}_convAtteK51"
-          python main.py --model "$model" --aux_mode kan --kernel_size "$KERNEL_SIZE" --grid_size "$GRID_SIZE" --grid_range $GRID_RANGE --seed "$seed" --comment "$tag" &
+          tag="${model}_kan_k${KERNEL_SIZE}_g${GRID_SIZE}_r${GRID_RANGE// /_}"
+          python main.py --model "$model" --aux_mode kan --kernel_size "$KERNEL_SIZE" --grid_size "$GRID_SIZE" --grid_range $GRID_RANGE --seed "$seed" --comment "$tag" --report &
           
           running=$((running + 1))
           if [ "$running" -ge "$MAX_JOBS" ]; then

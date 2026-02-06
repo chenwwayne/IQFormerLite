@@ -29,7 +29,7 @@ from tensorboardX import SummaryWriter
 import matplotlib.pyplot as plt
 from plot_tSNE import plot_tsne
 from traintest import train_epoch, test_epoch, val_epoch
-from model_report import get_report_batch, adjust_inputs, build_multi_dtype_report, print_multi_dtype_report
+from model_report import get_report_batch, adjust_inputs, build_multi_dtype_report, print_multi_dtype_report, format_multi_dtype_report
 import time
 # plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
 # plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
@@ -300,7 +300,12 @@ if __name__ == '__main__':
         batch_x, batch_stft = get_report_batch(train_loader, args.aux_mode, device)
         batch_x, batch_stft = adjust_inputs(batch_x, batch_stft, batch_size=args.report_batch, length=args.report_length)
         reports = build_multi_dtype_report(model, batch_x, batch_stft, device, args.aux_mode, ['fp32', 'fp16', 'int8'])
-        print_multi_dtype_report(reports)
+        report_text = format_multi_dtype_report(reports)
+        print(report_text, end="")
+        if not args.report_only:
+            report_path = os.path.join('logs', model_tag, 'model_report.txt')
+            with open(report_path, 'w', encoding='utf-8') as f:
+                f.write(report_text)
         if args.report_only:
             sys.exit(0)
 

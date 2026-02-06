@@ -178,6 +178,37 @@ def build_multi_dtype_report(model, batch_x, batch_stft, device, aux_mode, dtype
         reports.append(build_model_report_for_dtype(model, batch_x, batch_stft, device, aux_mode, dt))
     return reports
 
+def format_multi_dtype_report(reports):
+    lines = []
+    for r in reports:
+        lines.append(f"=== DType: {r.get('dtype')} ===")
+        if not r.get("available", False):
+            lines.append("报告不可用")
+            continue
+        lines.append(f"参数量: {r['params']:,}")
+        lines.append(f"可训练参数量: {r['trainable_params']:,}")
+        lines.append(f"模型大小: {format_bytes(r['model_size'])}")
+        if r["macs"] is None:
+            lines.append("MACs: N/A")
+        else:
+            lines.append(f"MACs: {r['macs']:,}")
+        if r["flops"] is None:
+            lines.append("FLOPs: N/A")
+        else:
+            lines.append(f"FLOPs: {r['flops']:,}")
+        lines.append(f"Latency: {r['latency_ms']:.3f} ms")
+        if r["throughput"] is None:
+            lines.append("Throughput: N/A")
+        else:
+            lines.append(f"Throughput: {r['throughput']:.2f} samples/s")
+        if r["peak_activation"] is None:
+            lines.append("Peak Activation Memory: N/A")
+            lines.append("Peak Total Memory: N/A")
+        else:
+            lines.append(f"Peak Activation Memory: {format_bytes(r['peak_activation'])}")
+            lines.append(f"Peak Total Memory: {format_bytes(r['peak_total'])}")
+    return "\n".join(lines) + "\n"
+
 def print_multi_dtype_report(reports):
     for r in reports:
         print(f"=== DType: {r.get('dtype')} ===")
