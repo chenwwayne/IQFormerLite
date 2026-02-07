@@ -8,7 +8,9 @@ MAX_JOBS=${MAX_JOBS:-10}
 KERNEL_SIZE=31
 GRID_SIZE=4
 GRID_RANGE="-2 2"
-SEEDS=(4567) # 4567 BEST 63.42
+# SEEDS=(4567) # 4567 BEST 63.42
+# SEEDS=(0123 2345 3456 5678 6789 7890 8901 9012)
+SEEDS=(1234)
 
 # Define the list of models to run
 # MODELS=('IQFormerLite' 'IQFormer' 'MCFormer' 'AMCNET' 'MCLDNN' 'PETCGDNN' 'FEA_T128')
@@ -21,7 +23,7 @@ for model in "${MODELS[@]}"; do
     # if [[ "$model" == "IQFormerLite" || "$model" == "IQFormer" ]]; then
     if [ "$model" == "IQFormerLite" ]; then
         for seed in "${SEEDS[@]}"; do
-          tag="${model}_kan_k${KERNEL_SIZE}_g${GRID_SIZE}_r${GRID_RANGE// /_}"
+          tag="${model}_kan_k${KERNEL_SIZE}_g${GRID_SIZE}_r${GRID_RANGE}_woLargeMLP_woLSTM_withLKGC_withLKF_seed${seed}"
           python main.py --model "$model" --aux_mode kan --kernel_size "$KERNEL_SIZE" --grid_size "$GRID_SIZE" --grid_range $GRID_RANGE --seed "$seed" --comment "$tag" --report &
           
           running=$((running + 1))

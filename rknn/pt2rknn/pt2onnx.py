@@ -9,6 +9,7 @@ sys.path.append(base_dir)
 sys.path.append(os.path.join(base_dir, "model"))
 
 from IQFormer import IQFormer
+from IQFormerLite import IQFormerLite
 
 
 def parse_args():
@@ -36,8 +37,10 @@ def build_model(args):
         num_classes = 26
     else:
         num_classes = 11
+    use_lite = args.aux_mode != "none" or "IQFormerLite" in os.path.basename(args.model_path)
+    model_cls = IQFormerLite if use_lite else IQFormer
     if args.database_choose in ["2016.10a", "2016.10b"]:
-        model = IQFormer(
+        model = model_cls(
             [2, 3, 2],
             embed_dims=[64, 64, 64],
             mlp_ratios=1,
@@ -58,7 +61,7 @@ def build_model(args):
             grid_range=tuple(args.grid_range),
         )
     else:
-        model = IQFormer(
+        model = model_cls(
             [3, 3, 3],
             embed_dims=[64, 64, 64],
             mlp_ratios=4,
