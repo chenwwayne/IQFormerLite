@@ -56,6 +56,21 @@ def set_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
+def infer_seq_length(sample):
+    if isinstance(sample, np.ndarray):
+        arr = sample
+    else:
+        arr = np.array(sample)
+    if arr.ndim == 1:
+        return int(arr.shape[0])
+    if arr.ndim >= 2:
+        if arr.shape[0] == 2 and arr.shape[1] != 2:
+            return int(arr.shape[1])
+        if arr.shape[1] == 2 and arr.shape[0] != 2:
+            return int(arr.shape[0])
+        return int(arr.shape[-1])
+    return 128
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('RML SMY model')
@@ -132,6 +147,7 @@ if __name__ == '__main__':
     train_dataset = [[],[],[]]
     val_dataset = [[],[],[]]
     test_dataset = [[],[],[]]
+    input_length = 128
     if args.database_choose == '2019':
         classes = ['BPSK', 'QPSK', '8PSK', '16PSK', '32PSK', '64PSK', '4QAM', '8QAM', '16QAM', '32QAM', 
                    '64QAM', '128QAM', '256QAM', '2FSK', '4FSK', '8FSK', '16FSK', '4PAM', '8PAM', '16PAM', 'AM-DSB', 
@@ -141,6 +157,8 @@ if __name__ == '__main__':
             train_label = h5file['labels'][:]
             SNR_tr = h5file['snr'][:]
             h5file.close()
+        if train is not None and train.size > 0:
+            input_length = infer_seq_length(train[0])
         snr_idx = np.where((SNR_tr>= args.minSNR) & (SNR_tr<= args.maxSNR))[0]
         print(train.shape)
         print('train_index_lenth:',len(snr_idx))
@@ -168,8 +186,7 @@ if __name__ == '__main__':
             data = pd.read_pickle(os.path.join(args.database_path, 'RML2016.10a.pkl'))
             classes = ['8PSK', 'BPSK', 'CPFSK', 'GFSK', 'PAM4', 'QAM16', 'QAM64', 'QPSK', 'AM-DSB', 'AM-SSB', 'WBFM']
         else:
-            classes = ['8PSK', 'BPSK', 'CPFSK', 'GFSK', 'PAM4', 'QAM16', 'QAM64', 'QPSK', 'AM-DSB',
-                    'WBFM']
+            classes = ['8PSK', 'BPSK', 'CPFSK', 'GFSK', 'PAM4', 'QAM16', 'QAM64', 'QPSK', 'AM-DSB','WBFM']
             data = pd.read_pickle(os.path.join(args.database_path, 'RML2016.10b.dat'))
         train_dataset = [[],[],[]]
         val_dataset = [[],[],[]]
@@ -198,6 +215,8 @@ if __name__ == '__main__':
         train_dataset = RMLgeneral(np.array(train_dataset[0]),np.array(train_dataset[1]),np.array(train_dataset[2]), aux_mode=dataset_aux_mode)
         val_dataset = RMLtest(np.array(val_dataset[0]),np.array(val_dataset[1]),np.array(val_dataset[2]), aux_mode=dataset_aux_mode)
         test_dataset = RMLtest(np.array(test_dataset[0]),np.array(test_dataset[1]),np.array(test_dataset[2]), aux_mode=dataset_aux_mode)
+        if len(train_dataset) > 0:
+            input_length = infer_seq_length(train_dataset.samples[0])
     print(f'train_size:{len(train_dataset)}\tval_size:{len(val_dataset)}\t')
     # Training Dataloader
     train_loader = DataLoader(
@@ -232,11 +251,25 @@ if __name__ == '__main__':
                     grid_size=args.grid_size,
                     grid_range=tuple(args.grid_range))
         else:
-            model = IQFormerLite([3,3,3], embed_dims=[64,64,64],
-                mlp_ratios=4,
+            # model = IQFormerLite([3,3,3], embed_dims=[64,64,64],
+            #     mlp_ratios=4,
+            #     act_layer=nn.GELU,
+            #     num_classes=num_classes,
+            #     down_patch_size=3, down_stride=2, down_pad=1,
+            #     drop_rate=0.2, drop_path_rate=0.2,
+            #     use_layer_scale=False, layer_scale_init_value=1e-5,
+            #     fork_feat=False,
+            #     vit_num=1,
+            #     aux_mode=args.aux_mode,
+            #     band_k=args.band_k,
+            #     kernel_size=args.kernel_size,
+            #     grid_size=args.grid_size,
+            #     grid_range=tuple(args.grid_range))
+            model = IQFormerLite([2,3,2], embed_dims=[64,64,64],
+                mlp_ratios=1,
                 act_layer=nn.GELU,
                 num_classes=num_classes,
-                down_patch_size=3, down_stride=2, down_pad=1,
+                down_patch_size=3, down_stride=4, down_pad=3,
                 drop_rate=0.2, drop_path_rate=0.2,
                 use_layer_scale=False, layer_scale_init_value=1e-5,
                 fork_feat=False,
@@ -270,13 +303,13 @@ if __name__ == '__main__':
     elif args.model == 'MCFormer':
         model = MCformer(num_classes=num_classes)
     elif args.model == 'AMCNET':
-        model = AMC_Net(num_classes=num_classes, sig_len=128)
+        model = AMC_Net(num_classes=num_classes, sig_len=input_length)
     elif args.model == 'MCLDNN':
-        model = MCLDNN(num_classes=num_classes, frame_length=128)
+        model = MCLDNN(num_classes=num_classes, frame_length=input_length)
     elif args.model == 'PETCGDNN':
-        model = PETCGDNN(num_classes=num_classes, frame_length=128)
+        model = PETCGDNN(num_classes=num_classes, frame_length=input_length)
     elif args.model == 'FEA_T128':
-        model = FEA_T(num_class=num_classes, seq_length=128)
+        model = FEA_T(num_class=num_classes, seq_length=input_length)
     else:
         raise ValueError(f"Unknown model: {args.model}")
 
