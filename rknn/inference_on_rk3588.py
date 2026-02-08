@@ -110,17 +110,16 @@ def get_npu_load():
         with open("/sys/kernel/debug/rknpu/load", "r", encoding="utf-8") as f:
             output = f.read().strip()
     except Exception:
-        try:
-            result = subprocess.run(["sudo", "cat", "/sys/kernel/debug/rknpu/load"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
-            output = result.stdout.decode().strip()
-        except Exception:
-            return None
-    core_loads = re.findall(r"Core\d+: *(\d+)%", output)
+        return None
+    core_loads = re.findall(r"(?:Core|core)\s*\d+\s*:\s*(\d+)\s*%", output)
     if core_loads:
         return list(map(int, core_loads))
-    single_load = re.search(r"NPU load: *(\d+)%", output)
+    single_load = re.search(r"NPU load:\s*(\d+)\s*%", output, re.IGNORECASE)
     if single_load:
         return [int(single_load.group(1))]
+    percent_values = re.findall(r"(\d+)\s*%", output)
+    if percent_values:
+        return list(map(int, percent_values))
     return None
 
 def get_process_rss_mb():
@@ -213,10 +212,11 @@ def build_pytorch_model(args):
     model.eval()
     return model, torch, None
 
-def compute_cpu_report(args, sample_length, batch_size):
+def compute_cpu_report(args, sample_length, batch_size, baseline_rss_mb=None):
     model, torch, err = build_pytorch_model(args)
     if model is None:
-        return None, err
+        return None, err, None
+    start_rss = baseline_rss_mb if baseline_rss_mb is not None else get_process_rss_mb()
     if args.pt_model_path:
         state = torch.load(args.pt_model_path, map_location="cpu")
         if isinstance(state, dict) and "state_dict" in state:
@@ -228,16 +228,47 @@ def compute_cpu_report(args, sample_length, batch_size):
     x = torch.randn(batch_size, 2, sample_length, dtype=torch.float32)
     batch_stft = None
     try:
-        from model_report import build_model_report, format_bytes
+        from model_report import build_model_report, build_model_report_for_dtype, format_bytes
     except Exception:
-        return None, "model_report import failed"
+        return None, "model_report import failed", None
     report = build_model_report(model, x, batch_stft, torch.device("cpu"), args.aux_mode)
     report["model_size_fmt"] = format_bytes(report["model_size"])
     report["peak_activation_fmt"] = format_bytes(report["peak_activation"]) if report["peak_activation"] is not None else None
     report["peak_total_fmt"] = format_bytes(report["peak_total"]) if report["peak_total"] is not None else None
-    return report, None
+    end_rss = get_process_rss_mb()
+    delta_mb = (end_rss - start_rss) if (end_rss is not None and start_rss is not None) else None
+    return report, None, delta_mb
 
-def run_npu_inference(rknn_lite, samples, labels, batch_size, warmup, iters, core_mask):
+
+def compute_cpu_report_for_dtype(args, sample_length, batch_size, dtype):
+    model, torch, err = build_pytorch_model(args)
+    if model is None:
+        return None, err
+    model = model.to("cpu")
+    x = torch.randn(batch_size, 2, sample_length, dtype=torch.float32)
+    batch_stft = None
+    try:
+        from model_report import build_model_report_for_dtype, format_bytes
+    except Exception:
+        return None, "model_report import failed"
+    r = build_model_report_for_dtype(model, x, batch_stft, torch.device("cpu"), args.aux_mode, dtype)
+    if not r.get("available", False):
+        return None, f"cpu dtype {dtype} unavailable"
+    r["model_size_fmt"] = format_bytes(r["model_size"])
+    r["peak_activation_fmt"] = format_bytes(r["peak_activation"]) if r["peak_activation"] is not None else None
+    r["peak_total_fmt"] = format_bytes(r["peak_total"]) if r["peak_total"] is not None else None
+    return r, None
+
+
+def map_cpu_dtype(model_name: str):
+    name = model_name.lower()
+    if "fp16" in name:
+        return "fp16"
+    if "int8" in name:
+        return "int8"
+    return "fp32"
+
+def run_npu_inference(rknn_lite, samples, labels, batch_size, warmup, iters, core_mask, baseline_rss_mb=None):
     total = len(samples)
     if total == 0:
         return None
@@ -247,6 +278,7 @@ def run_npu_inference(rknn_lite, samples, labels, batch_size, warmup, iters, cor
         rknn_lite.inference(inputs=[warm_batch])
     npu_load_samples = []
     correct = 0
+    peak_rss = baseline_rss_mb if baseline_rss_mb is not None else get_process_rss_mb()
     start = time.perf_counter()
     for i in range(0, total, batch_size):
         batch = samples[i:i + batch_size]
@@ -259,6 +291,10 @@ def run_npu_inference(rknn_lite, samples, labels, batch_size, warmup, iters, cor
         load = get_npu_load()
         if load is not None:
             npu_load_samples.append(load)
+        rss_now = get_process_rss_mb()
+        if rss_now is not None:
+            if peak_rss is None or rss_now > peak_rss:
+                peak_rss = rss_now
     end = time.perf_counter()
     elapsed = end - start
     batch_count = int(np.ceil(total / batch_size))
@@ -266,12 +302,17 @@ def run_npu_inference(rknn_lite, samples, labels, batch_size, warmup, iters, cor
     avg_sample_ms = (elapsed / total) * 1000
     throughput = total / elapsed if elapsed > 0 else None
     acc = (correct / total) if labels is not None else None
+    delta_mb = None
+    if peak_rss is not None and baseline_rss_mb is not None:
+        delta_mb = peak_rss - baseline_rss_mb
     return {
         "avg_batch_ms": avg_batch_ms,
         "avg_sample_ms": avg_sample_ms,
         "throughput": throughput,
         "accuracy": acc,
         "npu_load_samples": npu_load_samples,
+        "peak_rss_mb": peak_rss,
+        "delta_mb": delta_mb,
     }
 
 def summarize_npu_load(load_samples):
@@ -358,7 +399,7 @@ if __name__ == "__main__":
     print(f"Test samples: {len(samples)}")
     print(f"Input shape: {samples[0].shape}")
 
-    cpu_report, cpu_err = compute_cpu_report(args, samples.shape[-1], args.report_batch)
+    baseline_rss_mb = get_process_rss_mb()
 
     model_paths = resolve_model_paths(args)
     rows = []
@@ -377,6 +418,7 @@ if __name__ == "__main__":
                     args.warmup,
                     args.iters,
                     args.core_mask,
+                    baseline_rss_mb,
                 )
                 rknn_lite.release()
             else:
@@ -389,6 +431,13 @@ if __name__ == "__main__":
 
         npu_load_summary = summarize_npu_load(npu_result["npu_load_samples"]) if npu_result is not None else None
         rss_mb = get_process_rss_mb()
+        peak_mb = npu_result["peak_rss_mb"] if npu_result is not None else rss_mb
+        cpu_dtype = map_cpu_dtype(os.path.basename(model_path))
+        cpu_report, cpu_err = compute_cpu_report_for_dtype(args, samples.shape[-1], args.report_batch, cpu_dtype)
+        rknn_size_kb = os.path.getsize(model_path) / 1024 if os.path.isfile(model_path) else None
+        delta_mb = None
+        if npu_result is not None and npu_result["delta_mb"] is not None:
+            delta_mb = npu_result["delta_mb"]
 
         print(f"===== Report: {os.path.basename(model_path)} =====")
         print("===== Static Complexity =====")
@@ -402,7 +451,9 @@ if __name__ == "__main__":
             flops_g = cpu_report["flops"] / 1e9 if cpu_report["flops"] is not None else None
             print(f"Parameters (M): {params_m:.3f}")
             print("FLOPs (G): {}".format(f"{flops_g:.3f}" if flops_g is not None else "N/A"))
-            print(f"Model Size: {cpu_report['model_size_fmt']}")
+            print(f"CPU Model Size: {cpu_report['model_size_fmt']}")
+            if rknn_size_kb is not None:
+                print(f"RKNN Model Size: {rknn_size_kb:.2f} KB")
 
         print("===== Dynamic Inference Performance =====")
         if npu_result is not None:
@@ -434,16 +485,25 @@ if __name__ == "__main__":
         else:
             print(f"NPU Load Mean: {npu_load_summary['mean']}")
             print(f"NPU Load Max: {npu_load_summary['max']}")
-        if rss_mb is None:
-            print("Memory Usage (MB): N/A")
+        if baseline_rss_mb is None:
+            print("Memory Baseline (MB): N/A")
         else:
-            print(f"Memory Usage (MB): {rss_mb:.2f}")
+            print(f"Memory Baseline (MB): {baseline_rss_mb:.2f}")
+        if peak_mb is None:
+            print("Memory Peak (MB): N/A")
+        else:
+            print(f"Memory Peak (MB): {peak_mb:.2f}")
+        if delta_mb is None:
+            print("Memory Delta (MB): N/A")
+        else:
+            print(f"Memory Delta (MB): {delta_mb:.2f}")
 
         row = {
             "model": os.path.basename(model_path),
             "params_m": round(cpu_report["params"] / 1e6, 6) if cpu_report else None,
             "flops_g": round(cpu_report["flops"] / 1e9, 6) if cpu_report and cpu_report["flops"] is not None else None,
-            "model_size_kb": round(cpu_report["model_size"] / 1024, 6) if cpu_report else None,
+            "cpu_model_size_kb": round(cpu_report["model_size"] / 1024, 6) if cpu_report else None,
+            "rknn_model_size_kb": round(rknn_size_kb, 6) if rknn_size_kb is not None else None,
             "cpu_latency_ms": round(cpu_report["latency_ms"], 6) if cpu_report else None,
             "cpu_throughput": round(cpu_report["throughput"], 6) if cpu_report and cpu_report["throughput"] is not None else None,
             "npu_latency_batch_ms": round(npu_result["avg_batch_ms"], 6) if npu_result else None,
@@ -453,7 +513,9 @@ if __name__ == "__main__":
             "speedup": round(speedup, 6) if speedup is not None else None,
             "npu_load_mean": format_list_value(npu_load_summary["mean"]) if npu_load_summary else "",
             "npu_load_max": format_list_value(npu_load_summary["max"]) if npu_load_summary else "",
-            "memory_mb": round(rss_mb, 6) if rss_mb is not None else None,
+            "memory_baseline_mb": round(baseline_rss_mb, 6) if baseline_rss_mb is not None else None,
+            "memory_peak_mb": round(peak_mb, 6) if peak_mb is not None else None,
+            "memory_delta_mb": round(delta_mb, 6) if delta_mb is not None else None,
         }
         rows.append(row)
 
