@@ -8,6 +8,7 @@ GRID_RANGE="-2 2"
 PLATFORM="rk3588"
 AUX_MODE="kan"
 DATABASE="2016.10a"
+DATASET_PATH=""
 
 # Python environments
 RKNN_PYTHON="/home/cww/install/miniconda3/envs/rknn/bin/python"
@@ -24,6 +25,7 @@ usage() {
     echo "  -p, --platform    Target RKNN platform (default: rk3588)"
     echo "  --aux_mode        Aux mode (default: kan)"
     echo "  --database        Database (default: 2016.10a)"
+    echo "  --dataset         Dataset path for INT8 quantization"
     echo "  -h, --help        Show this help message"
     echo ""
     echo "Example:"
@@ -59,6 +61,10 @@ while [[ $# -gt 0 ]]; do
             DATABASE="$2"
             shift 2
             ;;
+        --dataset)
+            DATASET_PATH="$2"
+            shift 2
+            ;;
         -h|--help)
             usage
             ;;
@@ -80,17 +86,22 @@ MODEL_DIR=$(dirname "$MODEL_PATH")
 MODEL_BASENAME=$(basename "$MODEL_PATH" .pt)
 MODEL_ONNX="${MODEL_DIR}/${MODEL_BASENAME}.onnx"
 MODEL_ONNX_FIXED="${MODEL_DIR}/${MODEL_BASENAME}_fixed.onnx"
-MODEL_RKNN="${MODEL_DIR}/${MODEL_BASENAME}.rknn"
+MODEL_RKNN_FP32="${MODEL_DIR}/${MODEL_BASENAME}_fp32.rknn"
+MODEL_RKNN_FP16="${MODEL_DIR}/${MODEL_BASENAME}_fp16.rknn"
+MODEL_RKNN_INT8="${MODEL_DIR}/${MODEL_BASENAME}_int8.rknn"
 
 echo "=========================================="
 echo "Configuration:"
 echo "  Model Path:    $MODEL_PATH"
 echo "  ONNX Path:     $MODEL_ONNX"
 echo "  Fixed ONNX:    $MODEL_ONNX_FIXED"
-echo "  RKNN Path:     $MODEL_RKNN"
+echo "  RKNN FP32:     $MODEL_RKNN_FP32"
+echo "  RKNN FP16:     $MODEL_RKNN_FP16"
+echo "  RKNN INT8:     $MODEL_RKNN_INT8"
 echo "  Kernel Size:   $KERNEL_SIZE"
 echo "  Grid Size:     $GRID_SIZE"
 echo "  Platform:      $PLATFORM"
+echo "  Dataset Path:  $DATASET_PATH"
 echo "=========================================="
 
 # Get directory of this script to find python scripts
@@ -131,21 +142,59 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "=========================================="
-echo "Step 3: Converting ONNX to RKNN"
+echo "Step 3: Converting ONNX to RKNN (FP32)"
 echo "=========================================="
 
 $RKNN_PYTHON "$SCRIPT_DIR/onnx2rknn.py" \
   "$MODEL_ONNX_FIXED" \
   "$PLATFORM" \
-  fp \
-  "$MODEL_RKNN"
+  fp32 \
+  "$MODEL_RKNN_FP32"
 
 if [ $? -ne 0 ]; then
-    echo "Error: ONNX to RKNN conversion failed."
+    echo "Error: ONNX to RKNN conversion failed for FP32."
     exit 1
 fi
 
 echo "=========================================="
-echo "Success! RKNN model saved to:"
-echo "  $MODEL_RKNN"
+echo "Step 4: Converting ONNX to RKNN (FP16)"
+echo "=========================================="
+
+$RKNN_PYTHON "$SCRIPT_DIR/onnx2rknn.py" \
+  "$MODEL_ONNX_FIXED" \
+  "$PLATFORM" \
+  fp16 \
+  "$MODEL_RKNN_FP16"
+
+if [ $? -ne 0 ]; then
+    echo "Error: ONNX to RKNN conversion failed for FP16."
+    exit 1
+fi
+
+echo "=========================================="
+echo "Step 5: Converting ONNX to RKNN (INT8)"
+echo "=========================================="
+
+if [ -z "$DATASET_PATH" ]; then
+    echo "Error: Dataset path is required for INT8 quantization."
+    exit 1
+fi
+
+$RKNN_PYTHON "$SCRIPT_DIR/onnx2rknn.py" \
+  "$MODEL_ONNX_FIXED" \
+  "$PLATFORM" \
+  int8 \
+  "$MODEL_RKNN_INT8" \
+  "$DATASET_PATH"
+
+if [ $? -ne 0 ]; then
+    echo "Error: ONNX to RKNN conversion failed for INT8."
+    exit 1
+fi
+
+echo "=========================================="
+echo "Success! RKNN models saved to:"
+echo "  $MODEL_RKNN_FP32"
+echo "  $MODEL_RKNN_FP16"
+echo "  $MODEL_RKNN_INT8"
 echo "=========================================="
