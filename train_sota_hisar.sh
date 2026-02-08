@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-2}
+CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-1}
 export CUDA_VISIBLE_DEVICES
 
 MAX_JOBS=${MAX_JOBS:-6}
@@ -13,7 +13,8 @@ GRID_RANGE="-2 2"
 SEEDS=(2345)
 # Define the list of models to run
 # MODELS=('IQFormer' 'MCFormer' 'AMCNET' 'MCLDNN' 'PETCGDNN' 'FEA_T128')
-MODELS=('IQFormer' 'MCFormer' 'AMCNET' 'MCLDNN' 'PETCGDNN' 'FEA_T128')
+# MODELS=('IQFormer' 'MCFormer' 'AMCNET' 'MCLDNN' 'PETCGDNN' 'FEA_T128' 'FEA_T1024' )
+MODELS=('FEA_T1024' )
 # MODELS=('IQFormerLite')
 running=0
 
@@ -33,9 +34,9 @@ for model in "${MODELS[@]}"; do
         for seed in "${SEEDS[@]}"; do
           tag="${model}_base_seed${seed}"
           if [ "$model" == "IQFormer" ]; then
-            python main.py --model "$model" --aux_mode stft --seed "$seed" --comment "$tag" --database_path /home/cww/dataset/HisarMod2019 --database_choose 2019 --batch_size 256 &
+            python main.py --model "$model" --aux_mode stft --seed "$seed" --comment "$tag" --database_path /home/cww/dataset/HisarMod2019 --database_choose 2019 --batch_size 256 --report --report_only&
           else
-            python main.py --model "$model" --aux_mode none --seed "$seed" --comment "$tag" --database_path /home/cww/dataset/HisarMod2019 --database_choose 2019 --batch_size 256 &
+            python main.py --model "$model" --aux_mode none --seed "$seed" --comment "$tag" --database_path /home/cww/dataset/HisarMod2019 --database_choose 2019 --batch_size 256 --report --report_only&
           fi
           
           running=$((running + 1))

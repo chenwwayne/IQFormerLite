@@ -22,7 +22,8 @@ from MCFormer import MCformer
 from AMCNET import AMC_Net
 from MCLDNN import MCLDNN
 from PETCGDNN import PETCGDNN
-from FEA_T128 import FEA_T
+from FEA_T128 import FEA_T as FEA_T128
+from FEA_T1024 import FEA_T as FEA_T1024
 import torch
 from torch import nn
 from tensorboardX import SummaryWriter
@@ -99,7 +100,7 @@ if __name__ == '__main__':
 
     # model
     parser.add_argument('--model', type=str, default='IQFormerLite',
-                        choices=['IQFormerLite', 'IQFormer', 'MCFormer', 'AMCNET', 'MCLDNN', 'PETCGDNN', 'FEA_T128'],
+                        choices=['IQFormerLite', 'IQFormer', 'MCFormer', 'AMCNET', 'MCLDNN', 'PETCGDNN', 'FEA_T128', 'FEA_T1024'],
                         help='Model to use')
     parser.add_argument('--seed', type=int, default=1234,
                         help='random seed (default: 1234)')
@@ -309,7 +310,9 @@ if __name__ == '__main__':
     elif args.model == 'PETCGDNN':
         model = PETCGDNN(num_classes=num_classes, frame_length=input_length)
     elif args.model == 'FEA_T128':
-        model = FEA_T(num_class=num_classes, seq_length=input_length)
+        model = FEA_T128(num_class=num_classes, seq_length=input_length)
+    elif args.model == 'FEA_T1024':
+        model = FEA_T1024(num_class=num_classes, seq_length=input_length)
     else:
         raise ValueError(f"Unknown model: {args.model}")
 
@@ -331,7 +334,12 @@ if __name__ == '__main__':
 
     if args.report:
         batch_x, batch_stft = get_report_batch(train_loader, args.aux_mode, device)
-        batch_x, batch_stft = adjust_inputs(batch_x, batch_stft, batch_size=args.report_batch, length=args.report_length)
+        report_length = args.report_length
+        if args.aux_mode == 'stft' and report_length != input_length:
+            report_length = input_length
+        elif args.model in ['PETCGDNN', 'MCLDNN', 'AMCNET', 'FEA_T128', 'FEA_T1024'] and report_length != input_length:
+            report_length = input_length
+        batch_x, batch_stft = adjust_inputs(batch_x, batch_stft, batch_size=args.report_batch, length=report_length)
         reports = build_multi_dtype_report(model, batch_x, batch_stft, device, args.aux_mode, ['fp32', 'fp16', 'int8'])
         report_text = format_multi_dtype_report(reports)
         print(report_text, end="")
