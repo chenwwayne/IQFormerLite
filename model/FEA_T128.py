@@ -176,7 +176,7 @@ class Frame(nn.Module):  # FEM module
     def forward(self, x):
         # input_format: (B, 1024, 2)
         # Note that r_I and r_Q are concatenate in the last dimension of x
-        Input_Feature = torch.zeros(x.shape[0], self.FrameNum, self.PatchSize*2).cuda()
+        Input_Feature = torch.zeros(x.shape[0], self.FrameNum, self.PatchSize*2, device=x.device, dtype=x.dtype)
         for i in range(self.FrameNum):
             Start = i * self.Stride
             End = Start + self.PatchSize
