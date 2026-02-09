@@ -399,12 +399,11 @@ if __name__ == "__main__":
     print(f"Test samples: {len(samples)}")
     print(f"Input shape: {samples[0].shape}")
 
-    baseline_rss_mb = get_process_rss_mb()
-
     model_paths = resolve_model_paths(args)
     rows = []
 
     for model_path in model_paths:
+        per_model_baseline_mb = get_process_rss_mb()
         npu_result = None
         if RKNNLite is not None and os.path.isfile(model_path):
             rknn_lite = RKNNLite(verbose=args.rknn_verbose)
@@ -418,7 +417,7 @@ if __name__ == "__main__":
                     args.warmup,
                     args.iters,
                     args.core_mask,
-                    baseline_rss_mb,
+                    per_model_baseline_mb,
                 )
                 rknn_lite.release()
             else:
@@ -485,10 +484,10 @@ if __name__ == "__main__":
         else:
             print(f"NPU Load Mean: {npu_load_summary['mean']}")
             print(f"NPU Load Max: {npu_load_summary['max']}")
-        if baseline_rss_mb is None:
+        if per_model_baseline_mb is None:
             print("Memory Baseline (MB): N/A")
         else:
-            print(f"Memory Baseline (MB): {baseline_rss_mb:.2f}")
+            print(f"Memory Baseline (MB): {per_model_baseline_mb:.2f}")
         if peak_mb is None:
             print("Memory Peak (MB): N/A")
         else:
@@ -513,7 +512,7 @@ if __name__ == "__main__":
             "speedup": round(speedup, 6) if speedup is not None else None,
             "npu_load_mean": format_list_value(npu_load_summary["mean"]) if npu_load_summary else "",
             "npu_load_max": format_list_value(npu_load_summary["max"]) if npu_load_summary else "",
-            "memory_baseline_mb": round(baseline_rss_mb, 6) if baseline_rss_mb is not None else None,
+            "memory_baseline_mb": round(per_model_baseline_mb, 6) if per_model_baseline_mb is not None else None,
             "memory_peak_mb": round(peak_mb, 6) if peak_mb is not None else None,
             "memory_delta_mb": round(delta_mb, 6) if delta_mb is not None else None,
         }
