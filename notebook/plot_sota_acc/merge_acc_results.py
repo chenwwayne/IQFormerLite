@@ -3,7 +3,7 @@ import os
 import glob
 
 # Define the working directory
-base_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = '/home/cww/IQFormer_lite/logs/RML201610a'
 output_file = os.path.join(base_dir, 'RML201610a.csv')
 
 # Find all directories matching the pattern model_*_base
@@ -33,6 +33,9 @@ for d in directories:
         else:
             print(f"Skipping {dir_name}: does not end with _base")
             continue
+        
+        if model_name == 'PETCGDNN':
+            model_name = 'PET-CGDNN'
             
         csv_path = os.path.join(d, 'Test_ACC.csv')
         if not os.path.exists(csv_path):
@@ -76,6 +79,19 @@ if dfs:
     
     # Reset index to make SNR a column again
     merged_df = merged_df.reset_index()
+    
+    desired_order = [
+        'MCLDNN',
+        'MCFormer',
+        'PET-CGDNN',
+        'AMC-Net',
+        'FEA-T',
+        'IQFormer',
+        'IQFormerLite'
+    ]
+    existing_order = [col for col in desired_order if col in merged_df.columns]
+    other_columns = [col for col in merged_df.columns if col not in existing_order and col != 'SNR']
+    merged_df = merged_df[['SNR'] + existing_order + other_columns]
     
     # Save to CSV
     merged_df.to_csv(output_file, index=False)
