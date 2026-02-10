@@ -9,7 +9,6 @@ save_models
 *.pdf
 *.onnx
 *.pt
-*.rknn
 *.out
 *.dat
 

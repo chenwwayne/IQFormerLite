@@ -9,7 +9,7 @@ DATABASE_PATH="/home/cww/IQFormer_lite/dataset"
 DATABASE_CHOOSE="2016.10a"
 
 # MODELS=('IQFormerLite' 'IQFormer' 'MCFormer' 'AMCNET' 'MCLDNN' 'PETCGDNN' 'FEA_T128')
-MODELS=('MCLDNN')
+MODELS=('IQFormerLite')
 
 SEED=1234
 BATCH_SIZE=1024
