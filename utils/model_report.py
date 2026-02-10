@@ -2,10 +2,10 @@ import time
 import copy
 import torch
 
-def get_report_batch(train_loader, aux_mode, device):
+def get_report_batch(train_loader, aux_mode, device, force_stft=False):
     batch_x, batch_stft, _, _ = next(iter(train_loader))
     batch_x = batch_x.to(device)
-    if aux_mode == 'stft':
+    if aux_mode == 'stft' or force_stft:
         batch_stft = batch_stft.to(device)
     else:
         batch_stft = None
@@ -49,7 +49,7 @@ def try_torchinfo(model, batch_x, batch_stft, device, aux_mode):
         from torchinfo import summary
     except Exception:
         return None
-    if aux_mode == 'stft':
+    if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
         return summary(model, input_data=(batch_x, batch_stft), device=device, verbose=0)
     return summary(model, input_data=(batch_x,), device=device, verbose=0)
 
@@ -59,7 +59,7 @@ def measure_latency(model, batch_x, batch_stft, device, aux_mode, warmup=10, ite
         if str(device).startswith("cuda") and torch.cuda.is_available():
             torch.cuda.synchronize()
             for _ in range(warmup):
-                if aux_mode == 'stft':
+                if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
                     model(batch_x, batch_stft)
                 else:
                     model(batch_x)
@@ -68,7 +68,7 @@ def measure_latency(model, batch_x, batch_stft, device, aux_mode, warmup=10, ite
             end = torch.cuda.Event(enable_timing=True)
             start.record()
             for _ in range(iters):
-                if aux_mode == 'stft':
+                if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
                     model(batch_x, batch_stft)
                 else:
                     model(batch_x)
@@ -77,13 +77,13 @@ def measure_latency(model, batch_x, batch_stft, device, aux_mode, warmup=10, ite
             elapsed_ms = start.elapsed_time(end)
             return elapsed_ms / iters
         for _ in range(warmup):
-            if aux_mode == 'stft':
+            if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
                 model(batch_x, batch_stft)
             else:
                 model(batch_x)
         start = time.perf_counter()
         for _ in range(iters):
-            if aux_mode == 'stft':
+            if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
                 model(batch_x, batch_stft)
             else:
                 model(batch_x)
@@ -96,7 +96,7 @@ def measure_peak_memory(model, batch_x, batch_stft, device, aux_mode, param_byte
     torch.cuda.reset_peak_memory_stats()
     model.eval()
     with torch.no_grad():
-        if aux_mode == 'stft':
+        if aux_mode == 'stft' or model.__class__.__name__ == 'IQFormer':
             model(batch_x, batch_stft)
         else:
             model(batch_x)

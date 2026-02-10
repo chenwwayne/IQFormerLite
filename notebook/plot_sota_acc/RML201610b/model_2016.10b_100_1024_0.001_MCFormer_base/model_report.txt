@@ -1,0 +1,10 @@
+=== DType: fp32 ===
+参数量: 72,810
+可训练参数量: 72,810
+模型大小: 284.41 KB
+MACs: 2,533,194
+FLOPs: 5,066,388
+Latency: 2.118 ms
+Throughput: 472.12 samples/s
+Peak Activation Memory: 10.55 MB
+Peak Total Memory: 24.00 MB

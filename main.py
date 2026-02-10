@@ -77,7 +77,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser('RML SMY model')
     # Dataset
     parser.add_argument('--database_path', type=str, default="./dataset")
-    parser.add_argument('--database_choose', type=str, default="2016.10a")
+    parser.add_argument('--database_choose', type=str, default="2016.10b")
     # Hyperparameters
     parser.add_argument('--batch_size', type=int, default=1024)
     parser.add_argument('--minSNR', type=int, default=-20) # 2016 -20-18 2018 -20-30
@@ -93,7 +93,6 @@ if __name__ == '__main__':
     parser.add_argument('--kernel_size', type=int, default=31, help='Kernel size for KAN filterbank')
     parser.add_argument('--grid_size', type=int, default=4, help='Grid size for KAN filterbank')
     parser.add_argument('--grid_range', type=float, nargs=2, default=[-2.0, 2.0], help='Grid range for KAN filterbank')
-    parser.add_argument('--report', action='store_true', help='Generate model report')
     parser.add_argument('--report_only', action='store_true', help='Generate model report and exit')
     parser.add_argument('--report_batch', type=int, default=1, help='Batch size for model report')
     parser.add_argument('--report_length', type=int, default=128, help='Input length for model report')
@@ -106,6 +105,7 @@ if __name__ == '__main__':
                         help='random seed (default: 1234)')
     parser.add_argument('--model_path', type=str,
                         default=None, help='Model checkpoint')
+    parser.add_argument('--dry_run', action='store_true', help='Run a single batch for verification')
     parser.add_argument('--comment', type=str, default='IQFormer',
                         help='Comment to describe the saved model')
     if not os.path.exists('save_models'):
@@ -150,38 +150,7 @@ if __name__ == '__main__':
     test_dataset = [[],[],[]]
     input_length = 128
     if args.database_choose == '2019':
-        classes = ['BPSK', 'QPSK', '8PSK', '16PSK', '32PSK', '64PSK', '4QAM', '8QAM', '16QAM', '32QAM', 
-                   '64QAM', '128QAM', '256QAM', '2FSK', '4FSK', '8FSK', '16FSK', '4PAM', '8PAM', '16PAM', 'AM-DSB', 
-                   'AM-DSB-SC', 'AM-USB', 'AM-LSB', 'FM', 'PM']
-        with h5py.File(os.path.join(args.database_path, 'HisarMod2019train.h5')) as h5file:
-            train = h5file['samples'][:]
-            train_label = h5file['labels'][:]
-            SNR_tr = h5file['snr'][:]
-            h5file.close()
-        if train is not None and train.size > 0:
-            input_length = infer_seq_length(train[0])
-        snr_idx = np.where((SNR_tr>= args.minSNR) & (SNR_tr<= args.maxSNR))[0]
-        print(train.shape)
-        print('train_index_lenth:',len(snr_idx))
-        train = train[snr_idx]
-        train_label = train_label[snr_idx]
-        SNR_tr = SNR_tr[snr_idx]
-        train, val, train_label, val_label, SNR_tr, SNR_va = train_test_split(train, train_label, SNR_tr, test_size=args.test_size,
-                                                                            random_state=233,
-                                                                            stratify=list(zip(train_label,SNR_tr)))
-        with h5py.File(os.path.join(args.database_path, 'HisarMod2019test.h5')) as h5file:
-            test = h5file['samples'][:]
-            test_label = h5file['labels'][:]
-            SNR_te = h5file['snr'][:]
-            h5file.close()
-        snr_idx = np.where((SNR_te>= args.minSNR) & (SNR_te<= args.maxSNR))[0]
-        print('test_index_lenth:',len(snr_idx))
-        test = test[snr_idx]
-        test_label = test_label[snr_idx]
-        SNR_te = SNR_te[snr_idx]
-        train_dataset = RMLgeneral(train,train_label,SNR_tr, aux_mode=dataset_aux_mode)
-        val_dataset = RMLval(val,val_label,SNR_va, aux_mode=dataset_aux_mode)
-        test_dataset = RMLtest(test,test_label,SNR_te, aux_mode=dataset_aux_mode)
+        raise ValueError("HisarMod2019 dataset is no longer supported.")
     else: 
         if args.database_choose[-1] == 'a':
             data = pd.read_pickle(os.path.join(args.database_path, 'RML2016.10a.pkl'))
@@ -219,6 +188,21 @@ if __name__ == '__main__':
         if len(train_dataset) > 0:
             input_length = infer_seq_length(train_dataset.samples[0])
     print(f'train_size:{len(train_dataset)}\tval_size:{len(val_dataset)}\t')
+    
+    if args.dry_run:
+        print("Dry run mode: Truncating datasets to 2 batches...")
+        limit = args.batch_size * 2
+        train_dataset.samples = train_dataset.samples[:limit]
+        train_dataset.label = train_dataset.label[:limit]
+        train_dataset.SNR = train_dataset.SNR[:limit]
+        val_dataset.samples = val_dataset.samples[:limit]
+        val_dataset.label = val_dataset.label[:limit]
+        val_dataset.SNR = val_dataset.SNR[:limit]
+        test_dataset.samples = test_dataset.samples[:limit]
+        test_dataset.label = test_dataset.label[:limit]
+        test_dataset.SNR = test_dataset.SNR[:limit]
+        print(f'Dry run sizes -> train:{len(train_dataset)} val:{len(val_dataset)}')
+
     # Training Dataloader
     train_loader = DataLoader(
         train_dataset, batch_size=args.batch_size, shuffle=True, drop_last=False)
@@ -230,8 +214,6 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_dataset, batch_size=args.eval_batch_size, shuffle=False, drop_last=False)
     if args.database_choose == '2016.10b':
         num_classes = 10
-    elif args.database_choose == '2019':
-        num_classes = 26
     else:
         num_classes = 11
     
@@ -282,7 +264,7 @@ if __name__ == '__main__':
                 grid_range=tuple(args.grid_range))
     elif args.model == 'IQFormer':
         if args.database_choose in ['2016.10a','2016.10b']:
-            model = IQFormer([2,3,2], embed_dims=[64,64,64],
+            model = IQFormer([1,2,1], embed_dims=[64,64,64],
                 mlp_ratios=4,
                 act_layer=nn.GELU,
                 num_classes=num_classes,
@@ -332,21 +314,20 @@ if __name__ == '__main__':
         model.load_state_dict(torch.load(args.model_path, map_location=device))
         print('Model loaded : {}'.format(args.model_path))
 
-    if args.report:
-        batch_x, batch_stft = get_report_batch(train_loader, args.aux_mode, device)
+    if True:
+        batch_x, batch_stft = get_report_batch(train_loader, args.aux_mode, device, force_stft=(args.model == 'IQFormer'))
         report_length = args.report_length
         if args.aux_mode == 'stft' and report_length != input_length:
             report_length = input_length
         elif args.model in ['PETCGDNN', 'MCLDNN', 'AMCNET', 'FEA_T128', 'FEA_T1024'] and report_length != input_length:
             report_length = input_length
         batch_x, batch_stft = adjust_inputs(batch_x, batch_stft, batch_size=args.report_batch, length=report_length)
-        reports = build_multi_dtype_report(model, batch_x, batch_stft, device, args.aux_mode, ['fp32', 'fp16', 'int8'])
+        reports = build_multi_dtype_report(model, batch_x, batch_stft, device, args.aux_mode, ['fp32'])
         report_text = format_multi_dtype_report(reports)
         print(report_text, end="")
-        if not args.report_only:
-            report_path = os.path.join('logs', model_tag, 'model_report.txt')
-            with open(report_path, 'w', encoding='utf-8') as f:
-                f.write(report_text)
+        report_path = os.path.join('logs', model_tag, 'model_report.txt')
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(report_text)
         if args.report_only:
             sys.exit(0)
 
@@ -432,8 +413,14 @@ if __name__ == '__main__':
     for key in range(args.minSNR, args.maxSNR + 1, 2):
         avg_all += SNR[key]
         avg_true += SNR_true[key]
-        SNR[key] = SNR_true[key] / float(SNR[key])
-    SNR['Avg'] = avg_true / float(avg_all)
+        if SNR[key] > 0:
+            SNR[key] = SNR_true[key] / float(SNR[key])
+        else:
+            SNR[key] = 0.0
+    if avg_all > 0:
+        SNR['Avg'] = avg_true / float(avg_all)
+    else:
+        SNR['Avg'] = 0.0
     Avg = SNR['Avg']
     print(f'test_acc={Avg}')
     # Save test accuracy
@@ -442,6 +429,8 @@ if __name__ == '__main__':
     mod_dic = {}
     for snr in range(args.minSNR,args.maxSNR+1,2):
         SNR_cm = [i for i in zip(test_SNR, pred, true) if i[0] == snr]
+        if len(SNR_cm) == 0:
+            continue
         true_cm = []
         pred_cm = []
         true_cls = np.zeros(num_classes)
@@ -454,7 +443,7 @@ if __name__ == '__main__':
                 all[i[1]] = all[i[1]] + 1
             else:
                 all[i[2]] = all[i[2]] + 1
-        Cls_ACC = {cls: x / y for cls, x, y in zip(classes, true_cls, all)}
+        Cls_ACC = {cls: (x / y if y > 0 else 0.0) for cls, x, y in zip(classes, true_cls, all)}
         mod_dic[snr] = list(Cls_ACC.values())
         modacc = pd.DataFrame.from_dict(mod_dic, orient='index', columns=classes).reset_index(names='SNR')
         modacc.to_csv(f'logs/{model_tag}/Test_mod_SNR.csv', index=False)

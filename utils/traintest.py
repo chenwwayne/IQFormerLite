@@ -59,8 +59,14 @@ def train_epoch(num_epoch, data_loader, model, min_SNR, max_SNR, optimizer, crit
     for key in range(min_SNR, max_SNR + 1, 2):
         avg_all += SNR[key]
         avg_true += SNR_true[key]
-        SNR[key] = SNR_true[key] / float(SNR[key])
-    SNR['Avg'] = avg_true / float(avg_all)
+        if SNR[key] > 0:
+            SNR[key] = SNR_true[key] / float(SNR[key])
+        else:
+            SNR[key] = 0.0
+    if avg_all > 0:
+        SNR['Avg'] = avg_true / float(avg_all)
+    else:
+        SNR['Avg'] = 0.0
     Avg = SNR['Avg']
     print(f'Epoch:{num_epoch},train_loss={running_loss},train_acc={Avg}')
     return running_loss, SNR, y_true, y_pred
@@ -120,8 +126,14 @@ def val_epoch(num_epoch, data_loader, model, min_SNR, max_SNR, scheduler, criter
         for key in range(min_SNR, max_SNR + 1, 2):
             avg_all += SNR[key]
             avg_true += SNR_true[key]
-            SNR[key] = SNR_true[key] / float(SNR[key])
-        SNR['Avg'] = avg_true / float(avg_all)
+            if SNR[key] > 0:
+                SNR[key] = SNR_true[key] / float(SNR[key])
+            else:
+                SNR[key] = 0.0
+        if avg_all > 0:
+            SNR['Avg'] = avg_true / float(avg_all)
+        else:
+            SNR['Avg'] = 0.0
         Avg = SNR['Avg']
         print(f'Epoch:{num_epoch},val_loss={val_loss},val_acc={Avg}')
     return val_loss, SNR, y_true, y_pred, model
