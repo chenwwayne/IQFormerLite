@@ -375,10 +375,12 @@ if __name__ == '__main__':
             va.to_csv(f'logs/{model_tag}/Val_Epoch.csv', index=False)
 
         train_CM = confusion_matrix(train_true, train_pred)
-        traincm = train_CM.astype('float') / train_CM.sum(axis=1)[:, np.newaxis]  # 归一化
+        train_row_sums = train_CM.sum(axis=1, keepdims=True)
+        traincm = np.divide(train_CM.astype('float'), train_row_sums, out=np.zeros_like(train_CM, dtype=float), where=train_row_sums != 0)
         traincm = np.around(traincm, decimals=2)
         val_CM = confusion_matrix(val_true, val_pred)
-        valcm = val_CM.astype('float') / val_CM.sum(axis=1)[:, np.newaxis]  # 归一化
+        val_row_sums = val_CM.sum(axis=1, keepdims=True)
+        valcm = np.divide(val_CM.astype('float'), val_row_sums, out=np.zeros_like(val_CM, dtype=float), where=val_row_sums != 0)
         valcm = np.around(valcm, decimals=2)
 
         #   plotCM
@@ -448,7 +450,8 @@ if __name__ == '__main__':
         modacc = pd.DataFrame.from_dict(mod_dic, orient='index', columns=classes).reset_index(names='SNR')
         modacc.to_csv(f'logs/{model_tag}/Test_mod_SNR.csv', index=False)
         test_CM = confusion_matrix(true_cm, pred_cm)
-        testcm = test_CM.astype('float') / test_CM.sum(axis=1)[:, np.newaxis]  # 归一化
+        test_row_sums = test_CM.sum(axis=1, keepdims=True)
+        testcm = np.divide(test_CM.astype('float'), test_row_sums, out=np.zeros_like(test_CM, dtype=float), where=test_row_sums != 0)
         testcm = np.around(testcm, decimals=2)
         plot_confusion_matrix(testcm, args.database_choose, snr, cm_save_path, labels=classes)
         SNR_tsne_ = [i for i in
