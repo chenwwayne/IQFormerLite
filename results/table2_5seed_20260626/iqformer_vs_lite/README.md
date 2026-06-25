@@ -5,7 +5,7 @@ This archive stores the 5-seed offline evaluation results used for the IQFormerL
 ## Experiment scope
 
 - Remote source: `/data/iqformer-lite` on `A800-2`
-- Local archive: `code/seed_sweep_results_20260624`
+- Local archive: `code/results/table2_5seed_20260626/iqformer_vs_lite`
 - Datasets: `2016.10a`, `2016.10b`
 - Models: `IQFormer`, `IQFormerLite`
 - Seeds: `1, 2, 3, 4, 5`
@@ -15,11 +15,11 @@ This archive stores the 5-seed offline evaluation results used for the IQFormerL
 
 ## Contents
 
-- `summary/seed_results_per_run.csv`: per-seed overall accuracy.
-- `summary/seed_summary.csv`: mean, standard deviation, min, and max accuracy.
-- `summary/seed_model_delta.csv`: IQFormerLite minus IQFormer mean accuracy difference.
-- `summary/seed_summary.md`: Markdown summary table.
-- `raw/<dataset>/<model>/seed*/`: raw output files for each run.
+- `iqformer_per_seed_overall_accuracy.csv`: per-seed overall accuracy.
+- `iqformer_summary_overall_accuracy.csv`: mean, standard deviation, min, and max accuracy.
+- `iqformer_lite_delta_vs_iqformer.csv`: IQFormerLite minus IQFormer mean accuracy difference.
+- `iqformer_summary_overall_accuracy.md`: Markdown summary table.
+- `raw_runs/<dataset>/<model>/seed*/`: raw output files for each run.
 
 Each raw run directory contains:
 
