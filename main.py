@@ -106,6 +106,8 @@ if __name__ == '__main__':
     parser.add_argument('--model_path', type=str,
                         default=None, help='Model checkpoint')
     parser.add_argument('--dry_run', action='store_true', help='Run a single batch for verification')
+    parser.add_argument('--skip_post_test_artifacts', action='store_true',
+                        help='Exit after writing Test_ACC.csv to skip confusion matrices and t-SNE plots')
     parser.add_argument('--comment', type=str, default='IQFormer',
                         help='Comment to describe the saved model')
     if not os.path.exists('save_models'):
@@ -428,6 +430,8 @@ if __name__ == '__main__':
     # Save test accuracy
     testacc = pd.DataFrame.from_dict(SNR, orient='index', columns=['0']).reset_index(names='SNR')
     testacc.to_csv(f'logs/{model_tag}/Test_ACC.csv', index=False)
+    if args.skip_post_test_artifacts:
+        sys.exit(0)
     mod_dic = {}
     for snr in range(args.minSNR,args.maxSNR+1,2):
         SNR_cm = [i for i in zip(test_SNR, pred, true) if i[0] == snr]
