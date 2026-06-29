@@ -12,6 +12,20 @@ save_models
 *.out
 *.dat
 
+# LaTeX paper build artifacts. Keep source files and figure PDFs under version control.
+paper/**/Main.aux
+paper/**/Main.bbl
+paper/**/Main.bcf
+paper/**/Main.blg
+paper/**/Main.fdb_latexmk
+paper/**/Main.fls
+paper/**/Main.log
+paper/**/Main.out
+paper/**/Main.pdf
+paper/**/Main.run.xml
+paper/**/Main.synctex.gz
+!paper/**/Figures/**/*.pdf
+
 
 
 # Distribution / packaging

@@ -1,0 +1,1307 @@
+@inproceedings{baishya2024Edgeefficientdeep,
+	title = {Edge-Efficient Deep Learning Models for Automatic Modulation Classification: {{A}} Performance Analysis},
+	shorttitle = {Edge-{{Efficient Deep Learning Models}} for {{Automatic Modulation Classification}}},
+	booktitle = {2024 {{IEEE Wireless Communications}} and {{Networking Conference}} ({{WCNC}})},
+	author = {Baishya, Nayan Moni and Manoj, B. R. and Bora, Prabin K.},
+	year = 2024,
+	month = apr,
+	pages = {1--6},
+	issn = {1558-2612},
+	doi = {10.1109/WCNC57260.2024.10570946},
+	urldate = {2026-02-12},
+	abstract = {The recent advancement in deep learning (DL) for automatic modulation classification (AMC) of wireless signals has encouraged numerous possible applications on resource-constrained edge devices. However, developing optimized DL models suitable for edge applications of wireless communications is yet to be studied in depth. In this work, we perform a thorough investigation of optimized convolutional neural networks (CNNs) developed for AMC using the three most commonly used model optimization techniques: a) pruning, b) quantization, and c) knowledge distillation. Furthermore, we have proposed optimized models with the combinations of these techniques to fuse the complementary optimization benefits. The performances of all the proposed methods are evaluated in terms of sparsity, storage compression for network parameters, and the effect on classification accuracy with a reduction in parameters. The experimental results show that the proposed individual and combined optimization techniques are highly effective for developing models with significantly less complexity while maintaining or even improving classification performance compared to the benchmark CNNs.},
+	keywords = {Accuracy,Analytical models,Deep learning,knowledge distillation,model optimization,Modulation,Performance evaluation,pruning,quantization,Quantization (signal),wireless classifiers,Wireless communication},
+	annotation = {EI: 是\\
+	CCF: C\\
+	TLDR: A thorough investigation of optimized convolutional neural networks developed for AMC using the three most commonly used model optimization techniques, showing that the proposed individual and combined optimization techniques are highly effective for developing models with significantly less complexity while maintaining or improving classification performance compared to the benchmark CNNs.},
+	file = {C:\Users\ischa\Zotero\storage\92P99M6B\10570946.html}
+}
+
+@article{chen2020Automaticmodulation,
+	title = {Automatic Modulation Classification Scheme Based on {{LSTM}} with Random Erasing and Attention Mechanism},
+	author = {Chen, Yufan and Shao, Wei and Liu, Jin and Yu, Lu and Qian, Zuping},
+	year = 2020,
+	journal = {IEEE Access},
+	volume = {8},
+	pages = {154290--154300},
+	issn = {2169-3536},
+	doi = {10.1109/ACCESS.2020.3017641},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation classification (AMC) is a key technology of cognitive radio used in non-cooperative communication. Recently, deep learning has been applied to AMC tasks. In this paper, an AMC scheme based on deep learning is proposed, which combines random erasing and attention mechanism to achieve high classification accuracy. Firstly, we propose two data augmentation methods, random erasing at sample level and random erasing at amplitude/phase (AP) channel level. The former replaces training samples with noise information, while the latter replaces AP channel information of training samples with noise information. Erased data segments are randomly stitched to enable training data expansion. Training data of different qualities enables deep learning model to have stronger generalization capability and higher robustness. Then, we propose a single-layer Long Short-Term Memory (LSTM) model based on attention mechanism. In the first part of this model, we propose the signal embedding, which enables the input to contain modulation information more comprehensively and accurately. Then hidden state output by LSTM is input into the attention module, and weighting is applied to the hidden state to help the LSTM model capture the temporal features of modulated signals. Compared to a model without attention mechanism, this model has faster convergence speed and better classification performance. Lastly, we propose a random erasing-based test time augmentation (RE-TTA) method. Test data is randomly erased for multiple times and classification results are comprehensively evaluated, in order to further improve classification accuracy. Experimental results on dataset RML2016.10a show that classification accuracy of the proposed scheme is competitive compared with the state-of-the-art methods.},
+	keywords = {attention mechanism,Automatic modulation classification,Data mining,Data models,Deep learning,Feature extraction,long short-term memory,Modulation,random erasing,Training,Training data},
+	annotation = {JCR分区: Q2\\
+	中科院分区升级版: 计算机科学4区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 3.6\\
+	5年影响因子: 3.9\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\EPU3RYGK\Chen 等 - 2020 - Automatic modulation classification scheme based on LSTM with random erasing and attention mechanism.pdf}
+}
+
+@article{chen2022SigNetnovel,
+	title = {{{SigNet}}: {{A}} Novel Deep Learning Framework for Radio Signal Classification},
+	shorttitle = {{{SigNet}}},
+	author = {Chen, Zhuangzhi and Cui, Hui and Xiang, Jingyang and Qiu, Kunfeng and Huang, Liang and Zheng, Shilian and Chen, Shichuan and Xuan, Qi and Yang, Xiaoniu},
+	year = 2022,
+	month = jun,
+	journal = {IEEE Transactions On Cognitive Communications and Networking},
+	volume = {8},
+	number = {2},
+	pages = {529--541},
+	issn = {2332-7731},
+	doi = {10.1109/TCCN.2021.3120997},
+	urldate = {2025-05-10},
+	abstract = {Deep learning methods achieve great success in many areas due to their powerful feature extraction capabilities and end-to-end training mechanism, and recently they are also introduced for radio signal modulation classification. In this paper, we propose a novel deep learning framework called SigNet, where a signal-to-matrix (S2M) operator is adopted to convert the original signal into a square matrix first and is co-trained with a follow-up CNN architecture for classification. This model is further accelerated by integrating 1D convolution operators, leading to the upgraded model SigNet2.0. The simulations on two signal datasets show that both SigNet and SigNet2.0 outperform a number of well-known baselines. More interestingly, our proposed models behave extremely well in small-sample learning when only a small training dataset is provided. They can achieve a relatively high accuracy even when 1\% training data are kept, while other baseline models may lose their effectiveness much more quickly as the datasets get smaller. Such result suggests that SigNet/SigNet2.0 could be extremely useful in the situations where labeled signal data are difficult to obtain. The visualization of the output features of our models demonstrates that our model can well divide different modulation types of signals in the feature hyper-space.},
+	keywords = {Convolution,convolutional neural network,Convolutional neural networks,Deep learning,Feature extraction,Long short term memory,Modulation,modulation recognition,Training},
+	annotation = {TLDR: A novel deep learning framework called SigNet is proposed, where a signal-to-matrix (S2M) operator is adopted to convert the original signal into a square matrix first and is co-trained with a follow-up CNN architecture for classification, leading to the upgraded model SigNet2.0.},
+	file = {C:\Users\ischa\Zotero\storage\Y674K7MZ\Chen 等 - 2022 - SigNet A Novel Deep Learning Framework for Radio Signal Classification.pdf}
+}
+
+@article{chen2023Abandonlocality,
+	title = {Abandon Locality: {{Frame-wise}} Embedding Aided Transformer for Automatic Modulation Recognition},
+	shorttitle = {Abandon {{Locality}}},
+	author = {Chen, Yantao and Dong, Binhong and Liu, Cuiting and Xiong, Wenhui and Li, Shaoqian},
+	year = 2023,
+	month = jan,
+	journal = {IEEE Communications Letters},
+	volume = {27},
+	number = {1},
+	pages = {327--331},
+	issn = {1558-2558},
+	doi = {10.1109/LCOMM.2022.3213523},
+	urldate = {2026-02-11},
+	abstract = {Automatic modulation recognition (AMR) has been considered as an efficient technique for non-cooperative communication and intelligent communication. In this work, we propose a modified transformer-based method for AMR, called frame-wise embedding aided transformer (FEA-T), aiming to extract the global correlation feature of the signal to obtain higher classification accuracy as well as lower time cost. To enhance the global modeling capability of the transformer, we design a frame-wise embedding module (FEM) to aggregate more samples into a token in the embedding stage to generate a more efficient token sequence. We also present the optimal frame length by analyzing the representation ability of each transformer layer for a better trade-off between the speed and the performance. Moreover, we design a novel dual-branch gate linear unit (DB-GLU) scheme for the feed-forward network of the transformer to reduce the model size and enhance the performance. Experimental results on RadioML2018.01A datasets demonstrate that the proposed method outperforms state-of-the-art works in terms of recognition accuracy and running speed.},
+	keywords = {Automatic modulation recognition,Costs,deep learning,Feature extraction,Finite element analysis,Modulation,Symbols,Task analysis,transformer,Transformers},
+	annotation = {JCR分区: Q2\\
+	中科院分区升级版: 计算机科学3区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 4.4\\
+	5年影响因子: 4.2\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\ADCXEYFC\9915584.html}
+}
+
+@article{chen2024Channelpruning,
+	title = {Channel Pruning Method for Signal Modulation Recognition Deep Learning Models},
+	author = {Chen, Zhuangzhi and Wang, Zhangwei and Gao, Xuzhang and Zhou, Jinchao and Xu, Dongwei and Zheng, Shilian and Xuan, Qi and Yang, Xiaoniu},
+	year = 2024,
+	month = apr,
+	journal = {IEEE Transactions On Cognitive Communications and Networking},
+	volume = {10},
+	number = {2},
+	pages = {442--453},
+	issn = {2332-7731},
+	doi = {10.1109/TCCN.2023.3329000},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation recognition (AMR) plays an important role in communication system. With the expansion of data volume and the development of computing power, deep learning framework shows great potential in AMR. However, deep learning models suffer from the heavy resource consumption problem caused by the huge amount of parameters and high computational complexity, which limit their performance in scenarios that require fast response. Therefore, the deep learning models must be compressed and accelerated, where channel pruning is an effective method to reduce the amount of computation and can speed up models inference. In this paper, we propose a new channel pruning method suitable for AMR deep learning models. We consider both the channel redundancy of the convolutional layer and the channel importance measured by the \textbackslash gamma scale factor of the batch normalization (BN) layer. Our proposed method jointly evaluates the model channels from the perspectives of structural similarity and numerical value, and generates evaluation indicators for selecting channels. This method can prevent cutting out important convolutional layer channels. And combined with other strategies such as one-shot pruning strategy and local pruning strategy, the model classification performance can be guaranteed further. We demonstrate the effectiveness of our approach on a variety of different AMR models. Compared with other classical pruning methods, the proposed method can not only better maintain the classification accuracy, but also achieve a higher compression ratio. Finally, we deploy the pruned network model to edge devices, validating the significant acceleration effect of our method.},
+	keywords = {Automatic modulation recognition,Computational modeling,Convolution,deep learning,Deep learning,edge devices,Feature extraction,Load modeling,Modulation,neural network model pruning,Neural networks},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 7.0\\
+	5年影响因子: 7.8\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C:\Users\ischa\Zotero\storage\NIWX8RS8\10304321.html}
+}
+
+@article{chen2024Learndefend,
+	title = {Learn to Defend: {{Adversarial}} Multi-Distillation for Automatic Modulation Recognition Models},
+	shorttitle = {Learn to {{Defend}}},
+	author = {Chen, Zhuangzhi and Wang, Zhangwei and Xu, Dongwei and Zhu, Jiawei and Shen, Weiguo and Zheng, Shilian and Xuan, Qi and Yang, Xiaoniu},
+	year = 2024,
+	journal = {IEEE Transactions On Information Forensics and Security},
+	volume = {19},
+	pages = {3690--3702},
+	issn = {1556-6021},
+	doi = {10.1109/TIFS.2024.3361172},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation recognition (AMR) of radio signal is an important research topic in the area of non-cooperative communication and cognitive radio. Recently deep learning (DL) techniques enable significant progress in AMR. However, the techniques of adversarial machine learning cause the threats of adversarial attacks in DL-based AMR. In this paper, we aim to make AMR model robust, accurate and lightweight, thus propose a multi-distillation mechanism for robust training of DL-based AMR models, namely Adversarial Multi-Distillation (AMD). In the framework of AMD, by knowledge distillation, two powerful teacher models transfer the learned classification knowledge and defense knowledge, respectively, to the student model to form robust training. Our experiments with public dataset RML2016.10a show that the proposed method can significantly improve the defense of AMR models to against adversarial perturbations and keep relatively high classification accuracy, which enables robust decision making with lightweight models under adversarial attacks. The code for quick use and reproduction is available at https://github.com/Wangzhangwei19/Adversarial-Multi-Distillation.},
+	keywords = {adversarial attacks,adversarial training,Deep learning,Feature extraction,Interference,knowledge distillation,Modulation,Modulation recognition,Perturbation methods,Task analysis,Training},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 8.0\\
+	5年影响因子: 8.5\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C:\Users\ischa\Zotero\storage\AX4QX7R5\10422963.html}
+}
+
+@inproceedings{chen2024PeLKParameterefficient,
+	title = {{{PeLK}}: {{Parameter-efficient}} Large Kernel {{ConvNets}} with Peripheral Convolution},
+	shorttitle = {{{PeLK}}},
+	booktitle = {Proceedings of the {{IEEE}}/{{CVF Conference}} on {{Computer Vision}} and {{Pattern Recognition}}},
+	author = {Chen, Honghao and Chu, Xiangxiang and Ren, Yongjian and Zhao, Xin and Huang, Kaiqi},
+	year = 2024,
+	pages = {5557--5567},
+	urldate = {2026-02-06},
+	langid = {english},
+	annotation = {CCF: A},
+	file = {C:\Users\ischa\Zotero\storage\ZGL7MGCA\Chen 等 - 2024 - PeLK Parameter-efficient Large Kernel ConvNets with Peripheral Convolution.pdf}
+}
+
+@inproceedings{chollet2017XceptionDeep,
+	title = {Xception: {{Deep}} Learning with Depthwise Separable Convolutions},
+	shorttitle = {Xception},
+	booktitle = {2017 {{IEEE Conference}} on {{Computer Vision}} and {{Pattern Recognition}} ({{CVPR}})},
+	author = {Chollet, Fran{\c c}ois},
+	year = 2017,
+	month = jul,
+	pages = {1800--1807},
+	doi = {10.1109/CVPR.2017.195},
+	urldate = {2026-02-06},
+	abstract = {We present an interpretation of Inception modules in convolutional neural networks as being an intermediate step in-between regular convolution and the depthwise separable convolution operation (a depthwise convolution followed by a pointwise convolution). In this light, a depthwise separable convolution can be understood as an Inception module with a maximally large number of towers. This observation leads us to propose a novel deep convolutional neural network architecture inspired by Inception, where Inception modules have been replaced with depthwise separable convolutions. We show that this architecture, dubbed Xception, slightly outperforms Inception V3 on the ImageNet dataset (which Inception V3 was designed for), and significantly outperforms Inception V3 on a larger image classification dataset comprising 350 million images and 17,000 classes. Since the Xception architecture has the same number of parameters as Inception V3, the performance gains are not due to increased capacity but rather to a more efficient use of model parameters.},
+	keywords = {Biological neural networks,Computer architecture,Convolutional codes,Correlation,Google},
+	annotation = {CCF: A},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\N9TFYLUC\\Chollet - 2017 - Xception Deep Learning with Depthwise Separable Convolutions.pdf;C\:\\Users\\ischa\\Zotero\\storage\\9YA3RK9M\\8099678.html}
+}
+
+@article{dobre2007Surveyautomatic,
+	title = {Survey of Automatic Modulation Classification Techniques: {{Classical}} Approaches and New Trends},
+	shorttitle = {Survey of Automatic Modulation Classification Techniques},
+	author = {Dobre, O.A. and Abdi, A. and {Bar-Ness}, Y. and Su, W.},
+	year = 2007,
+	month = apr,
+	journal = {Iet Communications},
+	volume = {1},
+	number = {2},
+	pages = {137--156},
+	doi = {10.1049/iet-com:20050176},
+	urldate = {2026-02-06},
+	abstract = {The automatic recognition of the modulation format of a detected signal, the intermediate step between signal detection and demodulation, is a major task of an intelligent receiver, with various civilian and military applications. Obviously, with no knowledge of the transmitted data and many unknown parameters at the receiver, such as the signal power, carrier frequency and phase offsets, timing information and so on, blind identification of the modulation is a difficult task. This becomes even more challenging in real-world scenarios with multipath fading, frequency-selective and time-varying channels. With this in mind, the authors provide a comprehensive survey of different modulation recognition techniques in a systematic way. A unified notation is used to bring in together, under the same umbrella, the vast amount of results and classifiers, developed for different modulations. The two general classes of automatic modulation identification algorithms are discussed in detail, which rely on the likelihood function and features of the received signal, respectively. The contributions of numerous articles are summarised in compact forms. This helps the reader to see the main characteristics of each technique. However, in many cases, the results reported in the literature have been obtained under different conditions. So, we have also simulated some major techniques under the same conditions, which allows a fair comparison among different methodologies. Furthermore, new problems that have appeared as a result of emerging wireless technologies are outlined. Finally, open problems and possible directions for future research are briefly discussed.},
+	annotation = {JCR分区: Q3\\
+	中科院分区升级版: 计算机科学4区\\
+	中科院分区基础版: 工程技术4区\\
+	影响因子: 1.6\\
+	5年影响因子: 1.2\\
+	EI: 是}
+}
+
+@misc{drokin2024Kolmogorovarnoldconvolutions,
+	title = {Kolmogorov-Arnold Convolutions: {{Design}} Principles and Empirical Studies},
+	shorttitle = {Kolmogorov-{{Arnold Convolutions}}},
+	author = {Drokin, Ivan},
+	year = 2024,
+	month = jul,
+	number = {arXiv:2407.01092},
+	eprint = {2407.01092},
+	primaryclass = {cs},
+	publisher = {arXiv},
+	doi = {10.48550/arXiv.2407.01092},
+	urldate = {2026-02-06},
+	abstract = {The emergence of Kolmogorov-Arnold Networks (KANs) has sparked significant interest and debate within the scientific community. This paper explores the application of KANs in the domain of computer vision (CV). We examine the convolutional version of KANs, considering various nonlinearity options beyond splines, such as Wavelet transforms and a range of polynomials. We propose a parameter-efficient design for Kolmogorov-Arnold convolutional layers and a parameter-efficient finetuning algorithm for pre-trained KAN models, as well as KAN convolutional versions of self-attention and focal modulation layers. We provide empirical evaluations conducted on MNIST, CIFAR10, CIFAR100, Tiny ImageNet, ImageNet1k, and HAM10000 datasets for image classification tasks. Additionally, we explore segmentation tasks, proposing U-Net-like architectures with KAN convolutions, and achieving state-of-the-art results on BUSI, GlaS, and CVC datasets. We summarized all of our findings in a preliminary design guide of KAN convolutional models for computer vision tasks. Furthermore, we investigate regularization techniques for KANs. All experimental code and implementations of convolutional layers and models, pre-trained on ImageNet1k weights are available on GitHub via this https://github.com/IvanDrokin/torch-conv-kan},
+	archiveprefix = {arXiv},
+	keywords = {Computer Science - Artificial Intelligence,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning},
+	annotation = {TLDR: A parameter-efficient design for Kolmogorov-Arnold convolutional layers and a parameter-efficient finetuning algorithm for pre-trained KAN models, as well as KAN convolutional versions of self-attention and focal modulation layers are proposed.},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\VNRKVWZQ\\Drokin - 2024 - Kolmogorov-arnold convolutions Design principles and empirical studies.pdf;C\:\\Users\\ischa\\Zotero\\storage\\7YQI2Y98\\2407.html}
+}
+
+@article{dulek2017Onlinehybrid,
+	title = {Online Hybrid Likelihood Based Modulation Classification Using Multiple Sensors},
+	author = {Dulek, Berkan},
+	year = 2017,
+	month = aug,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {16},
+	number = {8},
+	pages = {4984--5000},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2017.2704124},
+	urldate = {2026-02-06},
+	abstract = {Hybrid likelihood-based approaches equipped with the expectation-maximization (EM) algorithm have received attention in the modulation classification literature during recent years. Despite their superior classification performance, these methods, which rely on iterative batch (offline) processing of the measurements, are not particularly suitable for practical applications due to their high computational demand. In this paper, two online methods that facilitate close to optimal classification performance with reduced computational complexity are employed for modulation classification over unknown nonidentical flat block-fading additive white Gaussian noise channels using multiple sensors. The presented algorithms rely on Titterington's and Capp\'e's online versions of the EM algorithm that are derived from stochastic approximations of the E- and M-steps of the standard EM algorithm. Unlike the batch method, where the a posteriori probabilities for all the transmitted symbols are updated based on the current set of channel estimates, only the a posteriori probability for the most recently transmitted symbol is computed at each symbol interval and this information is employed to estimate the parameters in a sequential manner. Since the a posteriori probabilities corresponding to the previous symbols are not updated at a given iteration, the computational demand is significantly reduced in comparison with the offline variants. Furthermore, the Polyak-Ruppert averaging is employed to improve the convergence speed. Numerical examples are provided to corroborate the effectiveness of the proposed online EM-based classifiers.},
+	keywords = {Channel estimation,Computational complexity,expectation-maximization,fading,Fading channels,Maximum likelihood estimation,Modulation,Online modulation classification,Polyak-Ruppert averaging,sensor,Sensors,stochastic approximation},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 10.7\\
+	5年影响因子: 11.4\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C:\Users\ischa\Zotero\storage\XXWAVNFC\7931606.html}
+}
+
+@misc{efficientdeep,
+	title = {An Efficient Deep Learning Model for Automatic Modulation Recognition Based on Parameter Estimation and Transformation \textbar{} {{IEEE}} Journals \& Magazine \textbar{} {{IEEE}} Xplore},
+	urldate = {2026-02-12},
+	howpublished = {https://ieeexplore.ieee.org/abstract/document/9507514},
+	file = {C:\Users\ischa\Zotero\storage\8QVMU7Z9\9507514.html}
+}
+
+@article{fu2022Lightweightautomatic,
+	title = {Lightweight Automatic Modulation Classification Based on Decentralized Learning},
+	author = {Fu, Xue and Gui, Guan and Wang, Yu and Ohtsuki, Tomoaki and Adebisi, Bamidele and Gacanin, Haris and Adachi, Fumiyuki},
+	year = 2022,
+	month = mar,
+	journal = {IEEE Transactions On Cognitive Communications and Networking},
+	volume = {8},
+	number = {1},
+	pages = {57--70},
+	issn = {2332-7731},
+	doi = {10.1109/TCCN.2021.3089178},
+	urldate = {2026-02-06},
+	abstract = {Due to the implementation and performance limitations of centralized learning automatic modulation classification (CentAMC) method, this paper proposes a decentralized learning AMC (DecentAMC) method using model consolidation and lightweight design. Specifically, the model consolidation is realized by a central device (CD) for edge device (ED) model averaging (MA) and multiple EDs for ED model training. The lightweight is designed by separable convolutional neural network (S-CNN), in which the separable convolutional layer is utilized to replace the standard convolution layer and most of fully connected layers are cut off. Simulation results show that the proposed method substantially reduces the storage and computational capacity requirements of the EDs and communication overhead. The training efficiency also shows remarkable improvement. Compared with convolutional neural network (CNN), the space complexity (i.e., model parameters and output feature map) is decreased by about 94\% and the time complexity (i.e., floating point operations) of S-CNN is decreased by about 96\% while degrading the average correct classification probability by less than 1\%. Compared with S-CNN-based CentAMC, without considering model weights uploading and downloading, the training efficiency of our proposed method is about N times of it, where N is the number of EDs. Considering the model weights uploading and downloading, the training efficiency of our proposed method can still be maintained at a high level (e.g., when the number of EDs is 12, the training efficency of the proposed AMC method is about 4 times that of S-CNN-based CentAMC in dataset D\_1 = \textbraceleft 2\textbackslash mathrm FSK, 4FSK, 8FSK, BPSK, QPSK, 8PSK, 16QAM\textbraceright{} and about 5 times that of S-CNN-based CentAMC in dataset D\_2 = \textbraceleft 2 \textbackslash mathrm FSK, 4FSK, 8FSK, BPSK, QPSK, 8PSK, PAM2, PAM4, PAM8, 16QAM\textbraceright{} ), while the communication overhead is reduced more than 35\%.},
+	keywords = {Adaptation models,Automatic modulation classification (AMC),centralized learning,Computational modeling,Convolution,convolutional neural network (CNN),decentralized learning,Feature extraction,Mathematical model,Modulation,Training}
+}
+
+@article{ghasemzadeh2023GGCNNefficiencymaximizing,
+	title = {{{GGCNN}}: {{An}} Efficiency-Maximizing Gated Graph Convolutional Neural Network Architecture for Automatic Modulation Identification},
+	shorttitle = {{{GGCNN}}},
+	author = {Ghasemzadeh, Pejman and Hempel, Michael and Wang, Honggang and Sharif, Hamid},
+	year = 2023,
+	month = sep,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {22},
+	number = {9},
+	pages = {6033--6047},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2023.3239311},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation identification (AMI) is a technique to detect the modulation type and order of a received signal, which has the potential to enhance cognitive radio capabilities for future generations of communication devices. However, AMI classifiers traditionally have exhibited low efficiency in low signal-to-noise ratio (SNR) environments. Hence, to address this problem we present our novel Gated Graph Convolutional Neural Network (GGCNN) classifier for feature-based AMI. This architecture includes a robust feature extraction stage to extract deep correlative patterns about the received symbols. Not only does this feature extraction stage use the temporal characteristics of the received symbols, but it also takes advantage of embedded signaling features from the received signal. In the proposed classifier, the received constellations are treated as a graph, allowing it to outperform state-of-the-art classifiers due to its strong performance in graph classification. This is observed clearly in the visualization of the extracted features, even for high-order modulation schemes. In this paper, we present our systematic research conducted for maximizing the efficiency obtainable by our classifier. Extensive simulation results demonstrate a significant accuracy improvement of 18.44 percentage points, and an efficiency increase by 60.78\% for our GGCNN-AMI classifier compared to state-of-the-art classifiers in low-SNR environments.},
+	keywords = {Automatic modulation identification (AMI),Computational complexity,Computational modeling,Convolutional neural networks,efficiency improvement,Feature extraction,feature-based (FB) classification,gated graph convolutional neural network (GGCNN),Logic gates,performance analysis,Receivers,Symbols},
+	file = {C:\Users\ischa\Zotero\storage\Q45YX2VQ\10032243.html}
+}
+
+@article{guo2024Ultralightconvolutional,
+	title = {Ultralight Convolutional Neural Network for Automatic Modulation Classification in Internet of Unmanned Aerial Vehicles},
+	author = {Guo, Lantu and Wang, Yu and Liu, Yuchao and Lin, Yun and Zhao, Haitao and Gui, Guan},
+	year = 2024,
+	month = jun,
+	journal = {IEEE Internet of Things Journal},
+	volume = {11},
+	number = {11},
+	pages = {20831--20839},
+	issn = {2327-4662},
+	doi = {10.1109/JIOT.2024.3373497},
+	urldate = {2026-02-06},
+	abstract = {Deep learning (DL)-based automatic modulation classification (AMC) has made breakthroughs and is generally used for signal detection and recognition in wireless communication systems, unmanned aircraft vehicle (UAV) systems, and other fields. However, high storage and computational demands limit its use in resource-constrained UAV systems. This article presents an AMC method featuring a streamlined design with lower computational needs, using the ultralight convolutional neural network (ULCNN). This innovative model combines data augmentation, complex-valued convolution, separable convolution, channel attention, and shuffling techniques for enhanced performance. The proposed ULCNN model balances efficiency and accuracy, with simulations showing it achieves 62.47\% accuracy on the RML2016.10a data set using only 9751 parameters. Furthermore, we evaluated the actual speed of ULCNN on a Raspberry Pi, an edge platform with roughly equivalent computing power to a conventional UAV, achieving an inference speed of only 0.775 ms per sample. This high performance, coupled with a significantly smaller model size, underscores the potential of ULCNN for integration into resource-constrained UAV systems, thereby enabling rapid and efficient data processing.},
+	keywords = {Automatic modulation classification (AMC),Autonomous aerial vehicles,Computational modeling,Convolutional neural networks,deep learning (DL),Feature extraction,Internet of Things,Modulation,resource-constrained unmanned aircraft vehicle (UAV) systems,Training,ultralight convolutional neural network (ULCNN)},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术1区\\
+	影响因子: 8.9\\
+	5年影响因子: 9.6\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP\\
+	CCF: C},
+	file = {C:\Users\ischa\Zotero\storage\VSZLRJEZ\10460305.html}
+}
+
+@inproceedings{hamidi-rad2021MCformertransformera,
+	title = {{{MCformer}}: {{A}} Transformer Based Deep Neural Network for Automatic Modulation Classification},
+	shorttitle = {{{MCformer}}},
+	booktitle = {2021 {{IEEE Global Communications Conference}} ({{GLOBECOM}})},
+	author = {{Hamidi-Rad}, Shahab and Jain, Swayambhoo},
+	year = 2021,
+	month = dec,
+	pages = {1--6},
+	doi = {10.1109/GLOBECOM46510.2021.9685815},
+	urldate = {2026-02-11},
+	abstract = {In this paper, we propose MCformer - a novel deep neural network for the automatic modulation classification task of complex-valued raw radio signals. MCformer architecture leverages convolution layer along with self-attention based encoder layers to efficiently exploit temporal correlation between the embeddings produced by convolution layer. MCformer provides state of the art classification accuracy at all signal-to-noise ratios in the RadioML2016.10b data-set with significantly less number of parameters which is critical for fast and energy-efficient operation.},
+	keywords = {cognitive radio,Convolution,Correlation,Deep learning,deep learning and attention mechanism,dynamic spectrum access,Energy efficiency,Modulation,modulation recognition,Neural networks,Transformers},
+	annotation = {CCF: C},
+	file = {C:\Users\ischa\Zotero\storage\KUVSNSXY\9685815.html}
+}
+
+@article{hou2024ClSTconvolutional,
+	title = {{{ClST}}: {{A}} Convolutional Transformer Framework for Automatic Modulation Recognition by Knowledge Distillation},
+	shorttitle = {{{ClST}}},
+	author = {Hou, Dongbin and Li, Lixin and Lin, Wensheng and Liang, Junli and Han, Zhu},
+	year = 2024,
+	month = jul,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {23},
+	number = {7},
+	pages = {8013--8028},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2023.3347537},
+	urldate = {2025-05-10},
+	abstract = {With the rapid development of deep learning (DL) in recent years, automatic modulation recognition (AMR) with DL has achieved high accuracy. However, insufficient training signal data in complicated channel environments and large-scale DL models are critical factors that make DL methods difficult to deploy in practice. Aiming to these problems, we propose a novel neural network named convolution-linked signal transformer (ClST) and a novel knowledge distillation method named signal knowledge distillation (SKD). The ClST is accomplished through three primary modifications: a hierarchy of transformer containing convolution, a novel attention mechanism named parallel spatial-channel attention (PSCA) mechanism and a novel convolutional transformer block named convolution-transformer projection (CTP) to leverage a convolutional projection. The SKD is a knowledge distillation method to effectively reduce the parameters and complexity of neural networks. We train two lightweight neural networks using the SKD algorithm, KD-CNN and KD-MobileNet, to meet the demand that neural networks can be used on miniaturized devices. The simulation results demonstrate that the ClST outperforms advanced neural networks on all datasets. Moreover, both KD-CNN and KD-MobileNet obtain higher recognition accuracy with less network complexity, which is very beneficial for the deployment of AMR on miniaturized communication devices.},
+	keywords = {Automatic modulation recognition,Complexity theory,Convolution,Convolutional neural networks,few-shot learning,knowledge distillation,Modulation,Neural networks,Training,transformer,Transformers},
+	annotation = {TLDR: A novel neural network named convolution-linked signal transformer (ClST), a knowledge distillation method to effectively reduce the parameters and complexity of neural networks and two lightweight neural networks using the SKD algorithm, to meet the demand that neural networks can be used on miniaturized devices.},
+	file = {C:\Users\ischa\Zotero\storage\26R9HKF7\Hou 等 - 2024 - ClST A Convolutional Transformer Framework for Automatic Modulation Recognition by Knowledge Distil.pdf}
+}
+
+@article{huang2017Automaticmodulation,
+	title = {Automatic Modulation Classification of Overlapped Sources Using Multiple Cumulants},
+	author = {Huang, Sai and Yao, Yuanyuan and Wei, Zhiqing and Feng, Zhiyong and Zhang, Ping},
+	year = 2017,
+	month = jul,
+	journal = {IEEE Transactions On Vehicular Technology},
+	volume = {66},
+	number = {7},
+	pages = {6089--6101},
+	issn = {1939-9359},
+	doi = {10.1109/TVT.2016.2636324},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation classification (AMC) for overlapped sources plays an important role in spectrum monitoring and signal interception. In this paper, we propose a feature-based AMC framework for multiple overlapped sources. The framework first separates the overlapped sources via blind channel estimation and then conducts novel maximum-likelihood-based multicumulant classification (MLMC) for each of the sources. MLMC employs multiple cumulants of arbitrary orders and arbitrary lags as discriminating features and a maximum likelihood ratio test for decision making. Hence, MLMC maximizes the probability of correct classification under the condition that the selected cumulants are utilized. Moreover, both the case with perfect channel estimation and the practically more relevant case with blind channel estimations, called fast independent component analysis and natural gradient independent component analysis, are presented to facilitate the signal separation process. Extensive simulations are also conducted to verify the validity and the superiority of the proposed framework and the MLMC algorithm.},
+	keywords = {Automatic modulation classification (AMC),Blind equalizers,Channel estimation,maximum likelihood (ML) classification,Maximum likelihood estimation,Modulation,Monitoring,multiple cumulants,overlapped signal classification,Receiving antennas,spectrum monitoring,Wireless communication},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 7.1\\
+	5年影响因子: 7.4\\
+	EI: 是}
+}
+
+@article{huang2019Automaticmodulation,
+	title = {Automatic Modulation Classification Using Compressive Convolutional Neural Network},
+	author = {Huang, Sai and Chai, Lu and Li, Zening and Zhang, Di and Yao, Yuanyuan and Zhang, Yifan and Feng, Zhiyong},
+	year = 2019,
+	journal = {IEEE Access},
+	volume = {7},
+	pages = {79636--79643},
+	issn = {2169-3536},
+	doi = {10.1109/ACCESS.2019.2921988},
+	urldate = {2026-02-12},
+	abstract = {The deep convolutional neural network has strong representative ability, which can learn latent information repeatedly from signal samples and improve the accuracy of automatic modulation classification (AMC). In this paper, a novel compressive convolutional neural network (CCNN) is proposed for AMC, where different constellation images, i.e., regular constellation images (RCs) and contrast enhanced grid constellation images (CGCs), are generated as network inputs from received signals. Moreover, a compressive loss constraint is proposed to train the CCNN, which aims at capturing high-dimensional features for modulation classification. Additionally, CCNN utilizes intra-class compactness and inter-class separability to enhance the classification and robustness performance for the different orders of modulations. The simulation results demonstrate that CCNN displays superior classification and robustness performance than existing AMC methods.},
+	keywords = {Automatic modulation classification,compressive loss constraint,Computational complexity,Convolutional neural networks,deep convolutional neural network,Feature extraction,Modulation,multiple constellation images,Robustness,Signal to noise ratio},
+	annotation = {JCR分区: Q2\\
+	中科院分区升级版: 计算机科学4区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 3.6\\
+	5年影响因子: 3.9\\
+	EI: 是\\
+	TLDR: A novel compressive convolutional neural network is proposed for AMC, where different constellation images are generated as network inputs from received signals, and a compressive loss constraint is proposed to train the CCNN, which aims at capturing high-dimensional features for modulation classification.},
+	file = {C:\Users\ischa\Zotero\storage\IVN8K66W\Huang 等 - 2019 - Automatic modulation classification using compressive convolutional neural network.pdf}
+}
+
+@article{ke2022Realtimeradioa,
+	title = {Real-Time Radio Technology and Modulation Classification via an {{LSTM}} Auto-Encoder},
+	author = {Ke, Ziqi and Vikalo, Haris},
+	year = 2022,
+	month = jan,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {21},
+	number = {1},
+	pages = {370--382},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2021.3095855},
+	urldate = {2026-02-06},
+	abstract = {Identification of the type of communication technology and/or modulation scheme based on detected radio signal are challenging problems encountered in a variety of applications including spectrum allocation and radio interference mitigation. They are rendered difficult due to a growing number of emitter types and varied effects of real-world channels upon the radio signal. Existing spectrum monitoring techniques are capable of acquiring massive amounts of radio and real-time spectrum data using compact sensors deployed in a variety of settings. However, state-of-the-art methods that use such data to classify emitter types and detect communication schemes struggle to achieve required levels of accuracy at a computational efficiency that would allow their implementation on low-cost computational platforms. In this paper, we present a learning framework based on an LSTM denoising auto-encoder designed to automatically extract stable and robust features from noisy radio signals, and infer modulation or technology type using the learned features. The algorithm utilizes a compact neural network architecture readily implemented on a low-cost computational platform while exceeding state-of-the-art accuracy. Results on realistic synthetic as well as over-the-air radio data demonstrate that the proposed framework reliably and efficiently classifies received radio signals, often demonstrating superior performance compared to state-of-the-art methods. Source codes are available at https://github.com/WuLoli/LSTMDAE.},
+	keywords = {Computational modeling,denoising auto-encoder,Feature extraction,LSTM,Modulation/technology classification,Noise reduction,Phase modulation,Task analysis,Wireless communication,Wireless sensor networks},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 10.7\\
+	5年影响因子: 11.4\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\GCJSNCLM\\Ke和Vikalo - 2022 - Real-time radio technology and modulation classification via an LSTM auto-encoder.pdf;C\:\\Users\\ischa\\Zotero\\storage\\NHNM48R9\\9487492.html}
+}
+
+@article{kim2025comprehensivesurvey,
+	title = {A Comprehensive Survey of Deep Learning for Time Series Forecasting: {{Architectural}} Diversity and Open Challenges},
+	shorttitle = {A Comprehensive Survey of Deep Learning for Time Series Forecasting},
+	author = {Kim, Jongseon and Kim, Hyungjoon and Kim, HyunGi and Lee, Dongjun and Yoon, Sungroh},
+	year = 2025,
+	month = apr,
+	journal = {Artificial Intelligence Review},
+	volume = {58},
+	number = {7},
+	pages = {216},
+	issn = {1573-7462},
+	doi = {10.1007/s10462-025-11223-9},
+	urldate = {2026-02-11},
+	abstract = {Time series forecasting is a critical task that provides key information for decision-making across various fields, such as economic planning, supply chain management, and medical diagnosis. After the use of traditional statistical methodologies and machine learning in the past, various fundamental deep learning architectures such as MLPs, CNNs, RNNs, and GNNs have been developed and applied to solve time series forecasting problems. However, the structural limitations caused by the inductive biases of each deep learning architecture constrained their performance. Transformer models, which excel at handling long-term dependencies, have become significant architectural components for time series forecasting. However, recent research has shown that alternatives such as simple linear layers can outperform Transformers. These findings have opened up new possibilities for using diverse architectures, ranging from fundamental deep learning models to emerging architectures and hybrid approaches. In this context of exploration into various models, the architectural modeling of time series forecasting has now entered a renaissance. This survey not only provides a historical context for time series forecasting but also offers comprehensive and timely analysis of the movement toward architectural diversification. By comparing and re-examining various deep learning models, we uncover new perspectives and present the latest trends in time series forecasting, including the emergence of hybrid models, diffusion models, Mamba models, and foundation models. By focusing on the inherent characteristics of time series data, we also address open challenges that have gained attention in time series forecasting, such as channel dependency, distribution shift, causality, and feature extraction. This survey explores vital elements that can enhance forecasting performance through diverse approaches. These contributions help lower entry barriers for newcomers by providing a systematic understanding of the diverse research areas in time series forecasting (TSF), while offering seasoned researchers broader perspectives and new opportunities through in-depth exploration of TSF challenges.},
+	langid = {english},
+	keywords = {Causality,Deep learning,Distribution shift,Foundation model,Time series forecasting},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 13.9\\
+	5年影响因子: 14.9\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP\\
+	TLDR: This survey explores vital elements that can enhance forecasting performance through diverse approaches, including the emergence of hybrid models, diffusion models, Mamba models, and foundation models, and addresses open challenges that have gained attention in time series forecasting.},
+	file = {C:\Users\ischa\Zotero\storage\8ZFDXP4Q\Kim 等 - 2025 - A comprehensive survey of deep learning for time series forecasting architectural diversity and ope.pdf}
+}
+
+@book{kolmogorov1961representationcontinuous,
+	title = {On the Representation of Continuous Functions of Several Variables by Superpositions of Continuous Functions of a Smaller Number of Variables},
+	author = {Kolmogorov, Andre{\textbackslash}u{\i}},
+	year = 1961
+}
+
+@misc{li2024Kolmogorovarnoldnetworks,
+	title = {Kolmogorov-Arnold Networks Are Radial Basis Function Networks},
+	author = {Li, Ziyao},
+	year = 2024,
+	month = may,
+	number = {arXiv:2405.06721},
+	eprint = {2405.06721},
+	primaryclass = {cs},
+	publisher = {arXiv},
+	doi = {10.48550/arXiv.2405.06721},
+	urldate = {2026-02-08},
+	abstract = {This short paper is a fast proof-of-concept that the 3-order B-splines used in Kolmogorov-Arnold Networks (KANs) can be well approximated by Gaussian radial basis functions. Doing so leads to FastKAN, a much faster implementation of KAN which is also a radial basis function (RBF) network.},
+	archiveprefix = {arXiv},
+	keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning},
+	annotation = {TLDR: A fast proof-of-concept that the 3-order B-splines used in Kolmogorov-Arnold Networks (KANs) can be well approximated by Gaussian radial basis functions leads to FastKAN, a much faster implementation of KAN which is also a radial basis function (RBF) network.},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\T2JABX67\\Li - 2024 - Kolmogorov-arnold networks are radial basis function networks.pdf;C\:\\Users\\ischa\\Zotero\\storage\\V4SWBXMX\\2405.html}
+}
+
+@article{lin2020improvedneural,
+	title = {An Improved Neural Network Pruning Technology for Automatic Modulation Classification in Edge Devices},
+	author = {Lin, Yun and Tu, Ya and Dou, Zheng},
+	year = 2020,
+	month = may,
+	journal = {IEEE Transactions On Vehicular Technology},
+	volume = {69},
+	number = {5},
+	pages = {5703--5706},
+	issn = {1939-9359},
+	doi = {10.1109/TVT.2020.2983143},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation classification (AMC) plays an important role in both civilian and military applications. Today, increasingly more researchers apply a deep learning framework in AMC. However, few papers take into account that a typical deep model is difficult to deploy on resource constrained devices. In this paper, we propose a new filter-level pruning technique based on activation maximization (AM) that omits the less important convolutional filter. Compared to other network pruning techniques, the convolutional neural network pruned via the AM method achieves equal or higher classification accuracy in the RadioML2016.10a dataset.},
+	keywords = {Automatic modulation classification,Biological neural networks,Convolution,deep learning,Deep learning,edge device,Modulation,network pruning,Neurons,Signal to noise ratio},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 7.1\\
+	5年影响因子: 7.4\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\R2L7NTRJ\9049161.html}
+}
+
+@article{lin2021Adversarialattacks,
+	title = {Adversarial Attacks in Modulation Recognition with Convolutional Neural Networks},
+	author = {Lin, Yun and Zhao, Haojun and Ma, Xuefei and Tu, Ya and Wang, Meiyu},
+	year = 2021,
+	month = mar,
+	journal = {IEEE Transactions On Reliability},
+	volume = {70},
+	number = {1},
+	pages = {389--401},
+	issn = {1558-1721},
+	doi = {10.1109/TR.2020.3032744},
+	urldate = {2026-02-06},
+	abstract = {Deep learning (DL) models are vulnerable to adversarial attacks, by adding a subtle perturbation which is imperceptible to the human eye, a convolutional neural network (CNN) can lead to erroneous results, which greatly reduces the reliability and security of the DL tasks. Considering the wide application of modulation recognition in the communication field and the rapid development of DL, by adding a well-designed adversarial perturbation to the input signal, this article explores the performance of attack methods on modulation recognition, measures the effectiveness of adversarial attacks on signals, and provides the empirical evaluation of the reliabilities of CNNs. The results indicate that the accuracy of the target model reduce significantly by adversarial attacks, when the perturbation factor is 0.001, the accuracy of the model could drop by about 50\% on average. Among them, iterative methods show greater attack performances than that of one-step method. In addition, the consistency of the waveform before and after the perturbation is examined, to consider whether the added adversarial examples are small enough (i.e., hard to distinguish by human eyes). This article also aims at inspiring researchers to further promote the CNNs reliabilities against adversarial attacks.},
+	keywords = {Adversarial examples,Convolution,convolutional neural network (CNN),Feature extraction,Modulation,modulation recognition,Perturbation methods,radio security,Security,Task analysis,Training,white-box attacks},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 5.7\\
+	5年影响因子: 5.9\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\9A4LVUYE\9259112.html}
+}
+
+@article{lin2022Learningtimefrequencya,
+	title = {Learning of Time-Frequency Attention Mechanism for Automatic Modulation Recognition},
+	author = {Lin, Shangao and Zeng, Yuan and Gong, Yi},
+	year = 2022,
+	month = apr,
+	journal = {IEEE Wireless Communications Letters},
+	volume = {11},
+	number = {4},
+	pages = {707--711},
+	issn = {2162-2345},
+	doi = {10.1109/LWC.2022.3140828},
+	urldate = {2025-05-10},
+	abstract = {Recently, deep learning-based image classification and speech recognition approaches have made extensive use of attention mechanisms to achieve state-of-the-art recognition, which demonstrates the effectiveness of attention mechanisms. Motivated by the fact that the frequency and time information of modulated radio signals are crucial for modulation recognition, this letter proposes a time-frequency attention mechanism for convolutional neural network (CNN)-based automatic modulation recognition. The proposed time-frequency attention mechanism is designed to learn which channel, frequency and time information is more meaningful in CNN for modulation recognition. We analyze the effectiveness of the proposed attention mechanism and evaluate the performance of the proposed models. Experiment results show that the proposed methods outperform existing learning-based methods and attention mechanisms.},
+	keywords = {Automatic modulation recognition,Convolution,convolutional neural network,Convolutional neural networks,Feature extraction,Frequency modulation,Modulation,Spectrogram,Time-frequency analysis,time-frequency attention},
+	annotation = {TLDR: The proposed time-frequency attention mechanism is designed to learn which channel, frequency and time information is more meaningful in CNN for modulation recognition, and experiment results show that the proposed methods outperform existing learning-based methods and attention mechanisms.},
+	file = {C:\Users\ischa\Zotero\storage\32ZJN4B9\Lin 等 - 2022 - Learning of Time-Frequency Attention Mechanism for Automatic Modulation Recognition.pdf}
+}
+
+@article{lin2022Modulationrecognition,
+	title = {Modulation Recognition Using Signal Enhancement and Multistage Attention Mechanism},
+	author = {Lin, Shangao and Zeng, Yuan and Gong, Yi},
+	year = 2022,
+	month = nov,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {21},
+	number = {11},
+	pages = {9921--9935},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2022.3181026},
+	urldate = {2025-05-10},
+	abstract = {Robustness against noise is critical for modulation recognition (MR) approaches deployed in real-world communication systems. In MR systems, a corrupted signal is normally enhanced using low-level signal enhancement (SE) before signal classification (SC). Many existing approaches address signal distortion problems by compartmentalizing SE from SC. While those approaches allow for efficient development, they also dictate compartmentalized performance metrics, without feedback from the SC module. For example, SE modules are designed using perceptual signal quality metrics but not with SC in mind. To improve the effectiveness of SE on MR, this paper proposes a joint learning framework consisting of three cascaded modules: dual-channel spectrum fusion, SE, and SC. Instead of separately processing SE and SC, these three modules are integrated into one framework and jointly trained with a single recognition loss. In contrast to estimating clean signals, the SE module in the proposed joint learning framework is trained to predict a ratio mask and find important time-frequency bins for the SC module. We integrate a multistage attention mechanism into the framework to further increase the robustness. The multistage attention mechanism is deployed to strengthen the recognition-related features learned from context information in channel, time, and frequency domains. We evaluate the recognition performance of the proposed framework and its modules on two benchmark datasets: RadioML2016.10a and RadioML2016.10b. The experiment results show that the proposed joint learning framework outperforms the separate learning framework. Moreover, comparisons are performed with several existing learning-based MR methods in the literature. The proposed joint learning framework leads to significant performance improvement, especially for modulated signals corrupted by channel noise.},
+	keywords = {attention mechanism,convolutional neural network,Feature extraction,Modulation,Modulation recognition,Noise measurement,Robustness,signal enhancement,Speech recognition,Time-frequency analysis,Training}
+}
+
+@article{lin2024GLRSEIGreen,
+	title = {{{GLR-SEI}}: {{Green}} and Low Resource Specific Emitter Identification Based on Complex Networks and Fisher Pruning},
+	shorttitle = {{{GLR-SEI}}},
+	author = {Lin, Yun and Zha, Haoran and Tu, Ya and Zhang, Sicheng and Yan, Wenjun and Xu, Congan},
+	year = 2024,
+	month = oct,
+	journal = {IEEE Transactions On Emerging Topics in Computational Intelligence},
+	volume = {8},
+	number = {5},
+	pages = {3239--3250},
+	issn = {2471-285X},
+	doi = {10.1109/TETCI.2023.3303092},
+	urldate = {2026-02-06},
+	abstract = {Better neural networks, more powerful computer hardware and signal Big Data make deep learning increasingly important in Specific Emitter Identification (SEI). However, its implementation uses large amounts of resources and releases CO2. With the requirement of green and low-carbon resource sustainability, deep learning-based SEI faces the great challenge of compressing the model while ensuring its performance. In this article, we propose a novel green and low resource specific emitter identification method using complex networks and Fisher pruning (GLR-SEI). Specifically, we divide the learning process into two stages: knowledge distillation and fisher pruning, which involves transferring knowledge from complex number networks to real number networks. The proposed approach is evaluated using aircraft Automatic Dependent Surveillance Broadcast (ADS-B) data collected in the real world and many pruning experiments are performed. In addition, we add descriptive experiments on Raspberry Pi to provide a more effective data presentation in order to better demonstrate our research results. The experimental results show that the proposed lightweight network in this article can reduce the recognition rate by only 0.7\% and the inference time by 10.1\% compared to the complex neural network.},
+	keywords = {ADS-B,complex networks,Deep learning,Feature extraction,Hardware,knowledge distillation,Knowledge engineering,Performance evaluation,Specific emitter identification,Training,Wireless communication},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	影响因子: 6.5\\
+	5年影响因子: 6.6\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\UDIHX4S4\10226427.html}
+}
+
+@article{liu2021Automaticmodulation,
+	title = {Automatic Modulation Recognition Based on a {{DCN-BiLSTM}} Network},
+	author = {Liu, Kai and Gao, Wanjun and Huang, Qinghua},
+	year = 2021,
+	month = jan,
+	journal = {Sensors},
+	volume = {21},
+	number = {5},
+	pages = {1577},
+	publisher = {Multidisciplinary Digital Publishing Institute},
+	issn = {1424-8220},
+	doi = {10.3390/s21051577},
+	urldate = {2025-05-10},
+	abstract = {Automatic modulation recognition (AMR) is a significant technology in noncooperative wireless communication systems. This paper proposes a deep complex network that cascades the bidirectional long short-term memory network (DCN-BiLSTM) for AMR. In view of the fact that the convolution operation of the traditional convolutional neural network (CNN) loses the partial phase information of the modulated signal, resulting in low recognition accuracy, we first apply a deep complex network (DCN) to extract the features of the modulated signal containing phase and amplitude information. Then, we cascade bidirectional long short-term memory (BiLSTM) layers to build a bidirectional long short-term memory model according to the extracted features. The BiLSTM layers can extract the contextual information of signals well and address the long-term dependence problems. Next, we feed the features into a fully connected layer. Finally, a softmax classifier is used to perform classification. Simulation experiments show that the performance of our proposed algorithm is better than that of other neural network recognition algorithms. When the signal-to-noise ratio (SNR) exceeds 4 dB, our model's recognition rate for the 11 modulation signals can reach 90\%.},
+	copyright = {http://creativecommons.org/licenses/by/3.0/},
+	langid = {english},
+	keywords = {automatic modulation recognition,bidirectional long short-term memory network,convolutional neural network,deep complex network},
+	annotation = {TLDR: A deep complex network that cascades the bidirectional long short-term memory network (DCN-BiLSTM) for AMR, which can extract the contextual information of signals well and address the long-term dependence problems.},
+	file = {C:\Users\ischa\Zotero\storage\RVQE3E4B\Liu 等 - 2021 - Automatic Modulation Recognition Based on a DCN-BiLSTM Network.pdf}
+}
+
+@article{liu2021Automaticmodulationa,
+	title = {Automatic Modulation Recognition through Wireless Sensor Networks in Aeronautical Wireless Channel},
+	author = {Liu, Kun and Xiang, Xin and Liang, Yuan and Yin, Liyan},
+	year = 2021,
+	month = oct,
+	journal = {IEEE Sensors Journal},
+	volume = {21},
+	number = {20},
+	pages = {23125--23132},
+	issn = {1558-1748},
+	doi = {10.1109/JSEN.2021.3106499},
+	urldate = {2026-02-06},
+	abstract = {The Doppler effect causes frequency offset and spectrum spread of communication signals, which increases the difficulty of feature extraction when identifying the modulation mode in aeronautical wireless channels. To improve the signal modulation recognition capability of the single monitoring node in Wireless Sensor Networks (WSN), a method based on the bidirectional convolution gated recurrent deep neural network (Bi-CGDNN) with an attention mechanism is proposed in this paper. We design the framework with different types of network layers, realizing frequency offset suppression and feature mapping. In addition, quadrature sampling signals and instantaneous feature statistics are collected to generate the dataset. Thus, the waveform features and phase-frequency information of the signals can be used for combinatorial analysis. In particular, the attention mechanism is introduced to optimize the framework for better feature perception and higher recognition rates. Experimental results show that our method achieves great recognition effects at different maximum Doppler frequencies. The recognition rate reaches 98.1\% at the signal-to-noise ratio (SNRs) of 8dB with the Doppler frequency of 200Hz.},
+	keywords = {attention mechanism,Doppler effect,Feature extraction,Frequency modulation,gated recurrent unit,Modulation,Modulation recognition,Sensors,Wireless communication,Wireless sensor networks},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 综合性期刊3区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 4.5\\
+	5年影响因子: 4.7\\
+	EI: 是}
+}
+
+@misc{liu2025KANKolmogorovarnoldc,
+	title = {{{KAN}}: {{Kolmogorov-arnold}} Networks},
+	shorttitle = {{{KAN}}},
+	author = {Liu, Ziming and Wang, Yixuan and Vaidya, Sachin and Ruehle, Fabian and Halverson, James and Solja{\v c}i{\'c}, Marin and Hou, Thomas Y. and Tegmark, Max},
+	year = 2025,
+	month = feb,
+	number = {arXiv:2404.19756},
+	eprint = {2404.19756},
+	primaryclass = {cs},
+	publisher = {arXiv},
+	doi = {10.48550/arXiv.2404.19756},
+	urldate = {2026-02-06},
+	abstract = {Inspired by the Kolmogorov-Arnold representation theorem, we propose Kolmogorov-Arnold Networks (KANs) as promising alternatives to Multi-Layer Perceptrons (MLPs). While MLPs have fixed activation functions on nodes ("neurons"), KANs have learnable activation functions on edges ("weights"). KANs have no linear weights at all -- every weight parameter is replaced by a univariate function parametrized as a spline. We show that this seemingly simple change makes KANs outperform MLPs in terms of accuracy and interpretability. For accuracy, much smaller KANs can achieve comparable or better accuracy than much larger MLPs in data fitting and PDE solving. Theoretically and empirically, KANs possess faster neural scaling laws than MLPs. For interpretability, KANs can be intuitively visualized and can easily interact with human users. Through two examples in mathematics and physics, KANs are shown to be useful collaborators helping scientists (re)discover mathematical and physical laws. In summary, KANs are promising alternatives for MLPs, opening opportunities for further improving today's deep learning models which rely heavily on MLPs.},
+	archiveprefix = {arXiv},
+	keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning,Condensed Matter - Disordered Systems and Neural Networks,Statistics - Machine Learning},
+	annotation = {TLDR: KANs are promising alternatives for MLPs, opening opportunities for further improving today's deep learning models which rely heavily on MLPs.},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\X46PXAH3\\Liu 等 - 2025 - KAN Kolmogorov-arnold networks.pdf;C\:\\Users\\ischa\\Zotero\\storage\\BMIJSNBL\\2404.html}
+}
+
+@article{luo2023Complexvaluedconvolution,
+	title = {Complex-Valued Convolution and Frequency Global Filter for Automatic Modulation Recognition},
+	author = {Luo, Qunping and Zhao, Ming-Min and Chen, Zijian and Su, Zhizhen and Zhao, Min-Jian},
+	year = 2023,
+	month = jul,
+	journal = {IEEE Communications Letters},
+	volume = {27},
+	number = {7},
+	pages = {1779--1783},
+	issn = {1558-2558},
+	doi = {10.1109/LCOMM.2023.3271633},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation recognition (AMR) plays an important role in cognitive radio and dynamic spectrum access, which has been widely applied in military and civilian applications. Due to the breakthroughs in deep learning (DL), DL-based AMR methods are becoming extremely popular. However, most existing DL-based methods are unable to deal with complex format data, and learning the mappings from the time series or its transformed representation to the true modulation type directly is difficult. To address these difficulties, this letter presents a complex-valued convolution and frequency global filter unit (CGFU), and proposes a hybrid neural network, namely CGF-HNN, which can efficiently exploit features from different domains. We evaluate the recognition performance of the proposed model on two well-known datasets, i.e., RML2016.10a and RML2018.01a. Simulation results show that the proposed model outperforms the existing state-of-the-art models.},
+	keywords = {Automatic modulation recognition,complex-valued convolution,Convolution,deep learning,Feature extraction,frequency global filter,Frequency modulation,Frequency-domain analysis,Information filters,Modulation,Training data},
+	annotation = {JCR分区: Q2\\
+	中科院分区升级版: 计算机科学3区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 4.4\\
+	5年影响因子: 4.2\\
+	EI: 是}
+}
+
+@article{ma2019Automaticmodulation,
+	title = {Automatic Modulation Classification Using Cyclic Correntropy Spectrum in Impulsive Noise},
+	author = {Ma, Jitong and Qiu, Tianshuang},
+	year = 2019,
+	month = apr,
+	journal = {IEEE Wireless Communications Letters},
+	volume = {8},
+	number = {2},
+	pages = {440--443},
+	issn = {2162-2345},
+	doi = {10.1109/LWC.2018.2875001},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation classification (AMC) plays an important role in many military and civilian communication applications. However, it remains a challenging task to support such AMC mechanisms under impulsive noise environments. Aiming at improving the classification performance in impulsive noise, in this letter, a novel modulation classification method is proposed by using the cyclic correntropy spectrum (CCES). In the proposed method, CCES is introduced into AMC for effectively suppressing impulsive noise. Specifically, it is verified that modulation types can be distinguished through CCES. Then, multi-slices are extracted at different cycle-frequencies from CCES as the original features for AMC. Following the extraction, the principal component analysis is applied to these slices to further optimize the original features. Finally, the radial basis function neural network is used as a classifier to perform modulation classification. Monte Carlo simulations demonstrate that the proposed algorithm outperforms other existing schemes in impulsive noise cases, especially with a low generalized signal to noise ratio.},
+	keywords = {Automatic modulation classification (AMC),Binary phase shift keying,Correlation,cyclic correntropy spectrum (CCES),Feature extraction,Frequency modulation,impulsive noise,Kernel,Principal component analysis},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学3区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 5.5\\
+	5年影响因子: 5.9\\
+	EI: 是}
+}
+
+@misc{molchanov2017Pruningconvolutional,
+	title = {Pruning Convolutional Neural Networks for Resource Efficient Inference},
+	author = {Molchanov, Pavlo and Tyree, Stephen and Karras, Tero and Aila, Timo and Kautz, Jan},
+	year = 2017,
+	month = jun,
+	number = {arXiv:1611.06440},
+	eprint = {1611.06440},
+	primaryclass = {cs},
+	publisher = {arXiv},
+	doi = {10.48550/arXiv.1611.06440},
+	urldate = {2026-02-06},
+	abstract = {We propose a new formulation for pruning convolutional kernels in neural networks to enable efficient inference. We interleave greedy criteria-based pruning with fine-tuning by backpropagation - a computationally efficient procedure that maintains good generalization in the pruned network. We propose a new criterion based on Taylor expansion that approximates the change in the cost function induced by pruning network parameters. We focus on transfer learning, where large pretrained networks are adapted to specialized tasks. The proposed criterion demonstrates superior performance compared to other criteria, e.g. the norm of kernel weights or feature map activation, for pruning large CNNs after adaptation to fine-grained classification tasks (Birds-200 and Flowers-102) relaying only on the first order gradient information. We also show that pruning can lead to more than 10x theoretical (5x practical) reduction in adapted 3D-convolutional filters with a small drop in accuracy in a recurrent gesture classifier. Finally, we show results for the large-scale ImageNet dataset to emphasize the flexibility of our approach.},
+	archiveprefix = {arXiv},
+	keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\ER6P3UNN\\Molchanov 等 - 2017 - Pruning convolutional neural networks for resource efficient inference.pdf;C\:\\Users\\ischa\\Zotero\\storage\\TAHQ8GP5\\1611.html}
+}
+
+@article{njoku2021CGDNetEfficientb,
+	title = {{{CGDNet}}: {{Efficient}} Hybrid Deep Learning Model for Robust Automatic Modulation Recognition},
+	shorttitle = {{{CGDNet}}},
+	author = {Njoku, Judith Nkechinyere and {Morocho-Cayamcela}, Manuel Eugenio and Lim, Wansu},
+	year = 2021,
+	month = jun,
+	journal = {IEEE Networking Letters},
+	volume = {3},
+	number = {2},
+	pages = {47--51},
+	issn = {2576-3156},
+	doi = {10.1109/LNET.2021.3057637},
+	urldate = {2025-05-10},
+	abstract = {In this letter, we introduce CGDNet, a cost-efficient hybrid neural network composed of a shallow convolutional network, a gated recurrent unit, and a deep neural network, for robust automatic modulation recognition for cognitive radio services of modern communication systems. Our model employs pooling layers, small filter sizes, Gaussian dropout layers, and skip connections which leads to an increase in network capacity, a reinforced process of feature extraction, and prevents the vanishing gradient problem. From our experiments, CGDNet incurs a low computational complexity and reaches the overall n-modulation recognition accuracy of 93.5\% and 90.38\% on two widely used Deep-Sig datasets.},
+	keywords = {Automatic modulation recognition,Computational modeling,Computer architecture,Convolution,convolutional neural networks,deep learning,Feature extraction,gated recurrent unit,Modulation,Neural networks,Training},
+	file = {C:\Users\ischa\Zotero\storage\SYH5EGMW\Njoku 等 - 2021 - CGDNet Efficient Hybrid Deep Learning Model for Robust Automatic Modulation Recognition.pdf}
+}
+
+@article{njoku2021CGDNetEfficientc,
+	title = {{{CGDNet}}: {{Efficient}} Hybrid Deep Learning Model for Robust Automatic Modulation Recognition},
+	shorttitle = {{{CGDNet}}},
+	author = {Njoku, Judith Nkechinyere and {Morocho-Cayamcela}, Manuel Eugenio and Lim, Wansu},
+	year = 2021,
+	month = jun,
+	journal = {IEEE Networking Letters},
+	volume = {3},
+	number = {2},
+	pages = {47--51},
+	issn = {2576-3156},
+	doi = {10.1109/LNET.2021.3057637},
+	urldate = {2026-02-06},
+	abstract = {In this letter, we introduce CGDNet, a cost-efficient hybrid neural network composed of a shallow convolutional network, a gated recurrent unit, and a deep neural network, for robust automatic modulation recognition for cognitive radio services of modern communication systems. Our model employs pooling layers, small filter sizes, Gaussian dropout layers, and skip connections which leads to an increase in network capacity, a reinforced process of feature extraction, and prevents the vanishing gradient problem. From our experiments, CGDNet incurs a low computational complexity and reaches the overall n-modulation recognition accuracy of 93.5\% and 90.38\% on two widely used Deep-Sig datasets.},
+	keywords = {Automatic modulation recognition,Computational modeling,Computer architecture,Convolution,convolutional neural networks,deep learning,Feature extraction,gated recurrent unit,Modulation,Neural networks,Training},
+	annotation = {EI: 是}
+}
+
+@inproceedings{oshea2016Convolutionalradiob,
+	title = {Convolutional Radio Modulation Recognition Networks},
+	author = {O'Shea, Timothy J. and Corgan, Johnathan and Clancy, T. Charles},
+	editor = {Jayne, Chrisina and Iliadis, Lazaros},
+	year = 2016,
+	pages = {213--226},
+	publisher = {Springer International Publishing},
+	address = {Cham},
+	doi = {10.1007/978-3-319-44188-7_16},
+	abstract = {We study the adaptation of convolutional neural networks to the complex-valued temporal radio signal domain. We compare the efficacy of radio modulation classification using naively learned features against using expert feature based methods which are widely used today and e show significant performance improvements. We show that blind temporal learning on large and densely encoded time series using deep convolutional neural networks is viable and a strong candidate approach for this task especially at low signal to noise ratio.},
+	isbn = {978-3-319-44188-7},
+	langid = {english},
+	keywords = {Cognitive radio,Convolutional networks,Deep learning,Dynamic spectrum access,Machine learning,Modulation recognition,Radio,Software radio},
+	annotation = {TLDR: It is shown that blind temporal learning on large and densely encoded time series using deep convolutional neural networks is viable and a strong candidate approach for this task especially at low signal to noise ratio.}
+}
+
+@article{oshea2018Overtheairdeepa,
+	title = {Over-the-Air Deep Learning Based Radio Signal Classification},
+	author = {O'Shea, Timothy James and Roy, Tamoghna and Clancy, T. Charles},
+	year = 2018,
+	month = feb,
+	journal = {IEEE Journal of Selected Topics in Signal Processing},
+	volume = {12},
+	number = {1},
+	pages = {168--179},
+	issn = {1941-0484},
+	doi = {10.1109/JSTSP.2018.2797022},
+	urldate = {2025-05-10},
+	abstract = {We conduct an in depth study on the performance of deep learning based radio signal classification for radio communications signals. We consider a rigorous baseline method using higher order moments and strong boosted gradient tree classification, and compare performance between the two approaches across a range of configurations and channel impairments. We consider the effects of carrier frequency offset, symbol rate, and multipath fading in simulation, and conduct over-the-air measurement of radio classification performance in the lab using software radios, and we compare performance and training strategies for both. Finally, we conclude with a discussion of remaining problems, and design considerations for using such techniques.},
+	keywords = {Cognitive radio,Decision trees,deep learning,Fading channels,Feature extraction,Machine learning,modulation,Modulation,neural networks,Neural networks,pattern recognition,sensor systems and applications,wireless communication,Wireless communication},
+	annotation = {TLDR: An in~ depth study on the performance of deep learning based radio signal classification for radio communications signals considers a rigorous baseline method using higher order moments and strong boosted gradient tree classification, and compares performance between the two approaches across a range of configurations and channel impairments.},
+	file = {C:\Users\ischa\Zotero\storage\CFDSUWJB\O’Shea 等 - 2018 - Over-the-Air Deep Learning Based Radio Signal Classification.pdf}
+}
+
+@article{qi2023FedBKDHeterogenous,
+	title = {{{FedBKD}}: {{Heterogenous}} Federated Learning via Bidirectional Knowledge Distillation for Modulation Classification in {{IoT-edge}} System},
+	shorttitle = {{{FedBKD}}},
+	author = {Qi, Peihan and Zhou, Xiaoyu and Ding, Yuanlei and Zhang, Zhengyu and Zheng, Shilian and Li, Zan},
+	year = 2023,
+	month = jan,
+	journal = {IEEE Journal of Selected Topics in Signal Processing},
+	volume = {17},
+	number = {1},
+	pages = {189--204},
+	issn = {1941-0484},
+	doi = {10.1109/JSTSP.2022.3224597},
+	urldate = {2026-02-06},
+	abstract = {Benefit from the rapid evolution of artificial intelligence and wireless communication technology, diverse Internet of Things (IoT) devices with edge computing ability have widely penetrated every aspect of daily human life. However, the deviations of private datasets and the heterogeneity of local models caused by the difference in device composition and application scenarios have hampering the aggregation of global recognition model in modulation classification task, thus constraining the classification performance of intelligent IoT-edge devices severely. To address this problem, we propose a heterogenous Federated learning framework based on Bidirectional Knowledge Distillation (FedBKD) for IoT system, which integrates knowledge distillation into the local model upload (client-to-cloud) and global model download (cloud-to-client) steps of federated learning. The client-to-cloud distillation is regarded as a process of multi-teacher knowledge distillation and the global network is regarded as a student network that unifies the heterogeneous knowledge from multiple local teacher networks. A public dataset is generated by conditional variational autoencoder (CVAE) and stored in the cloud server for supporting the obtaining of heterogeneous knowledge without sharing the private data of IoT devices. The cloud-to-client distillation is single-teacher-multiple-students process, which distills the knowledge from the single global model back to multiple heterogeneous local networks and partial knowledge distillation is used in this process. We implement our FedBKD method in the modulation classification task and the simulation results have proven the effectiveness of our proposed method.},
+	keywords = {Adaptation models,conditional variational autoencoder,Data models,federated learning,Federated learning,Internet of Things,IoT,knowledge distillation,Knowledge engineering,model heterogeneity,Modulation,Training},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 13.7\\
+	5年影响因子: 11.6},
+	file = {C:\Users\ischa\Zotero\storage\G6S7XJ7B\9963546.html}
+}
+
+@article{qiu2024DeepSIGhybrid,
+	title = {{{DeepSIG}}: {{A}} Hybrid Heterogeneous Deep Learning Framework for Radio Signal Classification},
+	shorttitle = {{{DeepSIG}}},
+	author = {Qiu, Kunfeng and Zheng, Shilian and Zhang, Luxin and Lou, Caiyi and Yang, Xiaoniu},
+	year = 2024,
+	month = jan,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {23},
+	number = {1},
+	pages = {775--788},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2023.3281896},
+	urldate = {2026-02-06},
+	abstract = {Deep learning has been widely used in automatic modulation classification (AMC) recently. Most of deep learning-based AMC uses a single network model to deal with radio signals with a single input format. In this paper, we propose a hybrid heterogeneous modulation classification architecture named DeepSIG, which integrates Recurrent Neural Network (RNN), Convolutional Neural Network (CNN) and Graph Neural Network (GNN) models in a single framework to process radio signals with heterogeneous input formats, i.e., in-phase (I) and quadrature (Q) sequences, images mapped from IQ signals and graphs converted from IQ signals, to extract and integrate the features from different perspectives. A fusion training mechanism is presented to train DeepSIG. We use three different radio signal datasets for simulations. Results show that our proposed DeepSIG performs the best in terms of classification accuracy compared with the three methods with single input, i.e., sequence, image or graph. The performance gain is larger in few-shot scenarios.},
+	keywords = {Classification algorithms,Computational modeling,Convolutional neural networks,deep learning,Deep learning,Discrete wavelet transforms,Feature extraction,graph,image,Modulation,Modulation classification,sequence},
+	annotation = {TLDR: A hybrid heterogeneous modulation classification architecture named DeepSIG is proposed, which integrates Recurrent Neural Network (RNN), Convolutional Neural Network (CNN) and Graph Neural Network (GNN) models in a single framework to process radio signals with heterogeneous input formats.},
+	file = {C:\Users\ischa\Zotero\storage\ZQUXAKVT\Qiu 等 - 2024 - DeepSIG A Hybrid Heterogeneous Deep Learning Framework for Radio Signal Classification.pdf}
+}
+
+@article{qu2025Enhancingautomatic,
+	title = {Enhancing Automatic Modulation Recognition through Robust Global Feature Extraction},
+	author = {Qu, Yunpeng and Lu, Zhilin and Zeng, Rui and Wang, Jintao and Wang, Jian},
+	year = 2025,
+	month = mar,
+	journal = {IEEE Transactions On Vehicular Technology},
+	volume = {74},
+	number = {3},
+	pages = {4192--4207},
+	issn = {1939-9359},
+	doi = {10.1109/TVT.2024.3486079},
+	urldate = {2025-05-10},
+	abstract = {Automatic Modulation Recognition (AMR) plays a crucial role in wireless communication systems. Deep learning AMR strategies have achieved tremendous success in recent years. Modulated signals exhibit long temporal dependencies, and extracting global features is crucial in identifying modulation schemes. Traditionally, human experts analyze patterns in constellation diagrams to classify modulation schemes. Classical convolutional-based networks, due to their limited receptive fields, excel at extracting local features but struggle to capture global relationships. To address this limitation, we introduce a novel hybrid deep framework named TLDNN, which incorporates the architectures of the transformer and long short-term memory (LSTM). We utilize the self-attention mechanism of the transformer to model the global correlations in signal sequences while employing LSTM to enhance the capture of temporal dependencies. To mitigate the impact like RF fingerprint features and channel characteristics on model generalization, we propose data augmentation strategies known as segment substitution (SS) to enhance the model's robustness to modulation-related features. Experimental results on widely-used datasets demonstrate that our method achieves state-of-the-art performance and exhibits significant advantages in terms of complexity. Our framework serves as a foundational backbone that can be extended to different datasets and applied to both mobile and static scenarios. We have verified the effectiveness of our augmentation approach in enhancing the generalization, particularly in few-shot scenarios.},
+	keywords = {Automatic modulation recognition,Constellation diagram,data augmentation,Data augmentation,Data mining,deep learning,Feature extraction,Fingerprint recognition,Long short term memory,LSTM,Modulation,Radio frequency,transformer,Transformers,Wireless communication},
+	annotation = {TLDR: A novel hybrid deep framework named TLDNN is introduced, which incorporates the architectures of the transformer and long short-term memory (LSTM) to model the global correlations in signal sequences while employing LSTM to enhance the capture of temporal dependencies.},
+	file = {C:\Users\ischa\Zotero\storage\GTN9Q78J\Qu 等 - 2025 - Enhancing Automatic Modulation Recognition Through Robust Global Feature Extraction.pdf}
+}
+
+@misc{Radiomachine,
+	title = {Radio Machine Learning Dataset Generation with {{GNU}} Radio \textbar{} Proceedings of the {{GNU}} Radio Conference},
+	urldate = {2026-02-06},
+	howpublished = {https://pubs.gnuradio.org/index.php/grcon/article/view/11}
+}
+
+@article{rashvand2024Enhancingautomatic,
+	title = {Enhancing Automatic Modulation Recognition for {{IoT}} Applications Using Transformers},
+	author = {Rashvand, Narges and Witham, Kenneth and Maldonado, Gabriel and Katariya, Vinit and Marer Prabhu, Nishanth and Schirner, Gunar and Tabkhi, Hamed},
+	year = 2024,
+	month = jan,
+	journal = {Iot},
+	volume = {5},
+	number = {2},
+	pages = {212--226},
+	publisher = {Multidisciplinary Digital Publishing Institute},
+	issn = {2624-831X},
+	doi = {10.3390/iot5020011},
+	urldate = {2025-05-10},
+	abstract = {Automatic modulation recognition (AMR) is vital for accurately identifying modulation types within incoming signals, a critical task for optimizing operations within edge devices in IoT ecosystems. This paper presents an innovative approach that leverages Transformer networks, initially designed for natural language processing, to address the challenges of efficient AMR. Our Transformer network architecture is designed with the mindset of real-time edge computing on IoT devices. Four tokenization techniques are proposed and explored for creating proper embeddings of RF signals, specifically focusing on overcoming the limitations related to the model size often encountered in IoT scenarios. Extensive experiments reveal that our proposed method outperformed advanced deep learning techniques, achieving the highest recognition accuracy. Notably, our model achieved an accuracy of 65.75 on the RML2016 and 65.80 on the CSPB.ML.2018+ dataset.},
+	copyright = {http://creativecommons.org/licenses/by/3.0/},
+	langid = {english},
+	keywords = {attention mechanism,automatic modulation recognition,deep learning,IoT,Transformer network},
+	file = {C:\Users\ischa\Zotero\storage\ZE4XTG3R\Rashvand 等 - 2024 - Enhancing Automatic Modulation Recognition for IoT Applications Using Transformers.pdf}
+}
+
+@inproceedings{sandler2018MobileNetV2Inverted,
+	title = {{{MobileNetV2}}: {{Inverted}} Residuals and Linear Bottlenecks},
+	shorttitle = {{{MobileNetV2}}},
+	booktitle = {Proceedings of the {{IEEE Conference}} on {{Computer Vision}} and {{Pattern Recognition}}},
+	author = {Sandler, Mark and Howard, Andrew and Zhu, Menglong and Zhmoginov, Andrey and Chen, Liang-Chieh},
+	year = 2018,
+	pages = {4510--4520},
+	urldate = {2026-02-06},
+	annotation = {CCF: A},
+	file = {C:\Users\ischa\Zotero\storage\CM7PWUVD\Sandler 等 - 2018 - MobileNetV2 Inverted Residuals and Linear Bottlenecks.pdf}
+}
+
+@article{sathyanarayanan2023RML22Realistic,
+	title = {{{RML22}}: {{Realistic}} Dataset Generation for Wireless Modulation Classification},
+	shorttitle = {{{RML22}}},
+	author = {Sathyanarayanan, Venkatesh and Gerstoft, Peter and Gamal, Aly El},
+	year = 2023,
+	month = nov,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {22},
+	number = {11},
+	pages = {7663--7675},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2023.3254490},
+	urldate = {2025-09-08},
+	abstract = {Application of Deep learning (DL) to modulation classification has shown significant performance improvements. The focus has been model centric, where newer architectures are attempted on benchmark dataset RADIOML.2016.10A (RML16). RML16 is a high impact effort that laid the foundation for generating a synthetic dataset for applying DL models to wireless problems. This encouraged development of newer architectures to RML16. We use a data centric DL approach where focus moves from model architectures to data quality. RML16 has shortcomings such as errors and ad-hoc choices of parameters. We build upon RML16 and provide realistic and correct methodology of generating dataset. A new benchmark dataset RML22 is generated. Going forward, we envision researchers to improve model quality on RML22. We attempt to improve data quality by studying the impact of information sources. Further, the choices of artifacts and signal model parameterization are analyzed carefully. The Python source code used to generate RML22 is shared to enable researchers to further improve dataset quality.},
+	keywords = {Ad hoc networks,Atmospheric modeling,benchmark dataset,Benchmark testing,Computational modeling,Deep learning,GNU radio,Mathematical models,Modulation,modulation classification,spectrum sensing,Wireless communication},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 10.7\\
+	5年影响因子: 11.4\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP}
+}
+
+@misc{Semisupervisedlearning,
+	title = {Semi-Supervised Learning with Generative Adversarial Networks on Digital Signal Modulation Classification. \textbar{} {{EBSCOhost}}},
+	urldate = {2026-02-06},
+	howpublished = {https://openurl.ebsco.com/EPDB\%3Agcd\%3A15\%3A31849823/detailv2?sid=ebsco\%3Aplink\%3Ascholar\&id=ebsco\%3Agcd\%3A129778535\&crl=c\&link\_origin=scholar.google.com}
+}
+
+@inproceedings{shaker2023SwiftFormerEfficient,
+	title = {{{SwiftFormer}}: {{Efficient}} Additive Attention for Transformer-Based Real-Time Mobile Vision Applications},
+	shorttitle = {{{SwiftFormer}}},
+	booktitle = {Proceedings of the {{IEEE}}/{{CVF International Conference}} on {{Computer Vision}}},
+	author = {Shaker, Abdelrahman and Maaz, Muhammad and Rasheed, Hanoona and Khan, Salman and Yang, Ming-Hsuan and Khan, Fahad Shahbaz},
+	year = 2023,
+	pages = {17425--17436},
+	urldate = {2026-02-07},
+	langid = {english},
+	annotation = {CCF: A},
+	file = {C:\Users\ischa\Zotero\storage\958RCJFJ\Shaker 等 - 2023 - SwiftFormer Efficient additive attention for transformer-based real-time mobile vision applications.pdf}
+}
+
+@article{shao2025IQFormernovel,
+	title = {{{IQFormer}}: {{A}} Novel Transformer-Based Model with Multi-Modality Fusion for Automatic Modulation Recognition},
+	shorttitle = {{{IQFormer}}},
+	author = {Shao, Mingyuan and Li, Dingzhao and Hong, Shaohua and Qi, Jie and Sun, Haixin},
+	year = 2025,
+	month = jun,
+	journal = {IEEE Transactions On Cognitive Communications and Networking},
+	volume = {11},
+	number = {3},
+	pages = {1623--1634},
+	issn = {2332-7731},
+	doi = {10.1109/TCCN.2024.3485118},
+	urldate = {2026-02-08},
+	abstract = {The advent of modern communication systems has led to the widespread application of deep learning-based automatic modulation recognition (DL-AMR) in wireless communications. However, existing networks still cannot effectively capture the complex relationships between signals under low signal-to-noise (SNR) ratio conditions. This paper proposes an automatic modulation recognition (AMR) method using multi-modal hybrid neural networks, named IQFormer. It is based on I/Q signals and time-frequency (T-F) transform distribution matrix inputs. To capture the inherent connection between spatio-temporal and T-F features in cross-modal features, we design a Dynamic Fusion Embedding (DFE) module. Within this module, feature information from multiple modalities is dynamically aggregated during the embedding stage, resulting in semantically enriched token sequences. Moreover, we develop a staged Transformer block scheme that allows IQFormer to efficiently extract local and global features from embedded tokens at different scales using convolution and attention mechanisms. Experimental results on RadioML2016.10a, RadioML2016.10b and HisarMod2019.1 datasets demonstrate the superior performance of IQFormer compared to the state-of-the-art (SOTA) DL-AMR methods. Code is available at https://github.com/WestdoorSad/IQFormer.},
+	keywords = {Automatic modulation recognition,Convolution,deep learning,Feature extraction,Interference,Market research,Modulation,multi-modality fusion,Signal to noise ratio,Time-domain analysis,Time-frequency analysis,transformer,Transformers,Wireless communication},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 7.0\\
+	5年影响因子: 7.8\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C:\Users\ischa\Zotero\storage\IPFCBZS5\10729886.html}
+}
+
+@misc{tekbiyik2019HisarModnew,
+	title = {{{HisarMod}}: {{A}} New Challenging Modulated Signals Dataset},
+	shorttitle = {{{HisarMod}}},
+	author = {Tekb{\i}y{\i}k, K{\"u}r{\c s}at},
+	year = 2019,
+	month = oct,
+	publisher = {IEEE DataPort},
+	doi = {10.21227/8K12-2G70},
+	urldate = {2026-02-11},
+	abstract = {In order to increase the diversity in signal datasets, we create a new dataset called HisarMod, which includes 26 classes and 5 different modulation families passing through 5 different wireless communication channel. During the generation of the dataset, MATLAB 2017a is employed for creating random bit sequences, symbols, and wireless fading channels. The dataset includes 26 modulation types from 5 different modulation families which are analog, FSK, PAM, PSK, and QAM. In the dataset, there are 1500 signals, which have the length of 1024 I/Q samples, for each modulation type. To make HisarMod similar to RadioML2016.10a for a fair comparison, there are 20 different SNR levels in between -20dB and 18dB. As a result, the dataset covers totally 780000 signals. When generating signals, oversampling rate is chosen as 2 and raised cosine pulse shaping filter is employed with roll-off factor of 0.35.},
+	copyright = {Creative Commons Attribution},
+	keywords = {Artificial Intelligence,cognitive radio,Communications,Deep Learning,Machine Learning,Modulation Classification,Signal Processing}
+}
+
+@article{tu2020Complexvaluednetworks,
+	title = {Complex-Valued Networks for Automatic Modulation Classification},
+	author = {Tu, Ya and Lin, Yun and Hou, Changbo and Mao, Shiwen},
+	year = 2020,
+	month = sep,
+	journal = {IEEE Transactions On Vehicular Technology},
+	volume = {69},
+	number = {9},
+	pages = {10085--10089},
+	issn = {1939-9359},
+	doi = {10.1109/TVT.2020.3005707},
+	urldate = {2026-02-06},
+	abstract = {Deep learning (DL) has been recognized as an effective solution for automatic modulation classification (AMC). However, most recent DL based AMC works are based on real-valued operations and representations. In this correspondence, we aim to demonstrate the high potential of complex-valued networks for AMC. We present the design of several key building blocks for complex-valued networks, such as complex convolution, complex batch-normalization, complex weight initialization, and complex dense strategies. We then provide a comparison study of three different neural network models and their complex-valued counterparts using the RadioML 2016.10 A dataset. Our results validate the superior performance in AMC achieved by the complex-valued networks.},
+	keywords = {Automatic modulation classification,complex-valued networks,Computer architecture,Convolution,deep learning,Kernel,Modulation,Neural networks,Signal to noise ratio,Wireless communication},
+	file = {C:\Users\ischa\Zotero\storage\TIB83MZE\9128039.html}
+}
+
+@inproceedings{vaswani2017Attentionall,
+	title = {Attention Is All You Need},
+	author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and ukasz Kaiser, {\L} and Polosukhin, Illia},
+	year = 2017,
+	volume = {30},
+	publisher = {Curran Associates, Inc.},
+	urldate = {2026-02-06},
+	annotation = {CCF: A},
+	file = {C:\Users\ischa\Zotero\storage\TDYUPLCS\Vaswani 等 - 2017 - Attention is all you need.pdf}
+}
+
+@article{wang2019Datadrivendeepa,
+	title = {Data-Driven Deep Learning for Automatic Modulation Recognition in Cognitive Radios},
+	author = {Wang, Yu and Liu, Miao and Yang, Jie and Gui, Guan},
+	year = 2019,
+	month = apr,
+	journal = {IEEE Transactions On Vehicular Technology},
+	volume = {68},
+	number = {4},
+	pages = {4074--4077},
+	issn = {1939-9359},
+	doi = {10.1109/TVT.2019.2900460},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation recognition (AMR) is an essential and challenging topic in the development of the cognitive radio (CR), and it is a cornerstone of CR adaptive modulation and demodulation capabilities to sense and learn environments and make corresponding adjustments. AMR is essentially a classification problem, and deep learning achieves outstanding performances in various classification tasks. So, this paper proposes a deep learning-based method, combined with two convolutional neural networks (CNNs) trained on different datasets, to achieve higher accuracy AMR. A CNN is trained on samples composed of in-phase and quadrature component signals, otherwise known as in-phase and quadrature samples, to distinguish modulation modes, that are relatively easy to identify. We adopt dropout instead of pooling operation to achieve higher recognition accuracy. A CNN based on constellation diagrams is also designed to recognize modulation modes that are difficult to distinguish in the former CNN, such as 16 quadratic-amplitude modulation (QAM) and 64 QAM, demonstrating the ability to classify QAM signals even in scenarios with a low signal-to-noise ratio.},
+	keywords = {Automatic modulation recognition (AMR),cognitive radio (CR),Constellation diagram,constellation diagrams,convolutional neural network (CNN),deep learning,Deep learning,Feature extraction,in-phase and quadrature (IQ) samples,Signal to noise ratio,Task analysis,Training},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 7.1\\
+	5年影响因子: 7.4\\
+	EI: 是}
+}
+
+@article{wang2021MultidimensionalCNNLSTM,
+	title = {Multidimensional {{CNN-LSTM}} Network for Automatic Modulation Classification},
+	author = {Wang, Na and Liu, Yunxia and Ma, Liang and Yang, Yang and Wang, Hongjun},
+	year = 2021,
+	month = jan,
+	journal = {Electronics},
+	volume = {10},
+	number = {14},
+	pages = {1649},
+	publisher = {Multidisciplinary Digital Publishing Institute},
+	issn = {2079-9292},
+	doi = {10.3390/electronics10141649},
+	urldate = {2025-05-10},
+	abstract = {Automatic modulation classification (AMC) is the premise for signal detection and demodulation applications, especially in non-cooperative communication scenarios. It has been a popular topic for decades and has gained significant progress with the development of deep learning methods. To further improve classification accuracy, a hierarchical multifeature fusion (HMF) based on a multidimensional convolutional neural network (CNN)-long short-term memory (LSTM) network is proposed in this paper. First, a multidimensional CNN module (MD-CNN) is proposed for feature compensation between interactive features extracted by two-dimensional convolutional filters and respective features extracted by one-dimensional filters. Second, learnt features of the MD-CNN module are fed into an LSTM layer for further exploitation of temporal features. Finally, classification results are obtained by the Softmax classifier. The effectiveness of the proposed method is verified by abundant experimental results on two public datasets, RadioML.2016.10a and RadioML.2016.10b. Satisfying results are obtained as compared with state-of-the-art methods.},
+	copyright = {http://creativecommons.org/licenses/by/3.0/},
+	langid = {english},
+	keywords = {automatic modulation classification,convolutional neural networks,the long short-term memory},
+	annotation = {TLDR: A hierarchical multifeature fusion (HMF) based on a multidimensional convolutional neural network (CNN)-long short-term memory (LSTM) network is proposed to improve classification accuracy and satisfaction results are obtained as compared with state-of-the-art methods.},
+	file = {C:\Users\ischa\Zotero\storage\WECSV6D8\Wang 等 - 2021 - Multidimensional CNN-LSTM Network for Automatic Modulation Classification.pdf}
+}
+
+@article{xiao2023Complexvalueddepthwise,
+	title = {Complex-Valued Depthwise Separable Convolutional Neural Network for Automatic Modulation Classification},
+	author = {Xiao, Chenghong and Yang, Shuyuan and Feng, Zhixi},
+	year = 2023,
+	journal = {IEEE Transactions On Instrumentation and Measurement},
+	volume = {72},
+	pages = {1--10},
+	issn = {1557-9662},
+	doi = {10.1109/TIM.2023.3298657},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation classification (AMC) is a critical task in industrial cognitive communication systems. Existing state-of-the-art methods, typified by real-valued convolutional neural networks, have introduced innovative solutions for AMC. However, such models viewed the two constituent components of complex-valued modulated signals as discrete real-valued inputs, causing structural phase damage to original signals and reduced interpretability of the model. In this article, a novel end-to- end AMC model called a complex-valued depthwise separable convolutional neural network (CDSCNN) is proposed, which adopts complex-valued operation units to enable automatic complex-valued feature learning specifically tailored for AMC. Considering the limited hardware resources available in industrial scenarios, complex-valued depthwise separable convolution (CDSC) is designed to strike a balance between classification accuracy and model complexity. With an overall accuracy (OA) of 62.63\% on the RadioML2016.10a dataset, CDSCNN outperforms its counterparts by 1\%--11\%. After fine-tuning on the RadioML2016.10b dataset, the OA reaches 63.15\%, demonstrating the robust recognition and generalization capability of CDSCNN. Moreover, the CDSCNN exhibits lower model complexity compared to other methods.},
+	keywords = {Automatic modulation classification (AMC),complex-valued convolutional neural network (CNN),Complexity theory,Convolution,Convolutional neural networks,Correlation,deep learning,depthwise separable convolution (DSC),Feature extraction,Indexes,lightweight design,Modulation},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 工程技术2区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 5.9\\
+	5年影响因子: 6.0\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\7RJQBJ4J\10198896.html}
+}
+
+@article{xiao2023Complexvalueddepthwisea,
+	title = {Complex-Valued Depthwise Separable Convolutional Neural Network for Automatic Modulation Classification},
+	author = {Xiao, Chenghong and Yang, Shuyuan and Feng, Zhixi},
+	year = 2023,
+	journal = {IEEE Transactions On Instrumentation and Measurement},
+	volume = {72},
+	pages = {1--10},
+	issn = {1557-9662},
+	doi = {10.1109/TIM.2023.3298657},
+	urldate = {2026-02-12},
+	abstract = {Automatic modulation classification (AMC) is a critical task in industrial cognitive communication systems. Existing state-of-the-art methods, typified by real-valued convolutional neural networks, have introduced innovative solutions for AMC. However, such models viewed the two constituent components of complex-valued modulated signals as discrete real-valued inputs, causing structural phase damage to original signals and reduced interpretability of the model. In this article, a novel end-to- end AMC model called a complex-valued depthwise separable convolutional neural network (CDSCNN) is proposed, which adopts complex-valued operation units to enable automatic complex-valued feature learning specifically tailored for AMC. Considering the limited hardware resources available in industrial scenarios, complex-valued depthwise separable convolution (CDSC) is designed to strike a balance between classification accuracy and model complexity. With an overall accuracy (OA) of 62.63\% on the RadioML2016.10a dataset, CDSCNN outperforms its counterparts by 1\%--11\%. After fine-tuning on the RadioML2016.10b dataset, the OA reaches 63.15\%, demonstrating the robust recognition and generalization capability of CDSCNN. Moreover, the CDSCNN exhibits lower model complexity compared to other methods.},
+	keywords = {Automatic modulation classification (AMC),complex-valued convolutional neural network (CNN),Complexity theory,Convolution,Convolutional neural networks,Correlation,deep learning,depthwise separable convolution (DSC),Feature extraction,Indexes,lightweight design,Modulation},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 工程技术2区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 5.9\\
+	5年影响因子: 6.0\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\JQ89JCPR\10198896.html}
+}
+
+@article{xu2020spatiotemporalmultichannela,
+	title = {A Spatiotemporal Multi-Channel Learning Framework for Automatic Modulation Recognition},
+	author = {Xu, Jialang and Luo, Chunbo and Parr, Gerard and Luo, Yang},
+	year = 2020,
+	month = oct,
+	journal = {IEEE Wireless Communications Letters},
+	volume = {9},
+	number = {10},
+	pages = {1629--1632},
+	issn = {2162-2345},
+	doi = {10.1109/LWC.2020.2999453},
+	urldate = {2025-05-10},
+	abstract = {Automatic modulation recognition (AMR) plays a vital role in modern communication systems. This letter proposes a novel three-stream deep learning framework to extract the features from individual and combined in-phase/quadrature (I/Q) symbols of the modulated data. The proposed framework integrates one-dimensional (1D) convolutional, two-dimensional (2D) convolutional and long short-term memory (LSTM) layers to extract features more effectively from a time and space perspective. Experiments on the benchmark dataset show the proposed framework has efficient convergence speed and achieves improved recognition accuracy, especially for the signals modulated by higher dimensional schemes such as 16 quadrature amplitude modulation (16-QAM) and 64-QAM.},
+	keywords = {Automatic modulation recognition,Convolution,Data mining,deep learning,Deep learning,Feature extraction,Modulation,multi-channel,Signal to noise ratio,Training}
+}
+
+@article{xu2020spatiotemporalmultichannelb,
+	title = {A Spatiotemporal Multi-Channel Learning Framework for Automatic Modulation Recognition},
+	author = {Xu, Jialang and Luo, Chunbo and Parr, Gerard and Luo, Yang},
+	year = 2020,
+	month = oct,
+	journal = {IEEE Wireless Communications Letters},
+	volume = {9},
+	number = {10},
+	pages = {1629--1632},
+	issn = {2162-2345},
+	doi = {10.1109/LWC.2020.2999453},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation recognition (AMR) plays a vital role in modern communication systems. This letter proposes a novel three-stream deep learning framework to extract the features from individual and combined in-phase/quadrature (I/Q) symbols of the modulated data. The proposed framework integrates one-dimensional (1D) convolutional, two-dimensional (2D) convolutional and long short-term memory (LSTM) layers to extract features more effectively from a time and space perspective. Experiments on the benchmark dataset show the proposed framework has efficient convergence speed and achieves improved recognition accuracy, especially for the signals modulated by higher dimensional schemes such as 16 quadrature amplitude modulation (16-QAM) and 64-QAM.},
+	keywords = {Automatic modulation recognition,Convolution,Data mining,deep learning,Deep learning,Feature extraction,Modulation,multi-channel,Signal to noise ratio,Training}
+}
+
+@article{xu2020spatiotemporalmultichannelc,
+	title = {A Spatiotemporal Multi-Channel Learning Framework for Automatic Modulation Recognition},
+	author = {Xu, Jialang and Luo, Chunbo and Parr, Gerard and Luo, Yang},
+	year = 2020,
+	month = oct,
+	journal = {IEEE Wireless Communications Letters},
+	volume = {9},
+	number = {10},
+	pages = {1629--1632},
+	issn = {2162-2345},
+	doi = {10.1109/LWC.2020.2999453},
+	urldate = {2026-02-11},
+	abstract = {Automatic modulation recognition (AMR) plays a vital role in modern communication systems. This letter proposes a novel three-stream deep learning framework to extract the features from individual and combined in-phase/quadrature (I/Q) symbols of the modulated data. The proposed framework integrates one-dimensional (1D) convolutional, two-dimensional (2D) convolutional and long short-term memory (LSTM) layers to extract features more effectively from a time and space perspective. Experiments on the benchmark dataset show the proposed framework has efficient convergence speed and achieves improved recognition accuracy, especially for the signals modulated by higher dimensional schemes such as 16 quadrature amplitude modulation (16-QAM) and 64-QAM.},
+	keywords = {Automatic modulation recognition,Convolution,Data mining,deep learning,Deep learning,Feature extraction,Modulation,multi-channel,Signal to noise ratio,Training},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学3区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 5.5\\
+	5年影响因子: 5.9\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\FTDBADV9\9106397.html}
+}
+
+@article{zha2024LTSEILongtailed,
+	title = {{{LT-SEI}}: {{Long-tailed}} Specific Emitter Identification Based on Decoupled Representation Learning in Low-Resource Scenarios},
+	shorttitle = {{{LT-SEI}}},
+	author = {Zha, Haoran and Wang, Hanhong and Feng, Zhongming and Xiang, Zhenyu and Yan, Wenjun and He, Yuanzhi and Lin, Yun},
+	year = 2024,
+	month = jan,
+	journal = {IEEE Transactions On Intelligent Transportation Systems},
+	volume = {25},
+	number = {1},
+	pages = {929--943},
+	issn = {1558-0016},
+	doi = {10.1109/TITS.2023.3308716},
+	urldate = {2026-02-06},
+	abstract = {In the case of COVID-19, which requires stable and reliable tracking of personnel movement, aircraft identification by specific emitter identification (SEI) is a hot-button issue. It refers to the process of identifying individual aircraft by comparing features extracted from the Radio Frequency (RF) signal of a given aircraft. Deep learning (DL) has been widely used in SEI research due to its excellent feature extraction capability, but in the actual low-resource reception scenario, the aircraft signal data acquired for training are long-tailed in distribution, and the imbalance of the signal data increases the challenge of training the network. In this paper, we propose a novel long-tailed specific emitter identification (LT-SEI) method using decoupled representation (DR) learning. Specifically, we separate the learning process into two stages: representation learning and classification, which includes unbalanced training and balanced classifier learning. The proposed DR-based LT-SEI approach is assessed using aircraft Automatic Dependent Surveillance Broadcast (ADS-B) data collected in the real world and compared to state-of-the-art methods. Experiment results show that the method has better long-tail recognition performance than the existing methods. When the data imbalance factor is 0.01, the F1 score of the model for the recognition result can reach 71.2\%, which is 9\% higher than that of the baseline model.},
+	keywords = {ADS-B,Aircraft,Authentication,Classification tree analysis,decoupling representation learning,Feature extraction,long-tailed recognition,Representation learning,RF signals,Specific emitter identification,Training},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 8.4\\
+	5年影响因子: 9.5\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C:\Users\ischa\Zotero\storage\RZA79D5M\10239239.html}
+}
+
+@article{zhang2020Automaticmodulation,
+	title = {Automatic Modulation Classification Using {{CNN-LSTM}} Based Dual-Stream Structure},
+	author = {Zhang, Zufan and Luo, Hao and Wang, Chun and Gan, Chenquan and Xiang, Yong},
+	year = 2020,
+	month = nov,
+	journal = {IEEE Transactions On Vehicular Technology},
+	volume = {69},
+	number = {11},
+	pages = {13521--13531},
+	issn = {1939-9359},
+	doi = {10.1109/TVT.2020.3030018},
+	urldate = {2026-02-06},
+	abstract = {Deep learning (DL) has recently aroused substantial concern due to its successful implementations in many fields. Currently, there are few studies on the applications of DL in the automatic modulation classification (AMC), which plays a critical role in non-cooperation communications. Besides, most previous work ignores the feature interaction, and only considers spatial or temporal attributes of signals. Combining the advantages of the convolutional neural network (CNN), and the long short-term memory (LSTM), this paper addresses the AMC using CNN-LSTM based dual-stream structure, which efficiently explores the feature interaction, and the spatial-temporal properties of raw complex temporal signals. Specifically, a preprocessing step is first implemented to convert signals into the temporal in-phase/quadrature (I/Q) format, and the amplitude/phase (A/P) representation, which facilitates the acquirement of more effective features for classification. To extract features from each signal pattern, each stream is composed of CNN, and LSTM (denoted as CNN-LSTM). Most importantly, the features learned from two streams interact in pairs, which increases the diversity of features and thereby further improves the performance. Finally, some comparisons with previous work are performed. The experimental results not only demonstrate the superior performance of the proposed method compared with the existing state-of-the-art methods, but also reveal the potential of DL-based approaches for AMC.},
+	keywords = {Automatic modulation classification,con-volutional neural network,Convolutional neural networks,Data models,dual-stream structure,Feature extraction,long short term memory network,Modulation,signal representation,Training,Wireless communication},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学2区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 7.1\\
+	5年影响因子: 7.4\\
+	EI: 是}
+}
+
+@article{zhang2021efficientdeep,
+	title = {An Efficient Deep Learning Model for Automatic Modulation Recognition Based on Parameter Estimation and Transformation},
+	author = {Zhang, Fuxin and Luo, Chunbo and Xu, Jialang and Luo, Yang},
+	year = 2021,
+	month = oct,
+	journal = {IEEE Communications Letters},
+	volume = {25},
+	number = {10},
+	pages = {3287--3290},
+	issn = {1558-2558},
+	doi = {10.1109/LCOMM.2021.3102656},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation recognition (AMR) is a promising technology for intelligent communication receivers to detect signal modulation schemes. Recently, the emerging deep learning (DL) research has facilitated high-performance DL-AMR approaches. However, most DL-AMR models only focus on recognition accuracy, leading to huge model sizes and high computational complexity, while some lightweight and low-complexity models struggle to meet the accuracy requirements. This letter proposes an efficient DL-AMR model based on phase parameter estimation and transformation, with convolutional neural network (CNN) and gated recurrent unit (GRU) as the feature extraction layers, which can achieve high recognition accuracy equivalent to the existing state-of-the-art models but reduces more than a third of the volume of their parameters. Meanwhile, our model is more competitive in training time and test time than the benchmark models with similar recognition accuracy. Moreover, we further propose to compress our model by pruning, which maintains the recognition accuracy higher than 90\% while has less than 1/8 of the number of parameters comparing with state-of-the-art models.},
+	keywords = {Automatic modulation recognition,Computational modeling,Data models,deep learning,Feature extraction,lightweight,low-complexity,Modulation,network pruning,Neural networks,Solid modeling,Training},
+	annotation = {TLDR: This letter proposes an efficient DL-AMR model based on phase parameter estimation and transformation, with convolutional neural network and gated recurrent unit as the feature extraction layers, which can achieve high recognition accuracy equivalent to the existing state-of-the-art models but reduces more than a third of the volume of their parameters.},
+	file = {C:\Users\ischa\Zotero\storage\PCXDNWPW\Zhang 等 - 2021 - An Efficient Deep Learning Model for Automatic Modulation Recognition Based on Parameter Estimation.pdf}
+}
+
+@article{zhang2021efficientdeepa,
+	title = {An Efficient Deep Learning Model for Automatic Modulation Recognition Based on Parameter Estimation and Transformation},
+	author = {Zhang, Fuxin and Luo, Chunbo and Xu, Jialang and Luo, Yang},
+	year = 2021,
+	month = oct,
+	journal = {IEEE Communications Letters},
+	volume = {25},
+	number = {10},
+	pages = {3287--3290},
+	issn = {1558-2558},
+	doi = {10.1109/LCOMM.2021.3102656},
+	urldate = {2026-02-12},
+	abstract = {Automatic modulation recognition (AMR) is a promising technology for intelligent communication receivers to detect signal modulation schemes. Recently, the emerging deep learning (DL) research has facilitated high-performance DL-AMR approaches. However, most DL-AMR models only focus on recognition accuracy, leading to huge model sizes and high computational complexity, while some lightweight and low-complexity models struggle to meet the accuracy requirements. This letter proposes an efficient DL-AMR model based on phase parameter estimation and transformation, with convolutional neural network (CNN) and gated recurrent unit (GRU) as the feature extraction layers, which can achieve high recognition accuracy equivalent to the existing state-of-the-art models but reduces more than a third of the volume of their parameters. Meanwhile, our model is more competitive in training time and test time than the benchmark models with similar recognition accuracy. Moreover, we further propose to compress our model by pruning, which maintains the recognition accuracy higher than 90\% while has less than 1/8 of the number of parameters comparing with state-of-the-art models.},
+	keywords = {Automatic modulation recognition,Computational modeling,Data models,deep learning,Feature extraction,lightweight,low-complexity,Modulation,network pruning,Neural networks,Solid modeling,Training},
+	annotation = {JCR分区: Q2\\
+	中科院分区升级版: 计算机科学3区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 4.4\\
+	5年影响因子: 4.2\\
+	EI: 是},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\8QL6T39Q\\Zhang 等 - 2021 - An efficient deep learning model for automatic modulation recognition based on parameter estimation.pdf;C\:\\Users\\ischa\\Zotero\\storage\\ZSGPRXNT\\9507514.html}
+}
+
+@inproceedings{zhang2023AMCneteffective,
+	title = {{{AMC-net}}: {{An}} Effective Network for Automatic Modulation Classification},
+	shorttitle = {{{AMC-Net}}},
+	booktitle = {{{ICASSP}} 2023 - 2023 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
+	author = {Zhang, Jiawei and Wang, Tiantian and Feng, Zhixi and Yang, Shuyuan},
+	year = 2023,
+	month = jun,
+	pages = {1--5},
+	issn = {2379-190X},
+	doi = {10.1109/ICASSP49357.2023.10097070},
+	urldate = {2026-02-11},
+	abstract = {Automatic modulation classification (AMC) is a crucial stage in the spectrum management, signal monitoring, and control of wireless communication systems. The accurate classification of the modulation format plays a vital role in the subsequent decoding of the transmitted data. End-to-end deep learning methods have been recently applied to AMC, outperforming traditional feature engineering techniques. However, AMC still has limitations in low signal-to-noise ratio (SNR) environments. To address the drawback, we propose a novel AMC-Net that improves recognition by denoising the input signal in the frequency domain while performing multi-scale and effective feature extraction. Experiments on two representative datasets demonstrate that our model performs better in efficiency and effectiveness than the most current methods.},
+	keywords = {Adaptation models,Automatic modulation classification,deep learning,Feature extraction,Frequency-domain analysis,Modulation,Task analysis,Time series analysis,Wireless communication},
+	annotation = {TLDR: A novel AMC-Net is proposed that improves recognition by denoising the input signal in the frequency domain while performing multi-scale and effective feature extraction and performs better in efficiency and effectiveness than the most current methods.\\
+	CCF: B},
+	file = {C\:\\Users\\ischa\\Zotero\\storage\\E9FSNT4A\\Zhang 等 - 2023 - AMC-Net An Effective Network for Automatic Modulation Classification.pdf;C\:\\Users\\ischa\\Zotero\\storage\\FHVG8MD5\\10097070.html}
+}
+
+@article{zhang2023Lightweightautomatic,
+	title = {Lightweight Automatic Modulation Classification via Progressive Differentiable Architecture Search},
+	author = {Zhang, Xixi and Chen, Xiaofeng and Wang, Yu and Gui, Guan and Adebisi, Bamidele and Sari, Hikmet and Adachi, Fumiyuki},
+	year = 2023,
+	month = dec,
+	journal = {IEEE Transactions On Cognitive Communications and Networking},
+	volume = {9},
+	number = {6},
+	pages = {1519--1530},
+	issn = {2332-7731},
+	doi = {10.1109/TCCN.2023.3306391},
+	urldate = {2026-02-12},
+	abstract = {Automatic modulation classification (AMC) is a key step of signal demodulation that determines whether the receiver can correctly receive the transmitted signal without prior knowledge of the modulation type. Deep learning (DL) based AMC methods have been proven to achieve excellent performances. However, these DL-based methods rely heavily on expert experience to design neural network structures. These hand-designed networks have fixed architectures and lack flexibility, which often leads to insufficient model generalization. Neural architecture search (NAS) is a vital direction for automatic machine learning (AutoML), which can solve the shortcomings of hand-designed network architectures. In this paper, according to the specific modulation classification task, we propose a lightweight progressive differentiable architecture search-based AMC (PDARTS-AMC) method to search for a very lightweight network with great performance. In addition, the optimal architecture searched on dataset simulated by MATLAB is transferred to the RadioML2016.10B task, to verify the robustness and generalization of the proposed method. Experimental results show that the proposed PDARTS-AMC method both improves the classification accuracy and reduces the computational cost when compared with existing classical AMC methods.},
+	keywords = {Automatic modulation classification,Computer architecture,Data models,Feature extraction,lightweight network,Mathematical models,Modulation,neural architecture search,Neural networks,progressive differentiable architecture search,Search problems},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 7.0\\
+	5年影响因子: 7.8\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C:\Users\ischa\Zotero\storage\GG3CI3V3\10224342.html}
+}
+
+@article{zhang2024CTRNetautomatica,
+	title = {{{CTRNet}}: {{An}} Automatic Modulation Recognition Based on Transformer-{{CNN}} Neural Network},
+	shorttitle = {{{CTRNet}}},
+	author = {Zhang, Wenna and Xue, Kailiang and Yao, Aiqin and Sun, Yunqiang},
+	year = 2024,
+	journal = {Electronics},
+	volume = {13},
+	number = {17},
+	pages = {3408},
+	publisher = {Multidisciplinary Digital Publishing Institute},
+	issn = {2079-9292},
+	doi = {10.3390/electronics13173408},
+	urldate = {2025-05-10},
+	abstract = {Deep learning (DL) has brought new perspectives and methods to automatic modulation recognition (AMR), enabling AMR systems to operate more efficiently and reliably in modern wireless communication environments through its powerful feature learning and complex pattern recognition capabilities. However, convolutional neural networks (CNNs) and recurrent neural networks (RNNs), which are used for sequence recognition tasks, face two main challenges, respectively: the ineffective utilization of global information and slow processing speeds due to sequential operations. To address these issues, this paper introduces CTRNet, a novel automatic modulation recognition network that combines a CNN with Transformer. This combination leverages Transformer's ability to adequately capture the long-distance dependencies between global sequences and its advantages in sequence modeling, along with the CNN's capability to extract features from local feature regions of signals. During the data preprocessing stage, the original IQ-modulated signals undergo sliding-window processing. By selecting the appropriate window sizes and strides, multiple subsequences are formed, enabling the network to effectively handle complex modulation patterns. In the embedding module, token vectors are designed to integrate information from multiple samples within each window, enhancing the model's understanding and modeling ability of global information. In the feedforward neural network, a more effective Bilinear layer is employed for processing to capture the higher-order relationship between input features, thereby enhancing the ability of the model to capture complex patterns. Experiments conducted on the RML2016.10A public dataset demonstrate that compared with the existing algorithms, the proposed algorithm not only exhibits significant advantages in terms of parameter efficiency but also achieves higher recognition accuracy under various signal-to-noise ratio (SNR) conditions. In particular, it performs relatively well in terms of accuracy, precision, recall, and F1-score, with clearer classification of higher-order modulations and notable overall accuracy improvement.},
+	copyright = {http://creativecommons.org/licenses/by/3.0/},
+	langid = {english},
+	keywords = {automatic modulation recognition (AMR),deep learning (DL),self-attention mechanism,transformer network},
+	annotation = {TLDR: This paper introduces CTRNet, a novel automatic modulation recognition network that combines a CNN with Transformer, which performs relatively well in terms of accuracy, precision, recall, and F1-score, with clearer classification of higher-order modulations and notable overall accuracy improvement.},
+	file = {C:\Users\ischa\Zotero\storage\DVJ9CUSH\Zhang 等 - 2024 - CTRNet An Automatic Modulation Recognition Based on Transformer-CNN Neural Network.pdf}
+}
+
+@article{zhang2024DIBADdisentangled,
+	title = {{{DIBAD}}: {{A}} Disentangled Information Bottleneck Adversarial Defense Method Using Hilbert-Schmidt Independence Criterion for Spectrum Security},
+	shorttitle = {{{DIBAD}}},
+	author = {Zhang, Sicheng and Yang, Yandie and Zhou, Ziyao and Sun, Zhi and Lin, Yun},
+	year = 2024,
+	journal = {IEEE Transactions On Information Forensics and Security},
+	volume = {19},
+	pages = {3879--3891},
+	issn = {1556-6021},
+	doi = {10.1109/TIFS.2024.3372798},
+	urldate = {2026-02-06},
+	abstract = {Automatic Modulation Classification (AMC) is crucial for monitoring the legitimacy of user frequency behavior and identifying potential sources of interference in spectrum monitoring. Deep learning-based AMC models have shown excellent performance, however, it has been proven susceptible to adversarial attacks. To address the problem, we propose a Disentangled Hilbert-Schmidt Information Bottleneck Adversarial Defense (DIBAD) method to enhance the adversarial robustness of AMC models. Specifically, we firstly analyze the task-relevant and task-irrelevant features in the intermediate representations of modulation signals from the perspective of mutual information theory. Secondly, a training framework consisting of a classification feature extractor, a supplementary feature extractor, and a classifier is designed. Under the information bottleneck constraint, the classification feature extractor and supplementary feature extractor are used to extract task-relevant and task-irrelevant features, respectively. The information bottleneck constraint is employed to reduce task-irrelevant features, thus improving the model's adversarial robustness. Experiments on the RML2016.10a and DMRadio09.real datasets, along with comprehensive analysis, demonstrate the superiority of the DIBAD method terms of adversarial robustness.},
+	keywords = {adversarial robustness,automatic modulation classification,Data mining,feature disentanglement,Feature extraction,Frequency modulation,information bottleneck,Monitoring,Robustness,Spectrum monitoring,Task analysis,Training},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 8.0\\
+	5年影响因子: 8.5\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP}
+}
+
+@article{zhu2018likelihoodbasedalgorithm,
+	title = {A Likelihood-Based Algorithm for Blind Identification of {{QAM}} and {{PSK}} Signals},
+	author = {Zhu, Daimei and Mathews, V. John and Detienne, David H.},
+	year = 2018,
+	month = may,
+	journal = {IEEE Transactions On Wireless Communications},
+	volume = {17},
+	number = {5},
+	pages = {3417--3430},
+	issn = {1558-2248},
+	doi = {10.1109/TWC.2018.2811802},
+	urldate = {2026-02-06},
+	abstract = {This paper presents a likelihood-based method for automatically identifying different quadrature amplitude modulations (QAM) and phase-shift keying (PSK) modulations. This algorithm selects the modulation type that maximizes a log-likelihood function based on the known probability distribution associated with the phase or amplitude of the received signals for the candidate modulation types. The approach of this paper does not need prior knowledge of carrier frequency or baud rate. Comparisons of theory and simulation demonstrate good agreement in the probability of successful modulation identification under different signal-to-noise ratios (SNRs). The probability of successful identification results in the simulation results show that under additive white Gaussian noise, the system can identify BPSK, QPSK, 8PSK, and QAMs of order 16, 32, 64, 128, and 256 above 99\% accuracy at 4-dB SNR when the two other competing methods available in the literatures cannot for an input signal containing 10 000 symbols and 20 samples per symbol. The simulation results also indicate that when the input signal length decreases, the system needs higher SNRs in order to get accurate identification results. Finally, simulations under different noisy environments indicate that the algorithm is robust to variations of noise environments different from the assumed model in the derivations.},
+	keywords = {Binary phase shift keying,Blind modulation identification,likelihood function,PSK,Pulse shaping methods,QAM,Quadrature amplitude modulation,Signal to noise ratio,theoretical performance analysis},
+	annotation = {JCR分区: Q1\\
+	中科院分区升级版: 计算机科学1区\\
+	中科院分区基础版: 工程技术2区\\
+	影响因子: 10.7\\
+	5年影响因子: 11.4\\
+	EI: 是\\
+	中科院升级版Top分区: 计算机科学TOP},
+	file = {C:\Users\ischa\Zotero\storage\8PMIEQX8\8310959.html}
+}
+
+@article{zhu2024MSGNetmultifeature,
+	title = {{{MSGNet}}: {{A}} Multi-Feature Lightweight Learning Network for Automatic Modulation Recognition},
+	shorttitle = {{{MSGNet}}},
+	author = {Zhu, Zhengyu and Zhou, Ning and Wang, Zixuan and Liang, Jing and Wang, Zhongyong},
+	year = 2024,
+	month = nov,
+	journal = {IEEE Communications Letters},
+	volume = {28},
+	number = {11},
+	pages = {2553--2557},
+	issn = {1558-2558},
+	doi = {10.1109/LCOMM.2024.3414617},
+	urldate = {2026-02-06},
+	abstract = {Automatic modulation recognition (AMR) has significant applications in communication system optimization, spectrum management, signal identification and classification, and security and protection. However, most of the existing AMR models are too large in terms of parameter number and computational complexity. Therefore, this letter proposes a multi-channel deepthwise separable convolution and gated recurrent unit network (MSGNet), which has a better recognition performance in the case of a lower number of parameters. MSGNet uses light weight modules: deepthwise separable convolution and gated recurrent unit, from the three input data channels to enter successively separated amplitude/phase samples, in-phase/quadrature-phase samples, and the real/imaginary samples obtained by Fourier transform of the signals, from which to obtain the signal space, time and frequency features. To speed up the training of the model and prevent overfitting, the batch normalization layer and dropout algorithm are added to the MSGNet model. Simulation results on the benchmark dataset indicate that the proposed model has a low number of parameters and computational complexity and a high level of recognition accuracy.},
+	keywords = {Automatic modulation recognition,Computational modeling,Convolution,deep learning,Feature extraction,lightweight,Logic gates,Long short term memory,low-complexity,Modulation,multi-feature,Training},
+	annotation = {JCR分区: Q2\\
+	中科院分区升级版: 计算机科学3区\\
+	中科院分区基础版: 工程技术3区\\
+	影响因子: 4.4\\
+	5年影响因子: 4.2\\
+	EI: 是},
+	file = {C:\Users\ischa\Zotero\storage\6JNMZIXW\10558775.html}
+}
