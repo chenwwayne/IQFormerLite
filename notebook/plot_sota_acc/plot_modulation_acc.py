@@ -1,101 +1,113 @@
+#!/usr/bin/env python3
+from __future__ import annotations
 
-import pandas as pd
+import argparse
+from pathlib import Path
+
 import matplotlib.pyplot as plt
-import os
-import glob
 import numpy as np
+import pandas as pd
 
-def plot_modulation_accuracy():
-    # Set paths
-    base_path = '/home/cww/IQFormer_lite/notebook/plot_sota_acc'
-    
-    # Find all model directories ending with 'base'
-    model_dirs = glob.glob(os.path.join(base_path, 'model*base'))
-    
-    if not model_dirs:
-        print("No model directories found!")
-        return
 
-    # Style settings matching the notebook
-    markers = ['o', 's', 'D', '^', 'v', '>', '<', 'p', '*', 'h', 'H', 'x', 'd', '+', '1']
-    # Use tab20 colors
-    colors = plt.cm.tab20.colors
-    
-    for model_dir in model_dirs:
-        dir_name = os.path.basename(model_dir)
-        
-        # Extract model name
-        # Assuming format: model_2016.10a_60_1024_0.001_AMC-Net_base
-        try:
-            parts = dir_name.split('_')
-            # The model name is typically the 6th element (index 5)
-            # e.g., parts[5] is 'AMC-Net'
-            model_name = parts[5]
-        except IndexError:
-            model_name = dir_name
-            print(f"Could not parse model name from {dir_name}, using full directory name.")
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
 
-        csv_path = os.path.join(model_dir, 'Test_mod_SNR.csv')
-        
-        if not os.path.exists(csv_path):
-            print(f"Skipping {model_name}: {csv_path} not found.")
-            continue
-            
-        print(f"Processing {model_name}...")
-        
-        # Read Data
-        try:
-            df = pd.read_csv(csv_path)
-        except Exception as e:
-            print(f"Error reading {csv_path}: {e}")
-            continue
 
-        # Create Plot
-        plt.figure(figsize=(10, 8)) # Slightly larger to accommodate legend if needed
-        
-        # Identify modulation columns (all columns except SNR)
-        # Ensure 'SNR' is not treated as a modulation
-        mod_columns = [col for col in df.columns if col.lower() != 'snr']
-        
-        # Plot each modulation curve
-        for idx, column in enumerate(mod_columns):
-            plt.plot(
-                df['SNR'],
-                df[column],
-                label=column,
-                marker=markers[idx % len(markers)],
-                color=colors[idx % len(colors)],
-                linewidth=2,
-                markersize=8
-            )
+DATASET_LABELS = {
+    "2016.10a": "RadioML2016.10A",
+    "2016.10b": "RadioML2016.10B",
+}
+DATASET_STEMS = {
+    "2016.10a": "RML201610a",
+    "2016.10b": "RML201610b",
+}
+MODELS = ("IQFormer", "IQFormerLite")
+MODULATION_ORDER = (
+    "8PSK",
+    "BPSK",
+    "CPFSK",
+    "GFSK",
+    "PAM4",
+    "QAM16",
+    "QAM64",
+    "QPSK",
+    "AM-DSB",
+    "AM-SSB",
+    "WBFM",
+)
+MARKERS = ("o", "s", "D", "^", "v", ">", "<", "p", "*", "h", "H")
+COLORS = dict(zip(MODULATION_ORDER, plt.get_cmap("tab20").colors[: len(MODULATION_ORDER)]))
 
-        # Axis and Grid setup
-        plt.xlim(-22, 20)
-        plt.ylim(0, 1.05) # Little bit of headroom for legend if needed
-        
-        plt.grid(True, which='both', linestyle='--', alpha=0.6)
-        
-        plt.xticks(range(-20, 21, 5), fontsize=12)
-        plt.yticks(np.arange(0, 1.1, 0.1), fontsize=12)
-        
-        # Labels and Title
-        plt.title(f'{model_name} Modulation Accuracy', fontsize=18)
-        plt.xlabel('SNR (dB)', fontsize=14)
-        plt.ylabel('Accuracy', fontsize=14)
-        
-        # Legend
-        # Using 'best' location to avoid covering data lines, or outside
-        plt.legend(fontsize=10, loc='best', ncol=2) 
-        
-        plt.tight_layout()
-        
-        # Save figure
-        save_filename = f'plot_{model_name}_mod_acc.png'
-        save_path = os.path.join(base_path, "mod_acc_result", save_filename)
-        plt.savefig(save_path, bbox_inches='tight', dpi=450)
-        plt.close()
-        
-        print(f"Saved plot to {save_path}")
+
+def parse_args() -> argparse.Namespace:
+    code_root = Path(__file__).resolve().parents[2]
+    parser = argparse.ArgumentParser(description="Generate five-seed modulation plots for paper Figure 5.")
+    parser.add_argument(
+        "--data-csv",
+        type=Path,
+        default=code_root / "results" / "table2_5seed_20260626" / "plot_data" / "figure5_modulation_accuracy_mean_std.csv",
+    )
+    parser.add_argument("--result-dir", type=Path, default=Path(__file__).resolve().parent / "mod_acc_result")
+    parser.add_argument(
+        "--paper-figures-dir",
+        type=Path,
+        default=code_root / "paper" / "Emerald_Publishing_V2_wo_author" / "Figures",
+    )
+    return parser.parse_args()
+
+
+def plot_panel(data: pd.DataFrame, dataset: str, model: str, result_dir: Path, paper_dir: Path) -> None:
+    subset = data.loc[(data["dataset"] == dataset) & (data["model"] == model)]
+    available = set(subset["modulation"])
+    modulations = [modulation for modulation in MODULATION_ORDER if modulation in available]
+    if not modulations:
+        raise ValueError(f"Missing Figure 5 data for {dataset}/{model}")
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    for index, modulation in enumerate(modulations):
+        curve = subset.loc[subset["modulation"] == modulation].sort_values("SNR")
+        ax.plot(
+            curve["SNR"],
+            curve["mean"],
+            label=modulation,
+            marker=MARKERS[index],
+            color=COLORS[modulation],
+            linewidth=1.8,
+            markersize=5,
+        )
+
+    ax.set_xlim(-21, 19)
+    ax.set_ylim(0, 1.02)
+    ax.set_xticks(range(-20, 19, 4))
+    ax.set_yticks(np.linspace(0, 1, 11))
+    ax.grid(True, linestyle="--", alpha=0.45)
+    ax.set_title(f"{model} on {DATASET_LABELS[dataset]}", fontsize=16)
+    ax.set_xlabel("SNR (dB)", fontsize=14)
+    ax.set_ylabel("Accuracy", fontsize=14)
+    ax.tick_params(labelsize=11)
+    ax.legend(fontsize=8, loc="lower right", ncol=2, framealpha=0.9)
+    fig.tight_layout()
+
+    stem = f"{DATASET_STEMS[dataset]}_{model}_mod_acc"
+    fig.savefig(result_dir / f"{stem}.png", dpi=600, bbox_inches="tight")
+    fig.savefig(result_dir / f"{stem}.pdf", format="pdf", bbox_inches="tight")
+    fig.savefig(result_dir / f"{stem}.svg", format="svg", bbox_inches="tight")
+    fig.savefig(paper_dir / f"{stem}.png", dpi=600, bbox_inches="tight")
+    fig.savefig(paper_dir / f"{stem}.pdf", format="pdf", bbox_inches="tight")
+    plt.close(fig)
+
+
+def main() -> int:
+    args = parse_args()
+    args.result_dir.mkdir(parents=True, exist_ok=True)
+    args.paper_figures_dir.mkdir(parents=True, exist_ok=True)
+    data = pd.read_csv(args.data_csv)
+    for dataset in DATASET_LABELS:
+        for model in MODELS:
+            plot_panel(data, dataset, model, args.result_dir, args.paper_figures_dir)
+    print(f"Generated Figure 5 plots in {args.paper_figures_dir}")
+    return 0
+
 
 if __name__ == "__main__":
-    plot_modulation_accuracy()
+    raise SystemExit(main())

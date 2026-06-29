@@ -1,129 +1,148 @@
-import pandas as pd
-import matplotlib.pyplot as plt
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
 import math
+from pathlib import Path
 
-dataset_name = 'RML201610b'
-# 读取 Excel 文件
-df = pd.read_csv(f'{dataset_name}.csv')
-
-# 只取SNR>=0的数据用于绘制
-df_positive = df[df['SNR'] >= 0]
-
-# 要绘制的列名
-# columns_to_plot = ['1DCNN-PF','CLDNN','CNN1','DAE','DenseNet','IC-AMCNet','LSTM2','FT-T','KAFT-T','DyTKAFT-T']
-columns_to_plot = ['MCLDNN', 'MCFormer', 'PET-CGDNN', 'AMC-Net', 'FEA-T', 'IQFormer', 'IQFormerLite']
-
-# ---------- 图例显示名映射 ----------
-legend_map = {
-    'DyTKAFT-T': 'DyTKAFT-T (Ours)',
-    # 其余不改的列名默认保持原样
-}
-
-# 设置图像大小
-fig, ax = plt.subplots(figsize=(8, 6))
-
-# 颜色    浅色 HEX   深色 HEX
-# 蓝色    '#ADD8E6','#00008B'
-# 绿色    '#90EE90','#006400'
-# 红色    '#FFB6C1','#8B0000'
-# 黄色    '#FFFFE0','#FFD700'
-# 青色    '#E0FFFF','#00CED1'
-# 紫色    '#E6E6FA','#4B0082'
-# 橙色    '#FFE4B5','#FF8C00'
-# 棕色    '#F5DEB3','#8B4513'
-# 灰色    '#D3D3D3','#696969'
-# 粉色    '#FFCCE5','#C71585'
-# 橄榄绿  '#F0FFF0','#556B2F'
-# 海蓝    '#B0E0E6','#4682B4'
-# 酒红    '#FFE4E1','#800000'
-# 金色    '#FFF8DC','#B8860B'
-# 靛青    '#F0F8FF','#191970'
-
-base_colors = [
-    '#ADD8E6',  
-    '#90EE90',  
-    '#FFB6C1',  
-    '#FFCCE5',  
-    '#B0E0E6',  
-    '#E6E6FA',
-    '#FFE4B5'
-]
-
-# 标记样式
-markers = ['o', 's', 'D', '^', 'v', '>', '<', 'p', '*', 'h', 'H', 'x', 'd', '+', '1']
-
-for idx, column in enumerate(columns_to_plot):
-    if column not in df.columns:
-        print(f"警告：列名 '{column}' 不在 Excel 文件中，已跳过。")
-        continue
-
-    # 默认按交替浅深颜色
-    color = base_colors[idx % len(base_colors)]
-    label_txt = legend_map.get(column, column)   # 关键：映射图例文字
-
-    # 特殊处理指定曲线
-    if column == 'IQFormerLite':
-        color = '#800000'  # 亮黄色 (Yellow)
-    # elif column == 'FKAFT-T':
-    #     color = '#FFFF00'  # 亮黄色 (Yellow)
-
-    ax.plot(
-        df['SNR'],
-        df[column],
-        label=label_txt,
-        marker=markers[idx % len(markers)],
-        color=color,
-        linewidth=2,
-        markersize=10
-    )
-
-# 主图设置
-ax.set_xlim(-22, 20)
-ax.set_ylim(0, 1)
-ax.grid(True, which='both', linestyle='--', alpha=0.6)
-ax.set_xticks(range(-20, 21, 5))
-ax.set_yticks([i/10 for i in range(0, 11)])
-ax.tick_params(labelsize=12)
-ax.set_title(f'{dataset_name}', fontsize=18)
-ax.set_xlabel('SNR (dB)', fontsize=14)
-ax.set_ylabel('Accuracy', fontsize=14)
-
-# 添加大图的图例
-ax.legend(fontsize=10, loc='upper left', ncol=1)
-
-# 添加小图（放大局部，SNR>0部分）
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
-axins = inset_axes(ax, width="45%", height="45%", loc='lower right')  # 小图位置
 
-for idx, column in enumerate(columns_to_plot):
-    if column not in df.columns:
-        continue
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
 
-    color = base_colors[idx % len(base_colors)]
-    if column == 'IQFormerLite':
-        color = '#800000'  # 浅黄色
-    # elif column == 'FKAFT-T':
-    #     color = '#FFFF00'  # 亮黄色
 
-    axins.plot(
-        df_positive['SNR'],
-        df_positive[column],
-        marker=markers[idx % len(markers)],
-        color=color,
-        linewidth=2,
-        markersize=6
+DATASET_LABELS = {
+    "2016.10a": "RadioML2016.10A",
+    "2016.10b": "RadioML2016.10B",
+}
+OUTPUT_NAMES = {
+    "2016.10a": "RML201610a_sota_acc",
+    "2016.10b": "RML201610b_sota_acc",
+}
+MODEL_ORDER = (
+    "MCLDNN",
+    "MCFormer",
+    "PET-CGDNN",
+    "AMC-Net",
+    "FEA-T",
+    "IQFormer",
+    "IQFormerLite",
+)
+COLORS = {
+    "MCLDNN": "#4C78A8",
+    "MCFormer": "#59A14F",
+    "PET-CGDNN": "#F28E8B",
+    "AMC-Net": "#E377C2",
+    "FEA-T": "#76B7B2",
+    "IQFormer": "#4E5AB8",
+    "IQFormerLite": "#9C1C1C",
+}
+MARKERS = {
+    "MCLDNN": "o",
+    "MCFormer": "s",
+    "PET-CGDNN": "D",
+    "AMC-Net": "^",
+    "FEA-T": "v",
+    "IQFormer": ">",
+    "IQFormerLite": "<",
+}
+SHADED_MODELS = {"IQFormer", "IQFormerLite"}
+
+
+def parse_args() -> argparse.Namespace:
+    code_root = Path(__file__).resolve().parents[2]
+    parser = argparse.ArgumentParser(description="Generate five-seed SNR-accuracy plots for paper Figure 4.")
+    parser.add_argument(
+        "--data-csv",
+        type=Path,
+        default=code_root / "results" / "table2_5seed_20260626" / "plot_data" / "figure4_snr_accuracy_mean_std.csv",
     )
+    parser.add_argument("--result-dir", type=Path, default=Path(__file__).resolve().parent / "result")
+    parser.add_argument(
+        "--paper-figures-dir",
+        type=Path,
+        default=code_root / "paper" / "Emerald_Publishing_V2_wo_author" / "Figures",
+    )
+    return parser.parse_args()
 
-axins.set_xlim(-1, 20)
-ymin = math.floor(df_positive.iloc[:, 1:].min().min() * 100) / 100 - 0.01
-ymax = math.floor(df_positive.iloc[:, 1:].max().max() * 100) / 100 + 0.01
-axins.set_ylim(ymin, ymax)
-axins.grid(True, linestyle='--', alpha=0.5)
-axins.set_xticks(range(0, 21, 5))
-axins.tick_params(labelsize=8)
 
-# 调整整体布局
-plt.tight_layout()
-plt.savefig(f'result/{dataset_name}_sota_acc.png', dpi=300)
-plt.savefig(f'result/{dataset_name}_sota_acc.svg', format="svg")
+def draw_curve(ax: plt.Axes, frame: pd.DataFrame, model: str, marker_size: float) -> None:
+    frame = frame.sort_values("SNR")
+    x = frame["SNR"].to_numpy(dtype=float)
+    mean = frame["mean"].to_numpy(dtype=float)
+    std = frame["std"].to_numpy(dtype=float)
+    color = COLORS[model]
+    ax.plot(
+        x,
+        mean,
+        label=model,
+        marker=MARKERS[model],
+        color=color,
+        linewidth=2.0,
+        markersize=marker_size,
+    )
+    if model in SHADED_MODELS:
+        ax.fill_between(x, np.clip(mean - std, 0, 1), np.clip(mean + std, 0, 1), color=color, alpha=0.14, linewidth=0)
+
+
+def plot_dataset(data: pd.DataFrame, dataset: str, output_dirs: tuple[Path, Path]) -> None:
+    subset = data.loc[data["dataset"] == dataset]
+    fig, ax = plt.subplots(figsize=(8, 6))
+    for model in MODEL_ORDER:
+        model_data = subset.loc[subset["model"] == model]
+        if model_data.empty:
+            raise ValueError(f"Missing Figure 4 data for {dataset}/{model}")
+        draw_curve(ax, model_data, model, marker_size=6)
+
+    ax.set_xlim(-21, 19)
+    ax.set_ylim(0, 1.01)
+    ax.set_xticks(range(-20, 19, 4))
+    ax.set_yticks(np.linspace(0, 1, 11))
+    ax.grid(True, linestyle="--", alpha=0.45)
+    ax.set_title(DATASET_LABELS[dataset], fontsize=17)
+    ax.set_xlabel("SNR (dB)", fontsize=14)
+    ax.set_ylabel("Accuracy", fontsize=14)
+    ax.tick_params(labelsize=11)
+    ax.legend(fontsize=9, loc="upper left", ncol=1, framealpha=0.9)
+
+    inset = inset_axes(ax, width="46%", height="43%", loc="lower right", borderpad=1.0)
+    high = subset.loc[subset["SNR"] >= 0]
+    for model in MODEL_ORDER:
+        draw_curve(inset, high.loc[high["model"] == model], model, marker_size=3.5)
+    shaded = high.loc[high["model"].isin(SHADED_MODELS)]
+    lower = min(float(high["mean"].min()), float((shaded["mean"] - shaded["std"]).min()))
+    upper = max(float(high["mean"].max()), float((shaded["mean"] + shaded["std"]).max()))
+    inset.set_xlim(-0.5, 18.5)
+    inset.set_ylim(max(0, math.floor((lower - 0.01) * 20) / 20), min(1.005, math.ceil((upper + 0.01) * 20) / 20))
+    inset.set_xticks([0, 6, 12, 18])
+    inset.grid(True, linestyle="--", alpha=0.4)
+    inset.tick_params(labelsize=7)
+
+    fig.subplots_adjust(left=0.11, right=0.98, bottom=0.12, top=0.91)
+    stem = OUTPUT_NAMES[dataset]
+    result_dir, paper_dir = output_dirs
+    fig.savefig(result_dir / f"{stem}.png", dpi=600, bbox_inches="tight")
+    fig.savefig(result_dir / f"{stem}.pdf", format="pdf", bbox_inches="tight")
+    fig.savefig(result_dir / f"{stem}.svg", format="svg", bbox_inches="tight")
+    fig.savefig(paper_dir / f"{stem}.png", dpi=600, bbox_inches="tight")
+    fig.savefig(paper_dir / f"{stem}.pdf", format="pdf", bbox_inches="tight")
+    plt.close(fig)
+
+
+def main() -> int:
+    args = parse_args()
+    args.result_dir.mkdir(parents=True, exist_ok=True)
+    args.paper_figures_dir.mkdir(parents=True, exist_ok=True)
+    data = pd.read_csv(args.data_csv)
+    for dataset in DATASET_LABELS:
+        plot_dataset(data, dataset, (args.result_dir, args.paper_figures_dir))
+    print(f"Generated Figure 4 plots in {args.paper_figures_dir}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

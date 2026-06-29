@@ -1,101 +1,165 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
 import pandas as pd
-import os
-import glob
 
-# Define the working directory
-base_dir = '/home/cww/IQFormer_lite/logs/RML201610a'
-output_file = os.path.join(base_dir, 'RML201610a.csv')
 
-# Find all directories matching the pattern model_*_base
-search_pattern = os.path.join(base_dir, 'model_*_base')
-directories = glob.glob(search_pattern)
+DATASETS = ("2016.10a", "2016.10b")
+MODEL_ORDER = (
+    "MCLDNN",
+    "MCFormer",
+    "PET-CGDNN",
+    "AMC-Net",
+    "FEA-T",
+    "IQFormer",
+    "IQFormerLite",
+)
+BASELINE_LABELS = {
+    "MCLDNN": "MCLDNN",
+    "MCFormer": "MCFormer",
+    "PETCGDNN": "PET-CGDNN",
+    "AMCNET": "AMC-Net",
+    "FEA_T128": "FEA-T",
+}
 
-# Initialize a list to store DataFrames
-dfs = []
 
-print(f"Found {len(directories)} directories.")
+def parse_args() -> argparse.Namespace:
+    code_root = Path(__file__).resolve().parents[2]
+    parser = argparse.ArgumentParser(description="Build five-seed data for paper Figures 4 and 5.")
+    parser.add_argument(
+        "--results-root",
+        type=Path,
+        default=code_root / "results" / "table2_5seed_20260626",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=code_root / "results" / "table2_5seed_20260626" / "plot_data",
+    )
+    parser.add_argument("--legacy-output-dir", type=Path, default=Path(__file__).resolve().parent)
+    return parser.parse_args()
 
-for d in directories:
-    dir_name = os.path.basename(d)
-    
-    # Extract model name
-    # Assumption: format is model_{database}_{epochs}_{batch}_{lr}_{model_name}_base
-    # We split by '_' 5 times, the last part contains {model_name}_base
-    try:
-        parts = dir_name.split('_', 5)
-        if len(parts) < 6:
-            print(f"Skipping {dir_name}: unexpected format")
-            continue
-            
-        model_part = parts[-1]
-        if model_part.endswith('_base'):
-            model_name = model_part[:-5] # Remove '_base'
-        else:
-            print(f"Skipping {dir_name}: does not end with _base")
-            continue
-        
-        if model_name == 'PETCGDNN':
-            model_name = 'PET-CGDNN'
-            
-        csv_path = os.path.join(d, 'Test_ACC.csv')
-        if not os.path.exists(csv_path):
-            print(f"Skipping {dir_name}: Test_ACC.csv not found")
-            continue
-            
-        # Read the CSV
-        df = pd.read_csv(csv_path)
-        
-        # Ensure SNR is integer and remove non-numeric rows (like 'Avg')
-        if 'SNR' in df.columns:
-            df = df[df['SNR'] != 'Avg']
-            df['SNR'] = df['SNR'].astype(int)
-        
-        # Rename the accuracy column ('0') to the model name
-        if '0' in df.columns:
-            df = df.rename(columns={'0': model_name})
-        else:
-            print(f"Warning: Column '0' not found in {csv_path}, columns are {df.columns}")
-            # Assume the second column is accuracy if '0' is missing
-            if len(df.columns) > 1:
-                df = df.rename(columns={df.columns[1]: model_name})
-            else:
+
+def seed_number(path: Path) -> int:
+    return int(path.parent.name.removeprefix("seed"))
+
+
+def read_test_acc(path: Path) -> pd.DataFrame:
+    frame = pd.read_csv(path)
+    if set(frame.columns) != {"SNR", "0"}:
+        raise ValueError(f"Unexpected Test_ACC.csv columns in {path}: {list(frame.columns)}")
+    frame = frame.loc[frame["SNR"].astype(str) != "Avg"].copy()
+    frame["SNR"] = pd.to_numeric(frame["SNR"], errors="raise").astype(int)
+    frame["accuracy"] = pd.to_numeric(frame["0"], errors="raise")
+    expected = list(range(-20, 20, 2))
+    if frame["SNR"].tolist() != expected:
+        raise ValueError(f"Unexpected SNR sequence in {path}")
+    return frame[["SNR", "accuracy"]]
+
+
+def collect_figure4(results_root: Path) -> pd.DataFrame:
+    records: list[pd.DataFrame] = []
+    baseline_root = results_root / "baseline" / "raw_runs"
+    iq_root = results_root / "iqformer_vs_lite" / "raw_runs"
+
+    for dataset in DATASETS:
+        for model_dir in sorted((baseline_root / dataset).iterdir()):
+            label = BASELINE_LABELS.get(model_dir.name)
+            if label is None:
                 continue
-                
-        # Set SNR as index for easy merging
-        df = df.set_index('SNR')
-        
-        # Add to list
-        dfs.append(df)
-        print(f"Loaded {model_name} from {dir_name}")
-        
-    except Exception as e:
-        print(f"Error processing {dir_name}: {e}")
+            for csv_path in sorted(model_dir.glob("seed*/Test_ACC.csv"), key=seed_number):
+                frame = read_test_acc(csv_path)
+                frame.insert(0, "seed", seed_number(csv_path))
+                frame.insert(0, "model", label)
+                frame.insert(0, "dataset", dataset)
+                records.append(frame)
 
-# Merge all DataFrames
-if dfs:
-    merged_df = pd.concat(dfs, axis=1)
-    # Sort index (SNR)
-    merged_df = merged_df.sort_index()
-    
-    # Reset index to make SNR a column again
-    merged_df = merged_df.reset_index()
-    
-    desired_order = [
-        'MCLDNN',
-        'MCFormer',
-        'PET-CGDNN',
-        'AMC-Net',
-        'FEA-T',
-        'IQFormer',
-        'IQFormerLite'
-    ]
-    existing_order = [col for col in desired_order if col in merged_df.columns]
-    other_columns = [col for col in merged_df.columns if col not in existing_order and col != 'SNR']
-    merged_df = merged_df[['SNR'] + existing_order + other_columns]
-    
-    # Save to CSV
-    merged_df.to_csv(output_file, index=False)
-    print(f"Successfully merged {len(dfs)} files into {output_file}")
-    print(merged_df.head())
-else:
-    print("No data found to merge.")
+        for model in ("IQFormer", "IQFormerLite"):
+            for csv_path in sorted((iq_root / dataset / model).glob("seed*/Test_ACC.csv"), key=seed_number):
+                frame = read_test_acc(csv_path)
+                frame.insert(0, "seed", seed_number(csv_path))
+                frame.insert(0, "model", model)
+                frame.insert(0, "dataset", dataset)
+                records.append(frame)
+
+    per_seed = pd.concat(records, ignore_index=True)
+    summary = (
+        per_seed.groupby(["dataset", "model", "SNR"], sort=False)["accuracy"]
+        .agg(n="count", mean="mean", std=lambda values: values.std(ddof=1))
+        .reset_index()
+    )
+    bad = summary.loc[summary["n"] != 5]
+    if not bad.empty:
+        raise ValueError(f"Figure 4 groups without five seeds:\n{bad.to_string(index=False)}")
+    summary["model"] = pd.Categorical(summary["model"], MODEL_ORDER, ordered=True)
+    return summary.sort_values(["dataset", "model", "SNR"]).reset_index(drop=True)
+
+
+def read_modulation_acc(path: Path) -> pd.DataFrame:
+    frame = pd.read_csv(path)
+    if "SNR" not in frame.columns:
+        raise ValueError(f"Missing SNR column in {path}")
+    frame["SNR"] = pd.to_numeric(frame["SNR"], errors="raise").astype(int)
+    if frame["SNR"].tolist() != list(range(-20, 20, 2)):
+        raise ValueError(f"Unexpected SNR sequence in {path}")
+    return frame.melt(id_vars="SNR", var_name="modulation", value_name="accuracy")
+
+
+def collect_figure5(results_root: Path) -> pd.DataFrame:
+    records: list[pd.DataFrame] = []
+    iq_root = results_root / "iqformer_vs_lite" / "raw_runs"
+    for dataset in DATASETS:
+        for model in ("IQFormer", "IQFormerLite"):
+            paths = sorted((iq_root / dataset / model).glob("seed*/Test_mod_SNR.csv"), key=seed_number)
+            for csv_path in paths:
+                frame = read_modulation_acc(csv_path)
+                frame.insert(0, "seed", seed_number(csv_path))
+                frame.insert(0, "model", model)
+                frame.insert(0, "dataset", dataset)
+                records.append(frame)
+
+    per_seed = pd.concat(records, ignore_index=True)
+    summary = (
+        per_seed.groupby(["dataset", "model", "modulation", "SNR"], sort=False)["accuracy"]
+        .agg(n="count", mean="mean", std=lambda values: values.std(ddof=1))
+        .reset_index()
+    )
+    bad = summary.loc[summary["n"] != 5]
+    if not bad.empty:
+        raise ValueError(f"Figure 5 groups without five seeds:\n{bad.to_string(index=False)}")
+    return summary.sort_values(["dataset", "model", "modulation", "SNR"]).reset_index(drop=True)
+
+
+def write_legacy_wide_csvs(summary: pd.DataFrame, output_dir: Path) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for dataset in DATASETS:
+        dataset_name = dataset.replace(".", "")
+        subset = summary.loc[summary["dataset"] == dataset]
+        for metric, suffix in (("mean", ""), ("std", "_std")):
+            wide = subset.pivot(index="SNR", columns="model", values=metric).reset_index()
+            columns = ["SNR", *[model for model in MODEL_ORDER if model in wide.columns]]
+            wide[columns].to_csv(output_dir / f"RML{dataset_name}{suffix}.csv", index=False)
+
+
+def main() -> int:
+    args = parse_args()
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+
+    figure4 = collect_figure4(args.results_root)
+    figure5 = collect_figure5(args.results_root)
+    figure4_path = args.output_dir / "figure4_snr_accuracy_mean_std.csv"
+    figure5_path = args.output_dir / "figure5_modulation_accuracy_mean_std.csv"
+    figure4.to_csv(figure4_path, index=False)
+    figure5.to_csv(figure5_path, index=False)
+    write_legacy_wide_csvs(figure4, args.legacy_output_dir)
+
+    print(f"Wrote {figure4_path} ({len(figure4)} rows)")
+    print(f"Wrote {figure5_path} ({len(figure5)} rows)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

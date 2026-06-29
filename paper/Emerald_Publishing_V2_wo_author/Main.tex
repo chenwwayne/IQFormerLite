@@ -468,18 +468,18 @@
 		\end{tabularx}
 	\end{table}
 
-	Fig.~\ref{fig:sota_acc} complements Table~\ref{tab:sota_compare} by reporting accuracy as a function of SNR.
+	Fig.~\ref{fig:sota_acc} complements Table~\ref{tab:sota_compare} by reporting the five-seed mean accuracy as a function of SNR.
 	Both datasets follow a common pattern: accuracy is close to chance under severe noise, increases sharply in the transition region (approximately $-10$ to $0$~dB), and saturates above $0$~dB.
 	Across the full SNR range, IQFormerLite remains among the strongest methods relative to the baselines.
-	On RadioML2016.10A, the accuracy curve of IQFormerLite closely tracks IQFormer, with a small gap in the high-SNR plateau, which suggests that most discriminative capacity is retained under compression.
-	On RadioML2016.10B, the high-SNR region shows near overlap between IQFormerLite and IQFormer, which is consistent with the larger training scale of RadioML2016.10B and suggests that a compact model can match a larger counterpart when sufficient data are available.
+	On RadioML2016.10A, IQFormerLite closely tracks IQFormer, with high-SNR accuracies of $92.36 \pm 0.45\%$ and $92.81 \pm 0.27\%$, respectively, indicating that most discriminative capacity is retained under compression.
+	On RadioML2016.10B, IQFormerLite reaches $93.75 \pm 0.05\%$ at high SNR, compared with $93.62 \pm 0.07\%$ for IQFormer; the near overlap and narrow variation across seeds indicate comparable high-SNR performance.
 	
 	\begin{figure}[htbp]
 		\centering
-		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610a_sota_acc.png}\label{fig:sota_acc_a}}
+		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610a_sota_acc.pdf}\label{fig:sota_acc_a}}
 		\hfill
-		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_sota_acc.png}\label{fig:sota_acc_b}}
-		\caption{Comparison of recognition accuracy under varying SNR levels. (a) Accuracy trend on RadioML2016.10A. (b) Accuracy trend on RadioML2016.10B. \label{fig:sota_acc}}
+		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_sota_acc.pdf}\label{fig:sota_acc_b}}
+		\caption{Comparison of recognition accuracy under varying SNR levels. Curves report the mean over five random seeds; shaded regions denote $\pm$ one standard deviation for IQFormer and IQFormerLite. (a) RadioML2016.10A. (b) RadioML2016.10B. \label{fig:sota_acc}}
 	\end{figure}
 	
 	Overall, IQFormerLite improves over prior lightweight baselines while following the expected SNR-dependent trend.
@@ -487,24 +487,24 @@
 	
 	\subsection{Modulation Analysis}
 	This section examines class-wise behavior to identify where compression affects recognition and how errors concentrate across modulation families.
-	Fig.~\ref{fig:mod_acc_comparison}(a)--(d) reports per-class accuracies of IQFormer and IQFormerLite on RadioML2016.10A and RadioML2016.10B.
-	A consistent pattern appears among closely confusable analog modulations: IQFormerLite improves recognition of WBFM relative to IQFormer, but this local gain is paired with lower accuracy on AM-DSB.
+	Fig.~\ref{fig:mod_acc_comparison}(a)--(d) reports the five-seed mean per-class accuracies of IQFormer and IQFormerLite on RadioML2016.10A and RadioML2016.10B.
+	A consistent pattern appears among closely confusable analog modulations. Averaged across all evaluated SNR levels, IQFormerLite improves WBFM accuracy relative to IQFormer by $9.29$ percentage points on RadioML2016.10A and $3.00$ percentage points on RadioML2016.10B, while AM-DSB accuracy changes by $-9.10$ and $-1.54$ percentage points, respectively.
 	This inverse shift suggests that compression mainly adjusts decision boundaries among overlapping classes rather than causing a uniform decline across modulation types.
 	Accordingly, most behavioral changes are concentrated in a small set of ambiguous analog categories, while overall capability is largely preserved.
 	
 	\begin{figure}[htbp]
 		\centering
-		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610a_IQFormer_mod_acc.png}\label{fig:mod_acc_a}}
+		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610a_IQFormer_mod_acc.pdf}\label{fig:mod_acc_a}}
 		\hfill
-		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610a_IQFormerLite_mod_acc.png}\label{fig:mod_acc_b}}
+		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610a_IQFormerLite_mod_acc.pdf}\label{fig:mod_acc_b}}
 		
 		\vspace{6pt}
 		
-		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_IQFormer_mod_acc.png}\label{fig:mod_acc_c}}
+		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_IQFormer_mod_acc.pdf}\label{fig:mod_acc_c}}
 		\hfill
-		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_IQFormerLite_mod_acc.png}\label{fig:mod_acc_d}}
+		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_IQFormerLite_mod_acc.pdf}\label{fig:mod_acc_d}}
 		
-		\caption{Comparison of per-modulation recognition accuracy between the baseline IQFormer and the proposed IQFormerLite.
+		\caption{Comparison of per-modulation recognition accuracy between the baseline IQFormer and the proposed IQFormerLite. Curves report the mean over five random seeds.
 			(a) IQFormer on RadioML2016.10A.
 			(b) IQFormerLite on RadioML2016.10A.
 			(c) IQFormer on RadioML2016.10B.
