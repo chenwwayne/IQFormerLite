@@ -6,7 +6,8 @@ from kans import RadialBasisFunction
 class FastKANConvNDLayer(nn.Module):
     def __init__(self, conv_class, norm_class, input_dim, output_dim, kernel_size,
                  groups=1, padding=0, stride=1, dilation=1,
-                 ndim: int = 2, grid_size=8, base_activation=nn.SiLU, grid_range=[-2, 2], dropout=0.0, **norm_kwargs):
+                 ndim: int = 2, grid_size=8, base_activation=nn.SiLU, grid_range=[-2, 2], dropout=0.0,
+                 branch_mode="full", **norm_kwargs):
         super(FastKANConvNDLayer, self).__init__()
         self.inputdim = input_dim
         self.outdim = output_dim
@@ -17,7 +18,10 @@ class FastKANConvNDLayer(nn.Module):
         self.groups = groups
         self.ndim = ndim
         self.grid_size = grid_size
-        self.base_activation = base_activation()
+        if branch_mode not in {"full", "base_only", "rbf_only"}:
+            raise ValueError(f"Unsupported FastKAN branch_mode: {branch_mode}")
+        self.branch_mode = branch_mode
+        self.base_activation = base_activation() if branch_mode != "rbf_only" else None
         self.grid_range = grid_range
         self.norm_kwargs = norm_kwargs
 
@@ -28,27 +32,31 @@ class FastKANConvNDLayer(nn.Module):
         if output_dim % groups != 0:
             raise ValueError('output_dim must be divisible by groups')
 
-        self.base_conv = nn.ModuleList([conv_class(input_dim // groups,
-                                                   output_dim // groups,
-                                                   kernel_size,
-                                                   stride,
-                                                   padding,
-                                                   dilation,
-                                                   groups=1,
-                                                   bias=False) for _ in range(groups)])
+        self.base_conv = nn.ModuleList()
+        if branch_mode != "rbf_only":
+            self.base_conv.extend([conv_class(input_dim // groups,
+                                              output_dim // groups,
+                                              kernel_size,
+                                              stride,
+                                              padding,
+                                              dilation,
+                                              groups=1,
+                                              bias=False) for _ in range(groups)])
 
-        self.spline_conv = nn.ModuleList([conv_class(grid_size * input_dim // groups,
-                                                     output_dim // groups,
-                                                     kernel_size,
-                                                     stride,
-                                                     padding,
-                                                     dilation,
-                                                     groups=1,
-                                                     bias=False) for _ in range(groups)])
-
-        self.layer_norm = nn.ModuleList([norm_class(input_dim // groups, **norm_kwargs) for _ in range(groups)])
-
-        self.rbf = RadialBasisFunction(grid_range[0], grid_range[1], grid_size)
+        self.spline_conv = nn.ModuleList()
+        self.layer_norm = nn.ModuleList()
+        self.rbf = None
+        if branch_mode != "base_only":
+            self.spline_conv.extend([conv_class(grid_size * input_dim // groups,
+                                                output_dim // groups,
+                                                kernel_size,
+                                                stride,
+                                                padding,
+                                                dilation,
+                                                groups=1,
+                                                bias=False) for _ in range(groups)])
+            self.layer_norm.extend([norm_class(input_dim // groups, **norm_kwargs) for _ in range(groups)])
+            self.rbf = RadialBasisFunction(grid_range[0], grid_range[1], grid_size)
 
         self.dropout = None
         if dropout > 0:
@@ -69,15 +77,17 @@ class FastKANConvNDLayer(nn.Module):
     def forward_fast_kan(self, x, group_index):
 
         # Apply base activation to input and then linear transform with base weights
-        base_output = self.base_conv[group_index](self.base_activation(x))
-        if self.dropout is not None:
-            x = self.dropout(x)
-        spline_basis = self.rbf(self.layer_norm[group_index](x))
-        spline_basis = spline_basis.moveaxis(-1, 2).flatten(1, 2)
-        spline_output = self.spline_conv[group_index](spline_basis)
-        x = base_output + spline_output
-
-        return x
+        output = None
+        if self.branch_mode != "rbf_only":
+            output = self.base_conv[group_index](self.base_activation(x))
+        if self.branch_mode != "base_only":
+            if self.dropout is not None:
+                x = self.dropout(x)
+            spline_basis = self.rbf(self.layer_norm[group_index](x))
+            spline_basis = spline_basis.moveaxis(-1, 2).flatten(1, 2)
+            spline_output = self.spline_conv[group_index](spline_basis)
+            output = spline_output if output is None else output + spline_output
+        return output
 
     def forward(self, x):
         split_x = torch.split(x, self.inputdim // self.groups, dim=1)
@@ -120,7 +130,7 @@ class FastKANConv2DLayer(FastKANConvNDLayer):
 class FastKANConv1DLayer(FastKANConvNDLayer):
     def __init__(self, input_dim, output_dim, kernel_size, groups=1, padding=0, stride=1, dilation=1,
                  grid_size=8, base_activation=nn.SiLU, grid_range=[-2, 2], dropout=0.0,
-                 norm_layer=nn.InstanceNorm1d, **norm_kwargs):
+                 norm_layer=nn.InstanceNorm1d, branch_mode="full", **norm_kwargs):
         super(FastKANConv1DLayer, self).__init__(nn.Conv1d, norm_layer,
                                                  input_dim, output_dim,
                                                  kernel_size,
@@ -128,4 +138,4 @@ class FastKANConv1DLayer(FastKANConvNDLayer):
                                                  ndim=1,
                                                  grid_size=grid_size, base_activation=base_activation,
                                                  grid_range=grid_range,
-                                                 dropout=dropout, **norm_kwargs)
+                                                 dropout=dropout, branch_mode=branch_mode, **norm_kwargs)

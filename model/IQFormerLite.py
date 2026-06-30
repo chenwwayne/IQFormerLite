@@ -10,6 +10,7 @@ import math
 from torch.autograd import Variable
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "torch-conv-kan")))
 from kan_convs.fast_kan_conv import FastKANConv1DLayer
+from kan_convs.kan_conv import KANConv1DLayer
 
 KANConv1d = FastKANConv1DLayer
 
@@ -304,6 +305,7 @@ class FilterbankKANStem(nn.Module):
         use_log_abs: bool = True,
         eps: float = 1e-6,
         post_proj: bool = True,
+        variant: str = "full",
     ):
         super().__init__()
         ks = int(kernel_size)
@@ -312,24 +314,48 @@ class FilterbankKANStem(nn.Module):
 
         self.use_log_abs = use_log_abs
         self.eps = eps
+        self.variant = variant
 
         # FastKANConv1DLayer signature:
         # (input_dim, output_dim, kernel_size, groups=1, padding=0, stride=1, dilation=1,
         #  grid_size=8, base_activation=nn.SiLU, grid_range=[-2,2], dropout=0.0, norm_layer=nn.InstanceNorm1d, **norm_kwargs)
-        self.fb = KANConv1d(
-            input_dim=in_chs,
-            output_dim=band_k,
-            kernel_size=ks,
-            groups=1,
-            padding=pad,
-            stride=stride,
-            dilation=1,
-            grid_size=grid_size,
-            base_activation=base_activation,
-            grid_range=list(grid_range),
-            dropout=dropout,
-            norm_layer=nn.InstanceNorm1d,  # 默认就是这个，但写清楚
-        )
+        if variant == "conv":
+            self.fb = nn.Conv1d(in_chs, band_k, kernel_size=ks, stride=stride,
+                                padding=pad, bias=False)
+        elif variant == "bspline":
+            self.fb = KANConv1DLayer(
+                input_dim=in_chs,
+                output_dim=band_k,
+                kernel_size=ks,
+                spline_order=3,
+                groups=1,
+                padding=pad,
+                stride=stride,
+                dilation=1,
+                grid_size=grid_size,
+                base_activation=base_activation,
+                grid_range=list(grid_range),
+                dropout=dropout,
+                norm_layer=nn.InstanceNorm1d,
+            )
+        elif variant in {"full", "base_only", "rbf_only"}:
+            self.fb = KANConv1d(
+                input_dim=in_chs,
+                output_dim=band_k,
+                kernel_size=ks,
+                groups=1,
+                padding=pad,
+                stride=stride,
+                dilation=1,
+                grid_size=grid_size,
+                base_activation=base_activation,
+                grid_range=list(grid_range),
+                dropout=dropout,
+                norm_layer=nn.InstanceNorm1d,
+                branch_mode=variant,
+            )
+        else:
+            raise ValueError(f"Unsupported LKF variant: {variant}")
 
         # 重要：把分布稳定下来，便于 Fusion 学到“用它”
         self.bn = nn.BatchNorm1d(band_k)
@@ -474,13 +500,15 @@ class IQFormerLite(nn.Module):
                  band_k=32,
                  kernel_size=31,
                  grid_size=2,
-                 grid_range=(-2.0, 2.0)):
+                 grid_range=(-2.0, 2.0),
+                 lkf_variant='full'):
         super().__init__()
 
         if not fork_feat:
             self.num_classes = num_classes
         self.fork_feat = fork_feat
         self.aux_mode = aux_mode
+        self.lkf_variant = lkf_variant
         self.BN = nn.BatchNorm1d(2)
         
         if self.aux_mode == 'stft':
@@ -509,6 +537,7 @@ class IQFormerLite(nn.Module):
                 base_activation=nn.SiLU,
                 use_log_abs=True,    # 强烈建议开
                 post_proj=True,
+                variant=lkf_variant,
             )
             # Fusion in: embed_dims[0]//8 + band_k, out: embed_dims[0]
             self.fusion = Fusion(embed_dims[0]//8 + band_k, embed_dims[0], drop_rate)

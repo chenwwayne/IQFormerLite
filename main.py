@@ -93,6 +93,9 @@ if __name__ == '__main__':
     parser.add_argument('--kernel_size', type=int, default=31, help='Kernel size for KAN filterbank')
     parser.add_argument('--grid_size', type=int, default=4, help='Grid size for KAN filterbank')
     parser.add_argument('--grid_range', type=float, nargs=2, default=[-2.0, 2.0], help='Grid range for KAN filterbank')
+    parser.add_argument('--lkf_variant', type=str, default='full',
+                        choices=['full', 'conv', 'base_only', 'rbf_only', 'bspline'],
+                        help='LKF ablation variant used when aux_mode=kan')
     parser.add_argument('--report_only', action='store_true', help='Generate model report and exit')
     parser.add_argument('--report_batch', type=int, default=1, help='Batch size for model report')
     parser.add_argument('--report_length', type=int, default=128, help='Input length for model report')
@@ -108,6 +111,10 @@ if __name__ == '__main__':
     parser.add_argument('--dry_run', action='store_true', help='Run a single batch for verification')
     parser.add_argument('--skip_post_test_artifacts', action='store_true',
                         help='Exit after writing Test_ACC.csv to skip confusion matrices and t-SNE plots')
+    parser.add_argument('--save_stage_checkpoints', action='store_true',
+                        help='Save extra epoch checkpoints for LKF interpretability analysis')
+    parser.add_argument('--stage_epochs', type=str, default='0,5,15,best,final',
+                        help='Comma-separated epoch tags to save when --save_stage_checkpoints is enabled. Supports integers, best, final.')
     parser.add_argument('--comment', type=str, default='IQFormer',
                         help='Comment to describe the saved model')
     if not os.path.exists('save_models'):
@@ -234,7 +241,8 @@ if __name__ == '__main__':
                     band_k=args.band_k,
                     kernel_size=args.kernel_size,
                     grid_size=args.grid_size,
-                    grid_range=tuple(args.grid_range))
+                    grid_range=tuple(args.grid_range),
+                    lkf_variant=args.lkf_variant)
         else:
             # model = IQFormerLite([3,3,3], embed_dims=[64,64,64],
             #     mlp_ratios=4,
@@ -263,7 +271,8 @@ if __name__ == '__main__':
                 band_k=args.band_k,
                 kernel_size=args.kernel_size,
                 grid_size=args.grid_size,
-                grid_range=tuple(args.grid_range))
+                grid_range=tuple(args.grid_range),
+                lkf_variant=args.lkf_variant)
     elif args.model == 'IQFormer':
         if args.database_choose in ['2016.10a','2016.10b']:
             model = IQFormer([1,2,1], embed_dims=[64,64,64],
@@ -337,6 +346,14 @@ if __name__ == '__main__':
     epochs_without_improvement = 0
     patience = 10
     num_epochs = args.num_epochs
+    stage_tokens = [token.strip().lower() for token in args.stage_epochs.split(',') if token.strip()]
+    stage_epoch_ids = set()
+    for token in stage_tokens:
+        if token.isdigit():
+            stage_epoch_ids.add(int(token))
+    stage_ckpt_dir = os.path.join(model_save_path, 'stage_checkpoints')
+    if args.save_stage_checkpoints and not os.path.exists(stage_ckpt_dir):
+        os.makedirs(stage_ckpt_dir)
     writer = SummaryWriter('logs/{}'.format(model_tag))
     for epoch in range(num_epochs):
         train_loss, train_ACC, train_true, train_pred = train_epoch(epoch, train_loader, model, args.minSNR,
@@ -350,10 +367,14 @@ if __name__ == '__main__':
         if epoch == 0:
             torch.save(model.state_dict(), os.path.join(model_save_path, 'weight.pt'))
             max_acc = val_ACC['Avg']
+            if args.save_stage_checkpoints and 'best' in stage_tokens:
+                torch.save(model.state_dict(), os.path.join(stage_ckpt_dir, 'epoch_best.pt'))
 
         else:
             if max_acc < val_ACC['Avg']:
                 torch.save(model.state_dict(), os.path.join(model_save_path, 'weight.pt'))
+                if args.save_stage_checkpoints and 'best' in stage_tokens:
+                    torch.save(model.state_dict(), os.path.join(stage_ckpt_dir, 'epoch_best.pt'))
                 avg = val_ACC['Avg']
                 print(f'max_acc:{max_acc}=====>{avg}')
                 max_acc = val_ACC['Avg']
@@ -388,12 +409,16 @@ if __name__ == '__main__':
         #   plotCM
         plot_confusion_matrix(traincm, args.database_choose, 'all', cm_save_path, labels=classes)
         plot_confusion_matrix(valcm, args.database_choose, 'all', cm_save_path, labels=classes)
+        if args.save_stage_checkpoints and epoch in stage_epoch_ids:
+            torch.save(model.state_dict(), os.path.join(stage_ckpt_dir, f'epoch_{epoch}.pt'))
         if epochs_without_improvement == patience:
             print(f'Early stopping at epoch {epoch}')
             break
     del train_loader
     del val_loader
     model.load_state_dict(torch.load(os.path.join(model_save_path, 'weight.pt')))
+    if args.save_stage_checkpoints and 'final' in stage_tokens:
+        torch.save(model.state_dict(), os.path.join(stage_ckpt_dir, 'epoch_final.pt'))
     start = time.time()
     test_true, test_pred, test_SNR = test_epoch(0, test_loader, model, device, aux_mode=args.aux_mode)
     end = time.time()
