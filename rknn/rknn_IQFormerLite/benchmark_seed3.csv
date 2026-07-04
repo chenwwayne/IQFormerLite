@@ -1,0 +1,4 @@
+model,params_m,flops_g,cpu_model_size_kb,rknn_model_size_kb,cpu_latency_ms,cpu_throughput,npu_latency_batch_ms,npu_latency_sample_ms,npu_throughput,npu_accuracy,speedup,npu_load_mean,npu_load_max,memory_baseline_mb,memory_peak_mb,memory_delta_mb
+weight_fp32.rknn,0.124497,0.031049,494.542969,909.101562,18.193116,54.965845,3.104742,0.194046,5153.406529,0.651636,93.756523,,,292.421875,304.355469,11.933594
+weight_fp16.rknn,,,,909.101562,,,2.999187,0.187449,5334.778536,0.651636,,,,781.890625,783.726562,1.835938
+weight_int8.rknn,,,,735.376953,,,2.520868,0.157554,6347.02025,0.650909,,,,783.375,783.375,0.0

@@ -12,6 +12,13 @@ save_models
 *.out
 *.dat
 
+# Local RadioML datasets must not be committed.
+dataset/RML2016.10*
+
+# macOS filesystem metadata.
+.DS_Store
+**/.DS_Store
+
 # LaTeX paper build artifacts. Keep source files and figure PDFs under version control.
 paper/**/Main.aux
 paper/**/Main.bbl

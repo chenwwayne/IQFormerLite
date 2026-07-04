@@ -1,6 +1,6 @@
 # LKF Ablation Results
 
-This directory is reserved for the five-seed LKF mechanism ablation.
+This directory contains the completed five-seed LKF mechanism ablation.
 
 ## Experiment matrix
 
@@ -30,3 +30,14 @@ rerun is required.
 
 Run `scripts/profile_lkf_ablation.py` once, then run
 `scripts/summarize_lkf_ablation.py --fail-on-missing` after all jobs finish.
+
+## Final outputs
+
+- `lkf_ablation_per_seed.csv`: all 45 records, including the 10 archived Full
+  LKF runs used as the reference.
+- `lkf_ablation_summary.csv` and `.md`: mean ± sample standard deviation,
+  complexity, and deltas relative to Full LKF.
+- `lkf_ablation_pairwise.csv`: paired seed differences and 95% t intervals.
+- `analysis.md`: interpretation, limitations, and manuscript-safe conclusions.
+- `raw_runs/`: the 35 newly completed server run directories.
+- `server_logs/`: compressed master execution logs retained for audit.

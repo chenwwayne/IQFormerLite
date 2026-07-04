@@ -1,5 +1,7 @@
 import argparse
 import csv
+import logging
+import math
 import os
 import pickle
 import re
@@ -50,6 +52,10 @@ except ImportError:
     print("Error: rknn_toolkit_lite2 not found.")
     print("Please install it first (e.g., pip install rknn_toolkit_lite2).")
 
+logging._nameToLevel["WARNING"] = logging.WARNING
+logging._nameToLevel["WARN"] = logging.WARNING
+logging._levelToName[logging.WARNING] = "WARNING"
+
 try:
     import psutil
 except Exception:
@@ -67,13 +73,23 @@ def standardize_samples(samples):
         samples = samples.transpose(0, 2, 1)
     return samples
 
-def load_rml2016_dict(data_path, classes, min_snr, max_snr, seed, test_size):
+def resolve_test_count(sample_count, test_size):
+    if isinstance(test_size, float):
+        count = int(math.ceil(sample_count * test_size))
+    else:
+        count = int(test_size)
+    if count < 1:
+        count = 1
+    if sample_count > 1 and count >= sample_count:
+        count = sample_count - 1
+    return count
+
+def load_rml2016_dict(data_path, classes, min_snr, max_snr, seed, test_size, split_random_state=None):
     with open(data_path, "rb") as f:
         u = pickle._Unpickler(f)
         u.encoding = "latin1"
         data = u.load()
     snrs, mods = map(lambda j: sorted(list(set(map(lambda x: x[j], data.keys())))), [1, 0])
-    rng = np.random.RandomState(seed)
     test_samples = []
     test_labels = []
     test_snrs = []
@@ -88,10 +104,10 @@ def load_rml2016_dict(data_path, classes, min_snr, max_snr, seed, test_size):
             s = data[(mod, snr)]
             if len(s) == 0:
                 continue
+            random_state = split_random_state if split_random_state is not None else seed
+            rng = np.random.RandomState(random_state)
             idx = rng.permutation(len(s))
-            test_count = int(round(len(s) * test_size))
-            if test_count < 1:
-                test_count = 1
+            test_count = resolve_test_count(len(s), test_size)
             test_idx = idx[:test_count]
             test_samples.append(s[test_idx])
             test_labels.append(np.full(test_count, classes.index(mod)))
@@ -125,8 +141,11 @@ def get_npu_load():
 def get_process_rss_mb():
     if psutil is None:
         return None
-    process = psutil.Process(os.getpid())
-    return process.memory_info().rss / (1024 * 1024)
+    try:
+        process = psutil.Process(os.getpid())
+        return process.memory_info().rss / (1024 * 1024)
+    except Exception:
+        return None
 
 def generate_simulated_data(sim_type, shape):
     if sim_type == "sine":
@@ -147,14 +166,22 @@ def generate_simulated_data(sim_type, shape):
         return np.zeros(shape, dtype=np.float32)
     return np.random.randn(*shape).astype(np.float32)
 
-def load_data(data_path, shape, sim_type, classes, min_snr, max_snr, seed, test_size):
+def load_data(data_path, shape, sim_type, classes, min_snr, max_snr, seed, test_size, split_random_state=None):
     if data_path is None:
         return generate_simulated_data(sim_type, shape), None
     if not os.path.exists(data_path):
         print(f"Error: Data file {data_path} not found.")
         sys.exit(1)
     if data_path.endswith(".pkl"):
-        return load_rml2016_dict(data_path, classes, min_snr, max_snr, seed, test_size)
+        return load_rml2016_dict(
+            data_path,
+            classes,
+            min_snr,
+            max_snr,
+            seed,
+            test_size,
+            split_random_state=split_random_state,
+        )
     if data_path.endswith(".h5"):
         import h5py
         f = h5py.File(data_path, "r")
@@ -272,7 +299,10 @@ def run_npu_inference(rknn_lite, samples, labels, batch_size, warmup, iters, cor
     total = len(samples)
     if total == 0:
         return None
-    rknn_lite.init_runtime(core_mask=core_mask)
+    ret = rknn_lite.init_runtime(core_mask=core_mask)
+    if ret != 0:
+        print("NPU runtime unavailable, skipping NPU inference.")
+        return None
     if warmup > 0:
         warm_batch = samples[:batch_size]
         rknn_lite.inference(inputs=[warm_batch])
@@ -353,6 +383,7 @@ if __name__ == "__main__":
     parser.add_argument("--data", type=str, default="/home/orangepi/datasets/RML2016.10a_dict.pkl")
     parser.add_argument("--simulate", type=str, default="random", choices=["random", "sine", "constant", "zeros"])
     parser.add_argument("--seed", type=int, default=123)
+    parser.add_argument("--split_random_state", type=int, default=None)
     parser.add_argument("--test_size", type=float, default=0.2)
     parser.add_argument("--min_snr", type=int, default=-20)
     parser.add_argument("--max_snr", type=int, default=18)
@@ -388,6 +419,7 @@ if __name__ == "__main__":
         max_snr=args.max_snr,
         seed=args.seed,
         test_size=args.test_size,
+        split_random_state=args.split_random_state,
     )
 
     if samples.ndim == 2:
@@ -432,7 +464,10 @@ if __name__ == "__main__":
         rss_mb = get_process_rss_mb()
         peak_mb = npu_result["peak_rss_mb"] if npu_result is not None else rss_mb
         cpu_dtype = map_cpu_dtype(os.path.basename(model_path))
-        cpu_report, cpu_err = compute_cpu_report_for_dtype(args, samples.shape[-1], args.report_batch, cpu_dtype)
+        try:
+            cpu_report, cpu_err = compute_cpu_report_for_dtype(args, samples.shape[-1], args.report_batch, cpu_dtype)
+        except Exception as e:
+            cpu_report, cpu_err = None, str(e)
         rknn_size_kb = os.path.getsize(model_path) / 1024 if os.path.isfile(model_path) else None
         delta_mb = None
         if npu_result is not None and npu_result["delta_mb"] is not None:

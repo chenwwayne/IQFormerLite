@@ -1,0 +1,40 @@
+{
+  "database_choose": "2016.10b",
+  "database_path": "./dataset",
+  "checkpoints": [
+    {
+      "label": "initial",
+      "path": "random_init"
+    },
+    {
+      "label": "seed1",
+      "path": "save_models/model_2016.10b_60_1024_0.001_IQFormerLite_aux-kan_seed1/weight.pt"
+    },
+    {
+      "label": "seed2",
+      "path": "save_models/model_2016.10b_60_1024_0.001_IQFormerLite_aux-kan_seed2/weight.pt"
+    },
+    {
+      "label": "seed3",
+      "path": "save_models/model_2016.10b_60_1024_0.001_IQFormerLite_aux-kan_seed3/weight.pt"
+    },
+    {
+      "label": "seed4",
+      "path": "save_models/model_2016.10b_60_1024_0.001_IQFormerLite_aux-kan_seed4/weight.pt"
+    },
+    {
+      "label": "seed5",
+      "path": "save_models/model_2016.10b_60_1024_0.001_IQFormerLite_aux-kan_seed5/weight.pt"
+    }
+  ],
+  "band_k": 32,
+  "kernel_size": 31,
+  "grid_size": 4,
+  "grid_range": [
+    -2.0,
+    2.0
+  ],
+  "n_fft": 512,
+  "max_samples_per_group": 512,
+  "note": "Frequency-response plots use KAN base/spline convolution weights. SNR/family plots are input-driven spectra of the trained kanstem output."
+}

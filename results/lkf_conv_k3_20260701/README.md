@@ -15,3 +15,12 @@ existing Conv(k=31) and Full LKF(k=31) five-seed results.
 
 Conv(k=3) is not receptive-field matched to Full LKF(k=31). The original
 Conv(k=31) result remains the fair parameterization control.
+
+## Completed outputs
+
+- `conv_k3_per_seed.csv`: five-seed results for both datasets.
+- `conv_k3_comparison_summary.csv` and `.md`: comparison with Conv(k=31) and
+  Full LKF(k=31).
+- `conv_k3_pairwise.csv`: paired seed differences and 95% t intervals.
+- `analysis.md`: result interpretation, limitations, and manuscript-safe claims.
+- `raw_runs/`: the 10 completed server run directories.

@@ -210,8 +210,8 @@
 		The design replaces serialization-heavy components and attention-style token mixing with a parallel-friendly, convolution-centric backbone.
 		A Large-Kernel Global Context (LKGC) block models long-range dependencies while fitting common NPU compiler paths, and a Learnable KAN-based Filterbank (LKF) enables adaptive spectral extraction from raw I/Q sequences.
 		Experiments on RadioML2016.10A and RadioML2016.10B show that IQFormerLite remains competitive with the state-of-the-art IQFormer while compressing parameters by 65.7\% (0.12~M versus 0.35~M).
-		On-device profiling on the RK3588 NPU demonstrates superior efficiency: IQFormerLite achieves a throughput of 5877.3~samples/s and a latency of 0.17~ms under INT8 quantization, representing up to a $13.46\times$ speedup over the baseline.
-		Furthermore, the framework exhibits high quantization robustness, with only a 0.40 percentage-point accuracy dip during INT8 conversion. 
+			On-device profiling on the RK3588 NPU demonstrates superior efficiency: under INT8 quantization, IQFormerLite achieves a throughput of 6387.84~samples/s and a latency of 0.157~ms, representing a $14.83\times$ speedup over the baseline.
+			Furthermore, the framework exhibits high quantization robustness, with only a 0.07 percentage-point accuracy dip during INT8 conversion.
 		Overall, IQFormerLite offers a hardware-aligned design direction that effectively bridges the gap between theoretical efficiency and practical real-time inference on edge NPUs.
 		
 		\textbf{Keywords:} Automatic Modulation Recognition; Lightweight Architecture; Edge NPUs; Deep Learning; Kolmogorov-Arnold Networks
@@ -264,7 +264,7 @@
 	
 	
 	\subsection{Knowledge Distillation}
-	Knowledge Distillation (KD) trains a compact model to match the behavior of a larger model and can improve the accuracy of lightweight architectures \cite{lin2024Glrseigreen}.
+	Knowledge Distillation (KD) trains a compact model to match the behavior of a larger model and can improve the accuracy of lightweight architectures \cite{lin2024GLRSEIGreen}.
 	Large models often provide strong performance but incur high computational and memory costs, while small models are efficient but may underfit.
 	KD reduces this gap by transferring the function mapping of a teacher network to a student network.
 	Qi et al.\ \cite{qi2023FedBKDHeterogenous} proposed a bidirectional KD framework for federated learning that improves performance while preserving privacy.
@@ -273,7 +273,7 @@
 	\subsection{Pruning}
 	Pruning removes low-importance weights or channels to reduce resource usage and accelerate inference \cite{molchanov2017Pruningconvolutional}.
 	Deep learning models often contain redundant parameters, and sparsification can reduce compute with limited accuracy loss.
-	Lin et al.\ \cite{lin2020Improvedneural} pruned convolutional filters in VT-CNN2 by identifying inactive or weakly activated filters and reported reduced overfitting under higher pruning rates.
+	Lin et al.\ \cite{lin2020improvedneural} pruned convolutional filters in VT-CNN2 by identifying inactive or weakly activated filters and reported reduced overfitting under higher pruning rates.
 	Chen et al.\ \cite{chen2024Channelpruning} estimated channel importance by coupling convolution and Batch Normalization (BN) statistics and applied structured pruning to remove unimportant filters.
 	In practice, a compact backbone remains central: lightweight design provides the base, pruning removes redundancy, and KD transfers predictive behavior to improve accuracy under tight constraints.
 	
@@ -386,6 +386,7 @@
 	A \texttt{ReduceLROnPlateau} scheduler reduces the learning rate by a factor of 0.5 with patience of 3 epochs.
 	Early stopping uses patience of 10 epochs with a maximum of 60 epochs.
 	Cross-entropy loss is used for optimization.
+	Unless otherwise stated, all reported recognition and interpretability results are aggregated over five independent runs with different random seeds and are presented as mean $\pm$ standard deviation.
 	
 	Deployment evaluation uses Orange Pi 5 Plus (Fig.~\ref{fig:orangepi5}) as the edge platform.
 	The device integrates Rockchip RK3588 with an octa-core CPU (4$\times$Cortex-A76 @ 2.4GHz + 4$\times$Cortex-A55 @ 1.8GHz) and an NPU providing 6~TOPS of INT8 compute.
@@ -413,17 +414,13 @@
 
 	
 	\begin{table}[htbp]
-		\caption{Comparison of model complexity and accuracy on two datasets (A: RadioML2016.10A, B: RadioML2016.10B). Accuracy values are reported as mean $\pm$ standard deviation over five random seeds. \textbf{Bold} indicates the best result, and \underline{underline} indicates the second-best result.}
-		\label{tab:sota_compare}
-		\renewcommand{\arraystretch}{1.25}
 		\centering
-		\small
-		\setlength{\tabcolsep}{3pt}
-		
-		\newcolumntype{Y}{>{\centering\arraybackslash}X}
-		
-		\begin{tabularx}{\linewidth}{@{}l c c c Y Y Y@{}}
-			\toprule
+		\caption{Comparison of model complexity and accuracy on two datasets (A: RadioML2016.10A, B: RadioML2016.10B). Accuracy values are reported as mean $\pm$ standard deviation. \textbf{Bold} indicates the best result, and \underline{underline} indicates the second-best result.}
+		\label{tab:sota_compare}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{adjustbox}{max width=\textwidth}
+			\begin{tabular}{lcccccc}
+			\toprule[1.5pt]
 			\multirow{2}{*}{\textbf{Model}} &
 			\multirow{2}{*}{\textbf{Dataset}} &
 			\multirow{2}{*}{\makecell{\textbf{Param.}\\\textbf{(M)}}} &
@@ -464,11 +461,12 @@
 			\multirow{2}{*}{32.06} &
 			$\underline{39.11 \pm 0.23}$ & $\underline{92.36 \pm 0.45}$ & $\underline{63.18 \pm 0.22}$ \\
 			& B & & & $\textbf{42.28} \pm \textbf{0.22}$ & $\textbf{93.75} \pm \textbf{0.05}$ & $\textbf{65.51} \pm \textbf{0.13}$ \\
-			\bottomrule
-		\end{tabularx}
+			\bottomrule[1.5pt]
+			\end{tabular}
+		\end{adjustbox}
 	\end{table}
 
-	Fig.~\ref{fig:sota_acc} complements Table~\ref{tab:sota_compare} by reporting the five-seed mean accuracy as a function of SNR.
+	Fig.~\ref{fig:sota_acc} complements Table~\ref{tab:sota_compare} by reporting the mean accuracy as a function of SNR.
 	Both datasets follow a common pattern: accuracy is close to chance under severe noise, increases sharply in the transition region (approximately $-10$ to $0$~dB), and saturates above $0$~dB.
 	Across the full SNR range, IQFormerLite remains among the strongest methods relative to the baselines.
 	On RadioML2016.10A, IQFormerLite closely tracks IQFormer, with high-SNR accuracies of $92.36 \pm 0.45\%$ and $92.81 \pm 0.27\%$, respectively, indicating that most discriminative capacity is retained under compression.
@@ -479,7 +477,7 @@
 		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610a_sota_acc.pdf}\label{fig:sota_acc_a}}
 		\hfill
 		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_sota_acc.pdf}\label{fig:sota_acc_b}}
-		\caption{Comparison of recognition accuracy under varying SNR levels. Curves report the mean over five random seeds; shaded regions denote $\pm$ one standard deviation for IQFormer and IQFormerLite. (a) RadioML2016.10A. (b) RadioML2016.10B. \label{fig:sota_acc}}
+		\caption{Comparison of recognition accuracy under varying SNR levels. Curves report the mean; shaded regions denote $\pm$ one standard deviation for IQFormer and IQFormerLite. (a) RadioML2016.10A. (b) RadioML2016.10B. \label{fig:sota_acc}}
 	\end{figure}
 	
 	Overall, IQFormerLite improves over prior lightweight baselines while following the expected SNR-dependent trend.
@@ -487,7 +485,7 @@
 	
 	\subsection{Modulation Analysis}
 	This section examines class-wise behavior to identify where compression affects recognition and how errors concentrate across modulation families.
-	Fig.~\ref{fig:mod_acc_comparison}(a)--(d) reports the five-seed mean per-class accuracies of IQFormer and IQFormerLite on RadioML2016.10A and RadioML2016.10B.
+	Fig.~\ref{fig:mod_acc_comparison}(a)--(d) reports the mean per-class accuracies of IQFormer and IQFormerLite on RadioML2016.10A and RadioML2016.10B.
 	A consistent pattern appears among closely confusable analog modulations. Averaged across all evaluated SNR levels, IQFormerLite improves WBFM accuracy relative to IQFormer by $9.29$ percentage points on RadioML2016.10A and $3.00$ percentage points on RadioML2016.10B, while AM-DSB accuracy changes by $-9.10$ and $-1.54$ percentage points, respectively.
 	This inverse shift suggests that compression mainly adjusts decision boundaries among overlapping classes rather than causing a uniform decline across modulation types.
 	Accordingly, most behavioral changes are concentrated in a small set of ambiguous analog categories, while overall capability is largely preserved.
@@ -504,7 +502,7 @@
 		\hfill
 		\subfloat[\centering]{\includegraphics[width=0.49\linewidth]{Figures/RML201610b_IQFormerLite_mod_acc.pdf}\label{fig:mod_acc_d}}
 		
-		\caption{Comparison of per-modulation recognition accuracy between the baseline IQFormer and the proposed IQFormerLite. Curves report the mean over five random seeds.
+		\caption{Comparison of per-modulation recognition accuracy between the baseline IQFormer and the proposed IQFormerLite. Curves report the mean.
 			(a) IQFormer on RadioML2016.10A.
 			(b) IQFormerLite on RadioML2016.10A.
 			(c) IQFormer on RadioML2016.10B.
@@ -554,7 +552,7 @@
 		\caption{Ablation results for the LKF module configuration. Accuracy is reported by varying the grid size $G$ and grid range $[-R, R]$ under three representative kernel sizes ($K \in \{15,17,31\}$). The optimal performance is achieved with the configuration $\{G=4, [-R, R]=[-2, 2], K=31\}$.}
 		\label{fig:kan_grid_ablation}
 	\end{figure}
-	
+
 	Following the selection of LKF hyperparameters, we performed component-level ablations to evaluate how each module affects the accuracy--efficiency trade-off. As summarized in Table~\ref{tab:ablation}, reducing the MLP blocks from 4 to 1 reveals substantial redundancy in the baseline feedforward design; parameters and computation are halved while accuracy drops by only 0.45\%. Further compression, including the removal of the LSTM and replacing EAA \cite{shaker2023SwiftFormerEfficient} with the LKGC module, reduces the parameter count to 0.11~M. While this aggressive optimization initially lowers accuracy to 62.00\%, the LKF module recovers this loss, improving overall accuracy by 1.35\% with negligible overhead.
 	
 	The final IQFormerLite architecture offers significant efficiency gains, reducing parameters by 65.7\% and FLOPs by 58.6\% compared to the original IQFormer. Despite using only about 34\% of the parameters and 41\% of the compute, IQFormerLite maintains an overall accuracy of 63.35\%, leaving a marginal gap of just 0.25 percentage points relative to the heavier baseline. these results suggest that combining LKGC and LKF effectively compensates for the absence of serial and attention-based operators.
@@ -672,6 +670,42 @@
 			\end{tabularx}
 		\end{adjustwidth}
 	\end{table}
+
+	\subsection{Spectral Interpretability of the Learnable KAN Filterbank}
+	\label{sec:lkf_interpretability}
+
+	To further examine whether the LKF behaves as a structured spectral front-end rather than an opaque parameter block, Fig.~\ref{fig:lkf_interpretability} visualizes the learned filter responses and output spectra of IQFormerLite on RadioML2016.10B.
+	The analysis uses the default LKF configuration.
+	The learned-filter plots are obtained from the KAN base-branch convolution weights, while the SNR- and modulation-family curves measure the spectra of the LKF output features.
+	Therefore, the latter should be interpreted as input-dependent output responses rather than SNR-conditioned changes of the filter kernels.
+
+	\begin{figure}[htbp]
+		\centering
+		\subfloat[\centering Mean learned LKF response.\label{fig:lkf_interp_a}]{
+			\includegraphics[width=0.48\linewidth]{Figures/lkf_A_5seed_mean_learned_filter_response.pdf}
+		}
+		\hfill
+		\subfloat[\centering Cross-seed variability.\label{fig:lkf_interp_b}]{
+			\includegraphics[width=0.48\linewidth]{Figures/lkf_B_cross_seed_variability.pdf}
+		}
+		
+		\vspace{0.4em}
+		
+		\subfloat[\centering Aggregate response envelope.\label{fig:lkf_interp_c}]{
+			\includegraphics[width=0.48\linewidth]{Figures/lkf_C_aggregate_response_envelope.pdf}
+		}
+		\hfill
+		\subfloat[\centering LKF output spectra by SNR and modulation family.\label{fig:lkf_interp_d}]{
+			\includegraphics[width=0.48\linewidth]{Figures/lkf_D_snr_modulation_family_output_spectra.pdf}
+		}
+		\caption{Spectral interpretability analysis of the Learnable KAN-based Filterbank (LKF) on RadioML2016.10B.}
+		\label{fig:lkf_interpretability}
+	\end{figure}
+
+	As shown in Fig.~\ref{fig:lkf_interp_a}, the mean learned-filter response emphasizes near-baseband and low-to-mid frequency components.
+	Fig.~\ref{fig:lkf_interp_b} reports the standard deviation across seeds, indicating the cross-seed variability of this frequency-selective pattern.
+	The aggregate response envelope in Fig.~\ref{fig:lkf_interp_c} summarizes the overall frequency preference using the mean and $\pm$ one standard deviation.
+	Finally, Fig.~\ref{fig:lkf_interp_d} shows that different SNR and modulation-family conditions produce distinct output spectral responses after the fixed learned filterbank.
 	
 	\subsection{Visualization Analysis}
 	Fig.~\ref{fig:tsne_vis} illustrates how feature separability changes with signal quality.
@@ -709,77 +743,16 @@
 	
 	This section reports on-device measurements of IQFormerLite on the Rockchip RK3588 platform. We profile latency, throughput, and memory overhead after compiling the models with RKNN-Toolkit2 into FP32, FP16, and INT8.
 	
-	Table~\ref{tab:quant_npu} shows that IQFormerLite is consistently more efficient than the baseline IQFormer across all formats. Under FP32, the compiled RKNN size drops from 4261.38~KB to 909.10~KB (78.7\%), while latency decreases from 2.30~ms to 0.20~ms (91.3\%). These reductions translate into an $11.45\times$ throughput increase, from 435.23 to 4983.30~samples/s. The gap is even larger in INT8, where IQFormerLite reaches 5877.30~samples/s, corresponding to a $13.46\times$ increase over the baseline. IQFormerLite also operates at lower NPU load (48\%--49\%) than IQFormer (79\%), suggesting that its operator mix maps more effectively to the RK3588 NPU kernels on this deployment stack.
-	
-%	\begin{table*}[t]
-%		%		\caption{On-device performance under different quantization levels across multiple metrics. \label{tab:quant_npu}}
-%		%		\caption{On-device performance of IQFormer and IQFormerLite on the Rockchip RK3588 NPU under different quantization types. Quant. denotes the quantization type used for RKNN compilation. {$\Delta$Mem (MB)} indicates activation memory (runtime RAM overhead). {Lat. (ms)} is per-sample inference latency, and {Thr. (samples/s)} is throughput. \label{tab:quant_npu}}
-%		\caption{On-device performance of IQFormer and IQFormerLite on the Rockchip RK3588 NPU under different quantization types. Quant. \textasciitilde  quantization type; {$\Delta$Mem} \textasciitilde activation memory (runtime RAM overhead); Lat. \textasciitilde per-sample inference latency; Thr. \textasciitilde throughput. \label{tab:quant_npu}}
-%		
-%		
-%		\renewcommand{\arraystretch}{1.2}
-%		\small
-%		\sisetup{
-%			table-number-alignment = center,
-%			detect-weight = true,
-%			round-mode = places,
-%			round-precision = 2
-%		}
-%		\begin{adjustwidth}{-\extralength}{0cm}
-%			\newcolumntype{Y}{>{\centering\arraybackslash}X}
-%			\begin{tabularx}{\fulllength}{l l Y Y Y Y Y Y}
-%				\toprule
-%				\multirow{2}{*}{\textbf{Quant.}} & \multirow{2}{*}{\textbf{Method}} &
-%				\multicolumn{2}{c}{\textbf{Footprint}} &
-%				\multicolumn{2}{c}{\textbf{Runtime}} &
-%				\textbf{Util.} & \textbf{Quality} \\
-%				\cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-7} \cmidrule(lr){8-8}
-%				& & {Size (KB)} & {$\Delta$Mem (MB)} & {Lat. (ms)} & {Thr. (samples/s)} & {NPU Load (\%)} & {Acc. (\%)} \\
-%				\midrule
-%				
-%				\multirow{3}{*}{FP32}
-%				& IQFormer & 4261.38 & 12.3 & 2.30 & 435.23 & 79 & 62.03 \\
-%				%				\rowcolor{gray!10}
-%				& \textbf{IQFormerLite} & \textbf{909.10} & \textbf{7.6} & \textbf{0.20} & \textbf{4983.30} & \textbf{49} & \textbf{66.20} \\
-%				& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$78.7\%}} & {\textit{$\downarrow$38.2\%}} & {\textit{$\downarrow$91.3\%}} & {\textit{$\times$11.45}} & {\textit{$\downarrow$38.0\%}} & {\textit{$+4.17$ pp}} \\
-%				\midrule
-%				
-%				\multirow{3}{*}{FP16}
-%				& IQFormer & 4261.38 & 12.5 & 2.29 & 435.10 & 79 & 62.03 \\
-%				%				\rowcolor{gray!10}
-%				& \textbf{IQFormerLite} & \textbf{909.10} & \textbf{5.3} & \textbf{0.21} & \textbf{4836.20} & \textbf{48} & \textbf{66.00} \\
-%				& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$78.7\%}} & {\textit{$\downarrow$57.6\%}} & {\textit{$\downarrow$90.8\%}} & {\textit{$\times$11.12}} & {\textit{$\downarrow$39.2\%}} & {\textit{$+3.97$ pp}} \\
-%				\midrule
-%				
-%				\multirow{3}{*}{INT8}
-%				& IQFormer & 4046.92 & 11.9 & 2.28 & 436.69 & 79 & 54.32 \\
-%				%				\rowcolor{gray!10}
-%				& \textbf{IQFormerLite} & \textbf{735.38} & \textbf{0.9} & \textbf{0.17} & \textbf{5877.30} & \textbf{48} & \textbf{65.80} \\
-%				& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$81.8\%}} & {\textit{$\downarrow$92.4\%}} & {\textit{$\downarrow$92.5\%}} & {\textit{$\times$13.46}} & {\textit{$\downarrow$39.2\%}} & {\textit{$+11.48$ pp}} \\
-%				\bottomrule
-%			\end{tabularx}
-%		\end{adjustwidth}
-%	\end{table*}
+	Table~\ref{tab:quant_npu} shows that IQFormerLite is consistently more efficient than the baseline IQFormer across all formats. Under FP32, the compiled RKNN size drops from 4261.39~KB to 909.10~KB (78.67\%), while latency decreases from 2.294~ms to 0.197~ms (91.42\%). These reductions translate into an $11.66\times$ throughput increase, from 436.18 to 5084.47~samples/s. The gap is even larger in INT8, where IQFormerLite reaches 6387.84~samples/s, corresponding to a $14.83\times$ increase over the baseline. IQFormerLite also operates at lower NPU load (48\%--49\%) than IQFormer (79\%), suggesting that its operator mix maps more effectively to the RK3588 NPU kernels on this deployment stack.
 	
 	\begin{table}[htbp]
-		\caption{On-device performance of IQFormer and IQFormerLite on the Rockchip RK3588 NPU under different quantization types. Quant. \textasciitilde  quantization type; {$\Delta$Mem} \textasciitilde activation memory (runtime RAM overhead); Lat. \textasciitilde per-sample inference latency; Thr. \textasciitilde throughput. \label{tab:quant_npu}}
-		
+		\centering
+		\caption{On-device performance of IQFormer and IQFormerLite on the Rockchip RK3588 NPU under different quantization types. Quant. \textasciitilde  quantization type; {$\Delta$Mem} \textasciitilde activation memory (runtime RAM overhead); Lat. \textasciitilde per-sample inference latency; Thr. \textasciitilde throughput.}
+		\label{tab:quant_npu}
 		\renewcommand{\arraystretch}{1.2}
-		\small
-		\centering % 添加居中命令
-		\sisetup{
-			table-number-alignment = center,
-			detect-weight = true,
-			round-mode = places,
-			round-precision = 2
-		}
-		
-		% 定义 Y 为居中且自适应宽度的列
-		\newcolumntype{Y}{>{\centering\arraybackslash}X}
-		
-		% 将 \fulllength 替换为 \textwidth，并去除了 adjustwidth 环境
-		\begin{tabularx}{\textwidth}{l l Y Y Y Y Y Y}
-			\toprule
+		\begin{adjustbox}{max width=\textwidth}
+			\begin{tabular}{llcccccc}
+			\toprule[1.5pt]
 			\multirow{2}{*}{\textbf{Quant.}} & \multirow{2}{*}{\textbf{Method}} &
 			\multicolumn{2}{c}{\textbf{Footprint}} &
 			\multicolumn{2}{c}{\textbf{Runtime}} &
@@ -789,26 +762,27 @@
 			\midrule
 			
 			\multirow{3}{*}{FP32}
-			& IQFormer & 4261.38 & 12.3 & 2.30 & 435.23 & 79 & 62.03 \\
-			& \textbf{IQFormerLite} & \textbf{909.10} & \textbf{7.6} & \textbf{0.20} & \textbf{4983.30} & \textbf{49} & \textbf{66.20} \\
-			& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$78.7\%}} & {\textit{$\downarrow$38.2\%}} & {\textit{$\downarrow$91.3\%}} & {\textit{$\times$11.45}} & {\textit{$\downarrow$38.0\%}} & {\textit{$+4.17$ pp}} \\
+			& IQFormer & 4261.39 & 12.3 & 2.294 & 436.18 & 79 & 61.53 \\
+			& \textbf{IQFormerLite} & \textbf{909.10} & \textbf{7.6} & \textbf{0.197} & \textbf{5084.47} & \textbf{49} & \textbf{65.16} \\
+			& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$78.67\%}} & {\textit{$\downarrow$38.2\%}} & {\textit{$\downarrow$91.42\%}} & {\textit{$\times$11.66}} & {\textit{$\downarrow$38.0\%}} & {\textit{$+3.64$ pp}} \\
 			\midrule
 			
 			\multirow{3}{*}{FP16}
-			& IQFormer & 4261.38 & 12.5 & 2.29 & 435.10 & 79 & 62.03 \\
-			& \textbf{IQFormerLite} & \textbf{909.10} & \textbf{5.3} & \textbf{0.21} & \textbf{4836.20} & \textbf{48} & \textbf{66.00} \\
-			& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$78.7\%}} & {\textit{$\downarrow$57.6\%}} & {\textit{$\downarrow$90.8\%}} & {\textit{$\times$11.12}} & {\textit{$\downarrow$39.2\%}} & {\textit{$+3.97$ pp}} \\
+			& IQFormer & 4261.39 & 12.5 & 2.314 & 432.15 & 79 & 61.53 \\
+			& \textbf{IQFormerLite} & \textbf{909.10} & \textbf{5.3} & \textbf{0.194} & \textbf{5156.92} & \textbf{48} & \textbf{65.16} \\
+			& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$78.67\%}} & {\textit{$\downarrow$57.6\%}} & {\textit{$\downarrow$91.62\%}} & {\textit{$\times$11.93}} & {\textit{$\downarrow$39.2\%}} & {\textit{$+3.64$ pp}} \\
 			\midrule
 			
 			\multirow{3}{*}{INT8}
-			& IQFormer & 4046.92 & 11.9 & 2.28 & 436.69 & 79 & 54.32 \\
-			& \textbf{IQFormerLite} & \textbf{735.38} & \textbf{0.9} & \textbf{0.17} & \textbf{5877.30} & \textbf{48} & \textbf{65.80} \\
-			& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$81.8\%}} & {\textit{$\downarrow$92.4\%}} & {\textit{$\downarrow$92.5\%}} & {\textit{$\times$13.46}} & {\textit{$\downarrow$39.2\%}} & {\textit{$+11.48$ pp}} \\
-			\bottomrule
-		\end{tabularx}
+			& IQFormer & 4046.92 & 11.9 & 2.322 & 430.77 & 79 & 53.64 \\
+			& \textbf{IQFormerLite} & \textbf{735.38} & \textbf{0.9} & \textbf{0.157} & \textbf{6387.84} & \textbf{48} & \textbf{65.09} \\
+			& \textit{Gain (Lite vs. Base)} & {\textit{$\downarrow$81.83\%}} & {\textit{$\downarrow$92.4\%}} & {\textit{$\downarrow$93.25\%}} & {\textit{$\times$14.83}} & {\textit{$\downarrow$39.2\%}} & {\textit{$+11.45$ pp}} \\
+			\bottomrule[1.5pt]
+			\end{tabular}
+		\end{adjustbox}
 	\end{table}
 	
-	IQFormerLite is also stable under post-training quantization on this platform. Moving from FP32 to INT8 reduces accuracy from 66.20\% to 65.80\%, a 0.40 percentage-point change, whereas IQFormer drops from 62.03\% to 54.32\% (7.71 percentage points). INT8 further reduces IQFormerLite's incremental runtime memory to 0.9~MB, compared with 11.9~MB for the baseline under INT8, matching the 92.4\% reduction reported in Table~\ref{tab:quant_npu}. Together, these results indicate that IQFormerLite maintains accuracy while improving throughput and lowering memory overhead under low-precision execution.
+	IQFormerLite is also stable under post-training quantization on this platform. Moving from FP32 to INT8 reduces accuracy from 65.16\% to 65.09\%, a 0.07 percentage-point change, whereas IQFormer drops from 61.53\% to 53.64\% (7.89 percentage points). INT8 further reduces IQFormerLite's incremental runtime memory to 0.9~MB, compared with 11.9~MB for the baseline under INT8, matching the 92.4\% reduction reported in Table~\ref{tab:quant_npu}. Together, these results indicate that IQFormerLite maintains accuracy while improving throughput and lowering memory overhead under low-precision execution.
 	
 	It is important to acknowledge that the comparative evaluation in Table~\ref{tab:quant_npu} is subject to deployment constraints that prevent a perfectly symmetrical comparison between the architectures. Specifically, the baseline IQFormer encounters a significant "mutual exclusivity" dilemma within the PyTorch 2.0 ecosystem: the modern Dynamo compiler supports STFT but lacks support for LSTM, while the legacy TorchScript path supports LSTM but fails to reliably export STFT complex-valued arithmetic to ONNX. Furthermore, as the rknn-toolkit2 framework provides no native support for STFT operators, IQFormer must operate in a fragmented execution mode, which inherently disadvantages its measured latency and throughput relative to the hardware-aligned IQFormerLite on the RK3588 platform.
 	
@@ -836,7 +810,7 @@
 	This paper presents IQFormerLite, a hardware-efficient AMR framework for edge NPUs.
 	The framework replaces attention-style token mixing and serial sequence modeling with a convolution-centric backbone, using LKGC for global context modeling and LKF for adaptive spectral feature extraction from raw I/Q inputs.
 	Across RadioML2016.10A and RadioML2016.10B, IQFormerLite maintains accuracy close to IQFormer while compressing parameters from 0.35~M to 0.12~M (65.7\%).
-	On RK3588, INT8 compilation further improves practical efficiency by reducing RKNN footprint by 19.1\% and achieving 0.17~ms/sample latency and 5877.3~samples/s throughput with only a minor accuracy decrease.
+	On RK3588, IQFormerLite under INT8 reduces the RKNN footprint by 81.83\% relative to IQFormer and achieves 0.157~ms/sample latency and 6387.84~samples/s throughput with only a 0.07 percentage-point accuracy decrease from FP32.
 	Residual errors remain concentrated in confusable analog classes, especially WBFM versus AM-DSB, which suggests that future gains may come from data curation, class-aware objectives, and feature designs that emphasize discriminative cues for silence-dominated analog segments.
 	Overall, IQFormerLite shows that strong AMR performance can be retained under substantial compression when the architecture is built around edge compiler constraints and NPU-friendly operators.
 	

@@ -10,3 +10,11 @@ only for k=7, k=15, and k=51 on RadioML2016.10A and RadioML2016.10B.
 
 All kernel configurations must be reported. The sweep must not be used to
 selectively present only a weak convolution baseline.
+
+## Completed outputs
+
+- `per_seed.csv`: all five-seed convolution controls and Full LKF references.
+- `summary.csv` and `summary.md`: accuracy and complexity summary.
+- `paired_vs_full.csv`: same-seed differences against Full LKF(k=31).
+- `analysis.md`: configurations exceeded by LKF, SNR behavior, and claim limits.
+- `raw_runs/`: 30 newly completed k=7, k=15, and k=51 run directories.
