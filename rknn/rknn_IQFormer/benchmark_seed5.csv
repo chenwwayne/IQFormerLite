@@ -1,4 +1,0 @@
-model,params_m,flops_g,cpu_model_size_kb,rknn_model_size_kb,cpu_latency_ms,cpu_throughput,npu_latency_batch_ms,npu_latency_sample_ms,npu_throughput,npu_accuracy,speedup,npu_load_mean,npu_load_max,memory_baseline_mb,memory_peak_mb,memory_delta_mb
-IQFormer_fp32.rknn,0.355049,0.077484,1392.933594,4261.386719,35.891277,27.861923,37.465291,2.341581,427.061949,0.615273,15.327799,,,1525.441406,1538.121094,12.679688
-IQFormer_fp16.rknn,,,,4261.386719,,,36.972077,2.310755,432.759026,0.615273,,,,2004.589844,2004.589844,0.0
-IQFormer_int8.rknn,,,,4046.924805,,,36.725885,2.295368,435.660023,0.536364,,,,2005.808594,2005.808594,0.0
