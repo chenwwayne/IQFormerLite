@@ -1,15 +1,15 @@
-# RKNN 部署与评测指南
+# RKNN Deployment and Benchmark Guide
 
-> 面向 `IQFormerLite` / `IQFormer` 在 Rockchip NPU（重点为 `RK3588`）上的模型转换、板端推理与多次评测。
+> RKNN conversion, on-device inference, and repeated benchmarking for `IQFormerLite` / `IQFormer` on Rockchip NPUs, with RK3588 as the primary target.
 
-## ✨ 这份 README 能帮你做什么
+## ✨ What This README Covers
 
-- 快速找到 `IQFormerLite` 和 `IQFormer` 的 RKNN 入口
-- 按当前 `conda` 环境写清楚依赖版本
-- 直接复制命令完成 Quickstart、单次推理、5 seeds 评测
-- 理清 `PT -> ONNX -> RKNN -> 板端 benchmark` 的完整链路
+- Locate the RKNN entry points for `IQFormerLite` and `IQFormer`
+- Recreate the current `conda` environment and RKNN Runtime setup
+- Run quickstart inference, single-model benchmarking, and five-seed summaries
+- Understand the full `PT -> ONNX -> RKNN -> on-board benchmark` workflow
 
-## 🗺️ 总览图
+## 🗺️ Workflow Overview
 
 ```mermaid
 flowchart LR
@@ -26,16 +26,17 @@ flowchart LR
     G --> H[benchmark_5seeds.csv / summary.csv]
 ```
 
-## 📁 目录结构
+## 📁 Directory Layout
 
 ```text
 rknn/
 ├── README.md
-├── environment.yml                   # 完整 conda 环境导出
-├── environment-min.yml               # 精简版 conda 环境导出
-├── env_rknn_runtime_2.3.2.sh          # 配置 RKNN Runtime 动态库
-├── rknn-explicit.txt                 # 显式包清单，适合同平台严格复现
-├── run_benchmark_5seeds.py            # 统一跑 5 seeds 评测
+├── README_CN.md
+├── environment.yml                   # Full conda environment export
+├── environment-min.yml               # Minimal conda environment export
+├── env_rknn_runtime_2.3.2.sh          # RKNN Runtime library setup
+├── rknn-explicit.txt                 # Explicit package list for strict same-platform reproduction
+├── run_benchmark_5seeds.py            # Unified five-seed benchmark runner
 ├── runtime/
 │   └── lib/
 │       └── librknnrt.so
@@ -53,6 +54,7 @@ rknn/
 │   │   ├── onnx2rknn.py
 │   │   └── run_convert.sh
 │   └── weights/
+│       ├── IQFormerLite.pt
 │       ├── weight_fp32.rknn
 │       ├── weight_fp16.rknn
 │       └── weight_int8.rknn
@@ -76,35 +78,35 @@ rknn/
             └── IQFormer_int8.rknn
 ```
 
-## 🧪 环境版本
+## 🧪 Environment Versions
 
-以下版本基于当前机器上的 `conda` 环境 `rknn` 与仓库内 Runtime 文件整理：
+The following versions are based on the current `rknn` conda environment and the runtime files included in this directory.
 
-| 组件                   | 版本             | 说明                                                            |
-| -------------------- | -------------- | ------------------------------------------------------------- |
-| Conda env            | `rknn`         | 统一用于 RKNN 推理与转换脚本                                             |
-| Python               | `3.10.20`      | 来自 `conda-meta/history`                                       |
-| RKNN Runtime         | `2.3.2`        | 由 `env_rknn_runtime_2.3.2.sh` 与 `runtime/lib/librknnrt.so` 对应 |
-| `rknn_toolkit_lite2` | `2.3.2`        | 板端推理脚本实际依赖                                                    |
-| `numpy`              | `2.2.6`        | 评测与数据处理                                                       |
-| `psutil`             | `7.2.2`        | 进程内存统计                                                        |
-| `torch`              | `2.12.1+cu130` | CPU 侧复杂度/对照推理、导出 ONNX                                         |
-| `einops`             | `0.8.2`        | 模型依赖                                                          |
-| `timm`               | `1.0.27`       | 模型依赖                                                          |
+| Component | Version | Notes |
+| --- | --- | --- |
+| Conda env | `rknn` | Shared environment for RKNN inference and conversion scripts |
+| Python | `3.10.20` | From `conda-meta/history` |
+| RKNN Runtime | `2.3.2` | Matches `env_rknn_runtime_2.3.2.sh` and `runtime/lib/librknnrt.so` |
+| `rknn_toolkit_lite2` | `2.3.2` | Required by on-board inference scripts |
+| `numpy` | `2.2.6` | Evaluation and data processing |
+| `psutil` | `7.2.2` | Process memory profiling |
+| `torch` | `2.12.1+cu130` | CPU-side complexity checks, reference inference, and ONNX export |
+| `einops` | `0.8.2` | Model dependency |
+| `timm` | `1.0.27` | Model dependency |
 
-> 提示
+> Notes
 >
-> - 板端推理已明确依赖 `rknn_toolkit_lite2==2.3.2`
-> - `PT/ONNX -> RKNN` 转换脚本依赖 `rknn_toolkit2`（`from rknn.api import RKNN`），建议与 Runtime/Lite2 保持同版本 `2.3.2`
-> - 如果你要在另一台机器复现，优先保证 `RKNN Runtime`、`rknn_toolkit_lite2`、`rknn_toolkit2` 三者版本一致
+> - On-board inference depends on `rknn_toolkit_lite2==2.3.2`.
+> - The `PT/ONNX -> RKNN` conversion scripts depend on `rknn_toolkit2` through `from rknn.api import RKNN`; use version `2.3.2` to match Runtime/Lite2.
+> - For reproduction on another board, keep `RKNN Runtime`, `rknn_toolkit_lite2`, and `rknn_toolkit2` on compatible versions.
 
-## ♻️ 环境复现
+## ♻️ Environment Reproduction
 
-本目录已经提供 3 种环境复现方式，建议按需求选择：
+This directory provides three environment reproduction options.
 
-### 方式 1：使用完整环境文件
+### Option 1: Full Environment File
 
-适合大多数场景，优先推荐。
+Recommended for most users.
 
 ```bash
 cd /home/orangepi/IQFormerLite
@@ -113,9 +115,9 @@ conda activate rknn
 source /home/orangepi/IQFormerLite/rknn/env_rknn_runtime_2.3.2.sh
 ```
 
-### 方式 2：使用精简环境文件
+### Option 2: Minimal Environment File
 
-适合想减少冗余依赖、手动补装 RKNN 相关包的场景。
+Use this when you want a smaller environment and prefer to install RKNN packages manually.
 
 ```bash
 cd /home/orangepi/IQFormerLite
@@ -123,9 +125,9 @@ conda env create -f /home/orangepi/IQFormerLite/rknn/environment-min.yml
 conda activate rknn
 ```
 
-### 方式 3：使用显式清单严格复现
+### Option 3: Explicit Package List
 
-适合同平台严格复现，通常要求对方也是相同系统与架构。
+Use this for strict same-platform reproduction. It usually requires the same OS and architecture.
 
 ```bash
 conda create -n rknn --file /home/orangepi/IQFormerLite/rknn/rknn-explicit.txt
@@ -133,23 +135,23 @@ conda activate rknn
 source /home/orangepi/IQFormerLite/rknn/env_rknn_runtime_2.3.2.sh
 ```
 
-### 复现建议
+### Reproduction Notes
 
-- 推荐平台：`Linux aarch64`
-- 推荐 Python：`3.10`
-- 建议保持 `RKNN Runtime 2.3.2`、`rknn_toolkit_lite2 2.3.2`、`rknn_toolkit2 2.3.2` 一致
-- 如果对方不是同架构机器，优先参考 `environment-min.yml` 再手动补齐 RKNN 相关依赖
-- 如果存在本地 wheel、私有包或额外 `.so` 文件，需要一起分发
+- Recommended platform: `Linux aarch64`
+- Recommended Python version: `3.10`
+- Keep `RKNN Runtime 2.3.2`, `rknn_toolkit_lite2 2.3.2`, and `rknn_toolkit2 2.3.2` aligned when possible
+- If the target machine is not the same architecture, start from `environment-min.yml` and install the RKNN dependencies manually
+- If local wheels, private packages, or additional `.so` files are required, distribute them together with the environment instructions
 
-### 复现注意事项
+### Common Reproduction Pitfalls
 
-- 如果对方不是 `Linux aarch64`，不要优先使用 `rknn-explicit.txt`
-- 如果对方机器的 NPU Runtime 不同，板端推理可能失败
-- 如果转换脚本报 `from rknn.api import RKNN` 错误，通常说明缺少 `rknn_toolkit2`
-- 如果推理脚本报 `rknn_toolkit_lite2 not found`，通常说明当前环境未激活或 Lite2 未安装
-- 如果报 `Missing librknnrt.so`，重新执行 `source /home/orangepi/IQFormerLite/rknn/env_rknn_runtime_2.3.2.sh`
+- Do not use `rknn-explicit.txt` first if the target machine is not `Linux aarch64`
+- On-board inference may fail if the NPU runtime version differs
+- `from rknn.api import RKNN` errors usually mean `rknn_toolkit2` is missing from the conversion environment
+- `rknn_toolkit_lite2 not found` usually means the `rknn` environment is not active or Lite2 is not installed
+- `Missing librknnrt.so` usually means the runtime library path has not been exported
 
-### 快速自检
+### Quick Checks
 
 ```bash
 python -c "from rknnlite.api import RKNNLite; print('Lite2 OK')"
@@ -159,7 +161,7 @@ source /home/orangepi/IQFormerLite/rknn/env_rknn_runtime_2.3.2.sh
 
 ## 🚀 Quickstart
 
-### 1. 激活环境
+### 1. Activate the Environment
 
 ```bash
 cd /home/orangepi/IQFormerLite
@@ -167,15 +169,15 @@ conda activate rknn
 source /home/orangepi/IQFormerLite/rknn/env_rknn_runtime_2.3.2.sh
 ```
 
-运行成功后应能看到类似输出：
+Expected output:
 
 ```text
 Using RKNN runtime: /home/orangepi/IQFormerLite/rknn/runtime/lib/librknnrt.so
 ```
 
-### 2. 开启 NPU 负载可读权限
+### 2. Enable NPU Load Reading
 
-如果你想在结果里看到 `npu_load_mean` / `npu_load_max`，先执行：
+Run this if you want `npu_load_mean` / `npu_load_max` in the benchmark results.
 
 ```bash
 sudo chmod a+rx /sys/kernel/debug
@@ -183,33 +185,33 @@ sudo chmod a+rx /sys/kernel/debug/rknpu
 sudo chmod a+r /sys/kernel/debug/rknpu/load
 ```
 
-### 3. 一键跑 IQFormerLite
+### 3. Run IQFormerLite
 
 ```bash
 bash /home/orangepi/IQFormerLite/rknn/rknn_IQFormerLite/inference_on_rk3588.sh
 ```
 
-输出文件默认写到：
+Default output:
 
 ```text
 /home/orangepi/IQFormerLite/rknn/rknn_IQFormerLite/benchmark.csv
 ```
 
-### 4. 一键跑 IQFormer
+### 4. Run IQFormer
 
 ```bash
 bash /home/orangepi/IQFormerLite/rknn/rknn_IQFormer/inference_on_rk3588.sh
 ```
 
-输出文件默认写到：
+Default output:
 
 ```text
 /home/orangepi/IQFormerLite/rknn/rknn_IQFormer/benchmark.csv
 ```
 
-### 5. 跑 5 seeds 汇总评测
+### 5. Run Five-Seed Summary Benchmarks
 
-这个脚本会分别调用两个子目录里的 `inference_on_rk3588.py`，最终输出每个 seed 的结果和统计摘要。
+This script calls the `inference_on_rk3588.py` entry points in both project directories and writes per-seed results plus summary CSV files.
 
 ```bash
 PYTHONNOUSERSITE=1 /home/orangepi/miniconda3/envs/rknn/bin/python \
@@ -222,16 +224,16 @@ PYTHONNOUSERSITE=1 /home/orangepi/miniconda3/envs/rknn/bin/python \
   --split_random_state 233
 ```
 
-生成结果：
+Generated files:
 
 - `rknn/rknn_IQFormerLite/benchmark_5seeds.csv`
 - `rknn/rknn_IQFormerLite/benchmark_5seeds_summary.csv`
 - `rknn/rknn_IQFormer/benchmark_5seeds.csv`
 - `rknn/rknn_IQFormer/benchmark_5seeds_summary.csv`
 
-## 🔧 从 PT 转到 RKNN
+## 🔧 Convert PT to RKNN
 
-### 转换链路
+### Conversion Pipeline
 
 ```text
 .pt  ->  pt2onnx.py  ->  .onnx
@@ -239,7 +241,7 @@ PYTHONNOUSERSITE=1 /home/orangepi/miniconda3/envs/rknn/bin/python \
       ->  onnx2rknn.py -> fp32 / fp16 / int8 .rknn
 ```
 
-### IQFormerLite 转换示例
+### IQFormerLite Example
 
 ```bash
 bash /home/orangepi/IQFormerLite/rknn/rknn_IQFormerLite/pt2rknn/run_convert.sh \
@@ -248,13 +250,13 @@ bash /home/orangepi/IQFormerLite/rknn/rknn_IQFormerLite/pt2rknn/run_convert.sh \
   --dataset /home/orangepi/IQFormerLite/rknn/rknn_IQFormerLite/calib/dataset.txt
 ```
 
-转换后默认会在模型所在目录生成：
+By default, the converted RKNN files are written next to the source model:
 
 - `*_fp32.rknn`
 - `*_fp16.rknn`
 - `*_int8.rknn`
 
-### IQFormer 转换示例
+### IQFormer Example
 
 ```bash
 bash /home/orangepi/IQFormerLite/rknn/rknn_IQFormer/pt2rknn/run_convert.sh \
@@ -263,16 +265,16 @@ bash /home/orangepi/IQFormerLite/rknn/rknn_IQFormer/pt2rknn/run_convert.sh \
   --dataset /home/orangepi/IQFormerLite/rknn/rknn_IQFormer/calib/dataset.txt
 ```
 
-### 关于 INT8 校准
+### INT8 Calibration
 
-- `INT8` 转换需要 `dataset.txt`
-- `dataset.txt` 中应列出校准样本路径
-- `IQFormer` 的转换脚本会优先使用 `calib/dataset.txt`
-- 如果 `dataset.txt` 不存在，`IQFormer` 脚本会尝试从 `calib/` 下的 `iq_*.npy` 自动生成列表
+- `INT8` conversion requires `dataset.txt`
+- `dataset.txt` should list calibration sample paths
+- The `IQFormer` conversion script first checks `calib/dataset.txt`
+- If `dataset.txt` is missing, the `IQFormer` script tries to generate it from `iq_*.npy` files in `calib/`
 
-## 🧭 常用命令
+## 🧭 Common Commands
 
-### 只跑指定目录下的 RKNN 模型
+### Run RKNN Models from One Directory
 
 ```bash
 PYTHONNOUSERSITE=1 /home/orangepi/miniconda3/envs/rknn/bin/python \
@@ -285,7 +287,7 @@ PYTHONNOUSERSITE=1 /home/orangepi/miniconda3/envs/rknn/bin/python \
   --seed 1
 ```
 
-### 只评测 IQFormer
+### Benchmark IQFormer Only
 
 ```bash
 PYTHONNOUSERSITE=1 /home/orangepi/miniconda3/envs/rknn/bin/python \
@@ -295,40 +297,40 @@ PYTHONNOUSERSITE=1 /home/orangepi/miniconda3/envs/rknn/bin/python \
   --data /home/orangepi/IQFormerLite/dataset/RML2016.10a.pkl
 ```
 
-## 📊 输出字段说明
+## 📊 Output Fields
 
-- `params_m` / `flops_g` / `cpu_model_size_kb`：CPU 侧模型复杂度
-- `rknn_model_size_kb`：RKNN 文件大小
-- `cpu_latency_ms` / `cpu_throughput`：CPU 侧动态性能
-- `npu_latency_batch_ms` / `npu_latency_sample_ms` / `npu_throughput`：NPU 侧动态性能
-- `npu_accuracy`：NPU 侧精度
-- `speedup`：CPU / NPU 延迟比
-- `npu_load_mean` / `npu_load_max`：NPU 负载
-- `memory_baseline_mb` / `memory_peak_mb` / `memory_delta_mb`：进程 RSS 基线/峰值/增量
+- `params_m` / `flops_g` / `cpu_model_size_kb`: CPU-side model complexity
+- `rknn_model_size_kb`: compiled RKNN file size
+- `cpu_latency_ms` / `cpu_throughput`: CPU-side dynamic performance
+- `npu_latency_batch_ms` / `npu_latency_sample_ms` / `npu_throughput`: NPU-side dynamic performance
+- `npu_accuracy`: NPU-side accuracy
+- `speedup`: CPU/NPU latency ratio
+- `npu_load_mean` / `npu_load_max`: NPU load
+- `memory_baseline_mb` / `memory_peak_mb` / `memory_delta_mb`: process RSS baseline, peak, and increment
 
-## ❗ 常见问题
+## ❗ Troubleshooting
 
-### 1. 提示 `rknn_toolkit_lite2 not found`
+### 1. `rknn_toolkit_lite2 not found`
 
-说明当前没有激活 `rknn` 环境，或者环境里没装 Lite2：
+The `rknn` environment is not active, or Lite2 is not installed.
 
 ```bash
 conda activate rknn
 python -c "from rknnlite.api import RKNNLite; print('OK')"
 ```
 
-### 2. 提示 `Missing librknnrt.so`
+### 2. `Missing librknnrt.so`
 
-先确认 Runtime 文件存在，再重新 `source`：
+Check that the runtime file exists, then source the runtime setup script again.
 
 ```bash
 ls /home/orangepi/IQFormerLite/rknn/runtime/lib/librknnrt.so
 source /home/orangepi/IQFormerLite/rknn/env_rknn_runtime_2.3.2.sh
 ```
 
-### 3. `npu_load_mean` / `npu_load_max` 为空
+### 3. Empty `npu_load_mean` / `npu_load_max`
 
-通常是 `/sys/kernel/debug/rknpu/load` 没有读取权限，执行：
+`/sys/kernel/debug/rknpu/load` usually lacks read permission.
 
 ```bash
 sudo chmod a+rx /sys/kernel/debug
@@ -336,17 +338,16 @@ sudo chmod a+rx /sys/kernel/debug/rknpu
 sudo chmod a+r /sys/kernel/debug/rknpu/load
 ```
 
-### 4. 转换时报 `from rknn.api import RKNN` 失败
+### 4. `from rknn.api import RKNN` Fails During Conversion
 
-这类问题通常不是板端 Runtime，而是转换环境缺少 `rknn_toolkit2`。建议在 `rknn` 环境中补齐，并与 `Lite2 / Runtime 2.3.2` 保持一致。
+This is usually a conversion-environment issue rather than an on-board runtime issue. Install `rknn_toolkit2` in the `rknn` environment and keep it aligned with `Lite2 / Runtime 2.3.2`.
 
-## 📌 你最可能会用到的入口
+## 📌 Main Entry Points
 
-- 跑 `IQFormerLite`：`rknn/rknn_IQFormerLite/inference_on_rk3588.sh`
-- 跑 `IQFormer`：`rknn/rknn_IQFormer/inference_on_rk3588.sh`
-- 跑 5 seeds 汇总：`rknn/run_benchmark_5seeds.py`
-- 转换 `IQFormerLite`：`rknn/rknn_IQFormerLite/pt2rknn/run_convert.sh`
-- 转换 `IQFormer`：`rknn/rknn_IQFormer/pt2rknn/run_convert.sh`
+- Run `IQFormerLite`: `rknn/rknn_IQFormerLite/inference_on_rk3588.sh`
+- Run `IQFormer`: `rknn/rknn_IQFormer/inference_on_rk3588.sh`
+- Run five-seed summary: `rknn/run_benchmark_5seeds.py`
+- Convert `IQFormerLite`: `rknn/rknn_IQFormerLite/pt2rknn/run_convert.sh`
+- Convert `IQFormer`: `rknn/rknn_IQFormer/pt2rknn/run_convert.sh`
 
 ***
-
