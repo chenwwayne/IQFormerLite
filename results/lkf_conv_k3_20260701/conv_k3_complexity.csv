@@ -1,3 +1,0 @@
-dataset,variant,params,flops
-2016.10a,conv_k3,118735,29524352
-2016.10b,conv_k3,118670,29524224
