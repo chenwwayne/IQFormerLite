@@ -32,14 +32,13 @@
 |-- utils/                          # 训练循环、模型报告、绘图与辅助函数
 |-- scripts/                        # 实验运行与结果汇总脚本
 |-- notebook/                       # 分析与绘图工具
-|-- results/                        # 关键结果摘要与论文级分析结果
 |-- logs/                           # 运行日志、TensorBoard、混淆矩阵、t-SNE
 |-- save_models/                    # 训练得到的模型权重
-|-- rknn/                           # 边缘端/NPU 部署与 RKNN 相关文件
-`-- paper/                          # 论文稿件与图表材料
+`-- rknn/                           # 边缘端/NPU 部署与 RKNN 相关文件
 ```
 
-> ⚠️ `logs/`、`save_models/`、`results/**/raw_runs/` 和 TensorBoard 事件文件属于生成产物，体积可能很大，不建议日常全量同步。
+> ⚠️ `logs/`、`save_models/`、TensorBoard 事件文件以及本地实验输出体积可能很大。
+> `results/`、`paper/`、`.trae/` 等本地目录已明确排除，不再同步到 Gitee。
 
 ---
 

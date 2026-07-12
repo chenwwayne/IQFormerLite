@@ -32,14 +32,13 @@
 |-- utils/                          # Training loops, reports, plots, helpers
 |-- scripts/                        # Experiment and summary scripts
 |-- notebook/                       # Analysis and plotting utilities
-|-- results/                        # Curated summaries and paper-ready results
 |-- logs/                           # Runtime logs, TensorBoard, confusion matrices, t-SNE
 |-- save_models/                    # Trained checkpoints
-|-- rknn/                           # Edge/NPU deployment assets
-`-- paper/                          # Manuscript assets
+`-- rknn/                           # Edge/NPU deployment assets
 ```
 
-> ⚠️ `logs/`, `save_models/`, `results/**/raw_runs/`, and TensorBoard event files are generated artifacts and can be very large.
+> ⚠️ `logs/`, `save_models/`, TensorBoard event files, and local experiment outputs can be very large.
+> Local-only directories such as `results/`, `paper/`, and `.trae/` are intentionally excluded from Gitee synchronization.
 
 ---
 
