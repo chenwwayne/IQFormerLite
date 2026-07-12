@@ -23,6 +23,9 @@ paper/
 .DS_Store
 **/.DS_Store
 
+# Local Trae workspace metadata.
+.trae/
+
 # LaTeX paper build artifacts. Keep source files and figure PDFs under version control.
 paper/**/Main.aux
 paper/**/Main.bbl
