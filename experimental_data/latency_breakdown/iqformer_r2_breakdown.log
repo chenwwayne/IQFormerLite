@@ -1,0 +1,20 @@
+/home/orangepi/miniconda3/envs/rknn/lib/python3.10/site-packages/rknnlite/api/rknn_lite.py:41: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING rknn-toolkit-lite2 version: 2.3.2
+I RKNN: [11:17:26.173] RKNN Runtime Information, librknnrt version: 2.3.2 (429f97ae6b@2025-04-09T09:09:27)
+I RKNN: [11:17:26.174] RKNN Driver Information, version: 0.9.6
+I RKNN: [11:17:26.174] RKNN Model Information, version: 6, toolkit version: 2.3.2(compiler version: 2.3.2 (@2025-04-03T08:26:16)), target: RKNPU v2, target platform: rk3588, framework name: ONNX, framework layout: NCHW, model inference type: static_shape
+W RKNN: [11:17:26.185] query RKNN_QUERY_INPUT_DYNAMIC_RANGE error, rknn model is static shape type, please export rknn with dynamic_shapes
+WARNING Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+WARNING rknn-toolkit-lite2 version: 2.3.2
+I RKNN: [11:17:41.106] RKNN Runtime Information, librknnrt version: 2.3.2 (429f97ae6b@2025-04-09T09:09:27)
+I RKNN: [11:17:41.106] RKNN Driver Information, version: 0.9.6
+I RKNN: [11:17:41.106] RKNN Model Information, version: 6, toolkit version: 2.3.2(compiler version: 2.3.2 (e045de294f@2025-04-07T19:48:25)), target: RKNPU v2, target platform: rk3588, framework name: ONNX, framework layout: NCHW, model inference type: static_shape
+W RKNN: [11:17:41.109] query RKNN_QUERY_INPUT_DYNAMIC_RANGE error, rknn model is static shape type, please export rknn with dynamic_shapes
+WARNING Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+samples 1024
+batch_size 16
+repeats 5
+{'model': 'IQFormer INT8', 'cpu_stft_ms_per_sample_mean': 0.3712674191406862, 'cpu_stft_ms_per_sample_std': 0.0253983706464631, 'rknn_ms_per_sample_mean': 2.3704016343750745, 'rknn_ms_per_sample_std': 0.10341314421232273, 'e2e_ms_per_sample_mean': 2.7416690535157606, 'e2e_ms_per_sample_std': 0.10409125638531072, 'e2e_samples_per_s': 364.7413237996967, 'npu_load_mean': 21.58125}
+{'model': 'IQFormerLite INT8', 'cpu_stft_ms_per_sample_mean': 0.0, 'cpu_stft_ms_per_sample_std': 0.0, 'rknn_ms_per_sample_mean': 0.13591861660149362, 'rknn_ms_per_sample_std': 0.017649858902004933, 'e2e_ms_per_sample_mean': 0.13591861660149362, 'e2e_ms_per_sample_std': 0.017649858902004933, 'e2e_samples_per_s': 7357.343865056752, 'npu_load_mean': 29.333333333333332}
+output /tmp/iqformer_r2_breakdown.csv
