@@ -9,6 +9,32 @@
 
 📘 Chinese version: [README_CN.md](README_CN.md)
 
+📄 Paper: [IQFormerLite: A hardware-efficient framework for automatic modulation recognition](https://ftp.nowpublishers.com/ijicc/article-abstract/doi/10.1108/IJICC-02-2026-0175/1397768/IQFormerLite-a-hardware-efficient-framework-for?redirectedFrom=fulltext)<br>
+DOI: [10.1108/IJICC-02-2026-0175](https://doi.org/10.1108/IJICC-02-2026-0175)
+
+---
+
+## 🧠 From raw IQ signals to edge inference
+
+IQFormerLite processes raw I/Q sequences with a Dynamic Fusion Embedding module, a Learnable KAN Filterbank (LKF), and large-kernel convolutional encoder blocks. The design keeps long-range context modeling and adaptive spectral extraction while replacing recurrent and attention-heavy paths with operators that are easier to compile for edge NPUs.
+
+![IQFormerLite architecture](assets/paper/overview.png)
+
+The result is a compact AMC backbone for real-time experiments on RadioML2016.10A and RadioML2016.10B. The paper evaluates both recognition quality and deployment efficiency, rather than treating parameter count alone as the definition of “lightweight.”
+
+## 📈 Why IQFormerLite is lightweight
+
+The parameter–accuracy comparison below shows the intended operating point: IQFormerLite stays close to IQFormer in recognition accuracy while using substantially fewer parameters on both datasets.
+
+![Accuracy versus parameter count on RadioML2016.10A and RadioML2016.10B](assets/paper/param_vs_acc_bubble.png)
+
+| Dataset | IQFormerLite overall accuracy | Parameters | FLOPs |
+|---|---:|---:|---:|
+| RadioML2016.10A | 63.18 ± 0.22% | 0.13 M | 32.06 M |
+| RadioML2016.10B | 65.51 ± 0.13% | 0.13 M | 32.06 M |
+
+Compared with IQFormer, the proposed model reduces the parameter count from approximately 0.35 M to 0.13 M, a reduction of about 63.8%, while retaining competitive overall accuracy.
+
 ---
 
 ## ✨ Highlights
@@ -18,6 +44,12 @@
 - Training and evaluation support for RML2016.10a and RML2016.10b.
 - Includes IQFormer, MCFormer, AMCNet, MCLDNN, PET-CGDNN, FEA-T128, and FEA-T1024 baselines.
 - Provides scripts for seed sweeps, LKF ablations, kernel sweeps, result summaries, and figure generation.
+
+The SNR-dependent curves below show where the compact design preserves performance: accuracy rises sharply through the transition region and approaches the stronger baselines at moderate and high SNR.
+
+| RadioML2016.10A | RadioML2016.10B |
+|---|---|
+| ![RadioML2016.10A accuracy across SNR](assets/paper/rml2016_10a_sota_accuracy.png) | ![RadioML2016.10B accuracy across SNR](assets/paper/rml2016_10b_sota_accuracy.png) |
 
 ---
 
@@ -32,6 +64,7 @@
 |-- utils/                          # Training loops, reports, plots, helpers
 |-- scripts/                        # Experiment and summary scripts
 |-- notebook/                       # Analysis and plotting utilities
+|-- assets/paper/                   # Paper figures embedded in this README
 |-- logs/                           # Runtime logs, TensorBoard, confusion matrices, t-SNE
 |-- save_models/                    # Trained checkpoints
 `-- rknn/                           # Edge/NPU deployment assets
@@ -185,6 +218,10 @@ Recommended IQFormerLite configuration:
 --model IQFormerLite --aux_mode kan --kernel_size 31 --grid_size 4 --grid_range -2 2
 ```
 
+These LKF settings are not arbitrary defaults: the grid-size and grid-range sweep identifies `grid_size=4`, `grid_range=[-2, 2]`, and `kernel_size=31` as the selected configuration for the reported model.
+
+![LKF grid-size and grid-range ablation](assets/paper/lkf_grid_ablation.png)
+
 ---
 
 ## 📊 Outputs
@@ -215,6 +252,16 @@ save_models/<run_tag>/weight.pt
 ```
 
 > ✅ `Test_ACC.csv` is the primary file used by summary scripts.
+
+---
+
+## 🚀 Edge deployment
+
+The deployment target is the Rockchip RK3588 NPU on Orange Pi 5 Plus. This hardware-oriented path is part of the model’s design objective: the benchmark measures compiled-model latency, throughput, memory, NPU load, and quantized accuracy in addition to PyTorch accuracy.
+
+<img src="assets/paper/orangepi5.png" alt="Orange Pi 5 Plus deployment platform" width="50%">
+
+Under the evaluated INT8 RKNN protocol, IQFormerLite reaches **0.157 ms/sample** latency and **6,387.84 samples/s** throughput, with **63.11%** aligned RKNN validation accuracy.
 
 ---
 

@@ -18,6 +18,8 @@ dataset/RML2016.10*
 # Local experiment outputs and manuscript working files are kept out of Gitee.
 results/
 paper/
+!assets/paper/
+!assets/paper/*.png
 
 # macOS filesystem metadata.
 .DS_Store

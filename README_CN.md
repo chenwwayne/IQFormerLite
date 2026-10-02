@@ -9,6 +9,32 @@
 
 📘 英文版：[README.md](README.md)
 
+📄 论文：[IQFormerLite: A hardware-efficient framework for automatic modulation recognition](https://ftp.nowpublishers.com/ijicc/article-abstract/doi/10.1108/IJICC-02-2026-0175/1397768/IQFormerLite-a-hardware-efficient-framework-for?redirectedFrom=fulltext)<br>
+DOI：[10.1108/IJICC-02-2026-0175](https://doi.org/10.1108/IJICC-02-2026-0175)
+
+---
+
+## 🧠 从原始 IQ 信号到边缘端推理
+
+IQFormerLite 使用 Dynamic Fusion Embedding、可学习 KAN 滤波器组（Learnable KAN Filterbank，LKF）和大卷积核编码器处理原始 I/Q 序列。在保留长程上下文建模与自适应频谱提取能力的同时，模型将循环结构和较重的注意力路径替换为更适合边缘 NPU 编译的算子。
+
+![IQFormerLite 网络架构](assets/paper/overview.png)
+
+最终得到的模型可以用于 RadioML2016.10A 和 RadioML2016.10B 的实时自动调制识别实验。论文同时评估识别精度与实际部署效率，而不是只用参数量定义模型是否轻量。
+
+## 📈 IQFormerLite 为什么更轻量
+
+下面的参数量–准确率对比展示了模型的设计目标：在两个数据集上，IQFormerLite 使用显著更少的参数，同时保持接近 IQFormer 的识别精度。
+
+![RadioML2016.10A 与 RadioML2016.10B 上的准确率–参数量对比](assets/paper/param_vs_acc_bubble.png)
+
+| 数据集 | IQFormerLite 总体准确率 | 参数量 | FLOPs |
+|---|---:|---:|---:|
+| RadioML2016.10A | 63.18 ± 0.22% | 0.13 M | 32.06 M |
+| RadioML2016.10B | 65.51 ± 0.13% | 0.13 M | 32.06 M |
+
+与 IQFormer 相比，IQFormerLite 的参数量从约 0.35 M 降至 0.13 M，减少约 63.8%，同时保持具有竞争力的总体准确率。
+
 ---
 
 ## ✨ 项目亮点
@@ -18,6 +44,12 @@
 - 支持在 RML2016.10a 与 RML2016.10b 上进行训练与评估。
 - 集成 IQFormer、MCFormer、AMCNet、MCLDNN、PET-CGDNN、FEA-T128、FEA-T1024 等对比模型。
 - 提供多随机种子实验、LKF 消融、卷积核扫描、结果汇总与绘图脚本。
+
+下面的 SNR 曲线展示了轻量化设计保留性能的区间：在中高信噪比条件下，IQFormerLite 的准确率逐渐接近表现更强的基线模型。
+
+| RadioML2016.10A | RadioML2016.10B |
+|---|---|
+| ![RadioML2016.10A 分 SNR 准确率](assets/paper/rml2016_10a_sota_accuracy.png) | ![RadioML2016.10B 分 SNR 准确率](assets/paper/rml2016_10b_sota_accuracy.png) |
 
 ---
 
@@ -32,6 +64,7 @@
 |-- utils/                          # 训练循环、模型报告、绘图与辅助函数
 |-- scripts/                        # 实验运行与结果汇总脚本
 |-- notebook/                       # 分析与绘图工具
+|-- assets/paper/                   # README 中嵌入的论文图片
 |-- logs/                           # 运行日志、TensorBoard、混淆矩阵、t-SNE
 |-- save_models/                    # 训练得到的模型权重
 `-- rknn/                           # 边缘端/NPU 部署与 RKNN 相关文件
@@ -185,6 +218,10 @@ IQFormerLite, IQFormer, MCFormer, AMCNET, MCLDNN, PETCGDNN, FEA_T128, FEA_T1024
 --model IQFormerLite --aux_mode kan --kernel_size 31 --grid_size 4 --grid_range -2 2
 ```
 
+这些 LKF 参数并非随意设置：网格大小和网格范围扫描最终选取 `grid_size=4`、`grid_range=[-2, 2]` 以及 `kernel_size=31` 作为论文结果中的配置。
+
+![LKF 网格大小与网格范围消融结果](assets/paper/lkf_grid_ablation.png)
+
 ---
 
 ## 📊 输出文件
@@ -215,6 +252,16 @@ save_models/<run_tag>/weight.pt
 ```
 
 > ✅ `Test_ACC.csv` 是结果汇总脚本最关键的输入文件。
+
+---
+
+## 🚀 边缘端部署
+
+部署目标是 Orange Pi 5 Plus 上的 Rockchip RK3588 NPU。该硬件友好的推理路径是模型设计目标的一部分：除 PyTorch 精度外，评测还关注编译模型的延迟、吞吐、内存占用、NPU 利用率和量化后的准确率。
+
+<img src="assets/paper/orangepi5.png" alt="Orange Pi 5 Plus 部署平台" width="50%">
+
+在论文评估的 INT8 RKNN 协议下，IQFormerLite 达到 **0.157 ms/样本** 的延迟和 **6,387.84 samples/s** 的吞吐，配套 RKNN 验证准确率为 **63.11%**。
 
 ---
 
